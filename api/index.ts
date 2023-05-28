@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
+const userRouter = require("./routes/user")
+const authRouter = require("./routes/auth")
 
 dotenv.config()
 
@@ -16,9 +18,11 @@ mongoose.connect(
         console.log(err);
     })
 
-app.get("/api/test", () => {
-    console.log("test is successfully")
-})
+
+app.use(express.json())
+app.use("/api/auth", authRouter)
+app.use("/api/users", userRouter)
+
 
 app.listen(PORT, () => {
     console.log(`Backend server is running on port:${PORT}`)
