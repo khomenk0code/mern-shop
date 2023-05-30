@@ -5,7 +5,7 @@ const router = require("express").Router()
 const {verifyTokenAndAuth, verifyTokenAndAdmin} = require("../middleware/verifyToken")
 const User = require("../models/user");
 
-router.put("/:id", verifyTokenAndAuth, async (req: any, res: Response) => {
+router.put("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
     if (req.body.password) {
         req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASSWORD_SECRET).toString()
     }
@@ -58,7 +58,7 @@ router.get("/", verifyTokenAndAdmin, async (req: Request, res: Response) => {
     }
 })
 
-router.get("/stats", verifyTokenAndAdmin, async (req: Request, res: Response) => {
+router.get("/stats", verifyTokenAndAdmin, async (req: Request, res: Response)=> {
     const date = new Date()
     const lastYear = new Date(date.setFullYear(date.getFullYear() - 1))
 

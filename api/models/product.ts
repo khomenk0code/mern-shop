@@ -1,7 +1,21 @@
 const mongoose = require("mongoose")
 
+export interface IProduct {
+    title: string;
+    desc: string;
+    img: string;
+    categories?: string[];
+    size: string;
+    color: string;
+    price: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+
+}
+
+
 const ProductsSchema = new mongoose.Schema({
-    username: {type: String, required: true, unique: true},
+    title: {type: String, required: true, unique: true},
     desc: {type: String, required: true},
     img: {type: String, required: true},
     categories: {type: Array},
@@ -11,4 +25,4 @@ const ProductsSchema = new mongoose.Schema({
 
 },{timestamps: true});
 
-module.exports = mongoose.model("Products", ProductsSchema)
+module.exports = mongoose.model("Product", ProductsSchema)
