@@ -5,6 +5,9 @@ const dotenv = require("dotenv")
 const userRouter = require("./routes/user")
 const authRouter = require("./routes/auth")
 const productsRouter = require("./routes/product")
+const ordersRouter = require("./routes/order")
+const cartRouter = require("./routes/cart")
+const paymentRouter = require("./routes/payment")
 
 dotenv.config()
 
@@ -24,6 +27,9 @@ app.use(express.json())
 app.use("/api/auth", authRouter)
 app.use("/api/users", userRouter)
 app.use("/api/products", productsRouter)
+app.use("/api/orders", ordersRouter)
+app.use("/api/cart", cartRouter)
+app.use("/api/payment", paymentRouter)
 
 
 app.listen(PORT, () => {

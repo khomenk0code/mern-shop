@@ -6,11 +6,8 @@ const Product = require("../models/product");
 
 router.post("/", verifyTokenAndAdmin, async (req: Request, res: Response) => {
     const newProduct: any  = new Product(req.body)
-    console.log("newProduct",newProduct)
-
     try {
         const savedProduct: any = await newProduct.save()
-        console.log("savedProduct",savedProduct)
         res.status(200).json(savedProduct)
     } catch (e) {
         res.status(500).json(e)
@@ -63,7 +60,7 @@ router.get("/", async (req: Request, res: Response) => {
         let products;
 
         if (qNew) {
-            products = await Product.find().sort({createdAt: -1}).limit(5)
+            products = await Product.find().sort( {createdAt: -1} ).limit(5)
         } else if (qCategory) {
             products = await Product.find({categories:{
                 $in: [qCategory],
