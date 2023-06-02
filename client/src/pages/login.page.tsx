@@ -1,24 +1,22 @@
 import styled from "styled-components";
-import {mobile} from "../utils/responsive";
+import { mobile } from "../utils/responsive";
+import React from "react";
 
-
-
-
-const Login = () => {
-    return (
-        <Container>
-            <Wrapper>
-                <Title>SIGN IN</Title>
-                <Form>
-                    <Input placeholder="username" />
-                    <Input placeholder="password" />
-                    <Button>LOGIN</Button>
-                    <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-                    <Link>CREATE A NEW ACCOUNT</Link>
-                </Form>
-            </Wrapper>
-        </Container>
-    );
+const Login: React.FC = () => {
+  return (
+    <Container>
+      <Wrapper>
+        <Title>SIGN IN</Title>
+        <Form>
+          <Input placeholder="username" />
+          <Input placeholder="password" />
+          <Button>LOGIN</Button>
+          <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
+          <Link>CREATE A NEW ACCOUNT</Link>
+        </Form>
+      </Wrapper>
+    </Container>
+  );
 };
 
 const Container = styled.div`
@@ -40,11 +38,10 @@ const Wrapper = styled.div`
   width: 25%;
   padding: 20px;
   background-color: #fffffe;
-  display: flex; 
+  display: flex;
   flex-direction: column;
   align-items: center;
   ${mobile({ width: "75%" })}
-  
 `;
 
 const Title = styled.h1`
@@ -55,7 +52,6 @@ const Title = styled.h1`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  
 `;
 
 const Input = styled.input`

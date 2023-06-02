@@ -75,7 +75,7 @@ module.exports = function LiqPay(public_key, private_key) {
      * @throws {InvalidArgumentException}
      */
     this.cnb_form = function cnb_form(params) {
-        let language = "ru";
+        let language = "ua";
 
         if (params.language) {
             language = params.language;

@@ -1,57 +1,70 @@
-import React from 'react';
+import React, { ChangeEventHandler, useState } from "react";
 import styled from "styled-components";
 import Navbar from "../components/header.component";
 import Announcement from "../components/anonouncement.component";
 import Products from "../components/products.component";
 import Newsletter from "../components/newsletter.component";
 import Footer from "../components/footer";
-import {mobile} from "../utils/responsive";
+import { mobile } from "../utils/responsive";
+import { useLocation } from "react-router-dom";
 
 const ProductList: React.FC = () => {
-    return (
-        <Container>
-            <Announcement/>
-           <Navbar/>
-            <Title>Dresses</Title>
-            <FilterContainer>
-                <Filter>
-                    <FilterText>Filter Products:</FilterText>
-                    <Select>
-                        <Option disabled selected>
-                            Color
-                        </Option>
-                        <Option>White</Option>
-                        <Option>Black</Option>
-                        <Option>Red</Option>
-                        <Option>Blue</Option>
-                        <Option>Yellow</Option>
-                        <Option>Green</Option>
-                    </Select>
-                    <Select>
-                        <Option disabled selected>
-                            Size
-                        </Option>
-                        <Option>XS</Option>
-                        <Option>S</Option>
-                        <Option>M</Option>
-                        <Option>L</Option>
-                        <Option>XL</Option>
-                    </Select>
-                </Filter>
-                <Filter>
-                    <FilterText>Sort Products:</FilterText>
-                    <Select>
-                        <Option selected>Newest</Option>
-                        <Option>Price (asc)</Option>
-                        <Option>Price (desc)</Option>
-                    </Select>
-                </Filter>
-            </FilterContainer>
-            <Products/>
-            <Newsletter/>
-            <Footer/>
-        </Container>
-    );
+  const location = useLocation();
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState("newest");
+
+  const category: string = location.pathname.split("/")[2];
+
+  const handleFilters: ChangeEventHandler<
+    HTMLInputElement | HTMLSelectElement
+  > = (e) => {
+    const value = e.target.value;
+    setFilters({
+      ...filters,
+      [e.target.name]: value,
+    });
+  };
+
+  return (
+    <Container>
+      <Announcement />
+      <Navbar />
+      <Title>Dresses</Title>
+      <FilterContainer>
+        <Filter>
+          <FilterText>Filter Products:</FilterText>
+          <Select name="color" onChange={handleFilters}>
+            <Option disabled>Color</Option>
+            <Option>White</Option>
+            <Option>Black</Option>
+            <Option>Red</Option>
+            <Option>Blue</Option>
+            <Option>Yellow</Option>
+            <Option>Green</Option>
+          </Select>
+          <Select name="size" onChange={handleFilters}>
+            <Option disabled>Size</Option>
+            <Option>XS</Option>
+            <Option>S</Option>
+            <Option>M</Option>
+            <Option>L</Option>
+            <Option>XL</Option>
+          </Select>
+        </Filter>
+        <Filter>
+          <FilterText>Sort Products:</FilterText>
+          <Select onChange={(e) => setSort(e.target.value)}>
+            <Option value="newest">Newest</Option>
+            <Option value="asc">Price (asc)</Option>
+            <Option value="desc">Price (desc)</Option>
+          </Select>
+        </Filter>
+      </FilterContainer>
+      <Products category={category} filters={filters} sort={sort} />
+      <Newsletter />
+      <Footer />
+    </Container>
+  );
 };
 
 const Container = styled.div``;

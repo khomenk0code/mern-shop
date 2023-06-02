@@ -1,26 +1,25 @@
-import React from 'react';
+import React from "react";
 import styled from "styled-components";
-import {ICategories} from "../data";
-import {mobile} from "../utils/responsive";
-import {StyledLink} from "./header.component";
-
+import { ICategories } from "../data";
+import { mobile } from "../utils/responsive";
+import { Link } from "react-router-dom";
 
 type CategoriesItemProps = {
-    item: ICategories
-}
+  item: ICategories;
+};
 
-
-const CategoriesItem:React.FC<CategoriesItemProps>  = ({item}) => {
-    return (
-        <Container>
-            <Image src={item.img}/>
-            <Info>
-                <Title>{item.title}</Title>
-                <StyledLink to="/products"><Button>Shop now</Button></StyledLink>
-            </Info>
-        </Container>
-
-    );
+const CategoriesItem: React.FC<CategoriesItemProps> = ({ item }) => {
+  return (
+    <Container>
+      <Link to={`/products/${item.category}`}>
+        <Image src={item.img} />
+        <Info>
+          <Title>{item.title}</Title>
+          <Button>Shop now</Button>
+        </Info>
+      </Link>
+    </Container>
+  );
 };
 
 const Container = styled.div`
@@ -35,7 +34,6 @@ const Image = styled.img`
   height: 100%;
   object-fit: cover;
   ${mobile({ height: "40vh" })}
-
 `;
 
 const Info = styled.div`
@@ -51,15 +49,15 @@ const Info = styled.div`
 `;
 
 const Title = styled.h1`
-  color:white;
+  color: white;
   margin-bottom: 20px;
 `;
 
 const Button = styled.button`
-  border:none;
+  border: none;
   padding: 10px;
   background-color: white;
-  color:gray;
+  color: gray;
   cursor: pointer;
   font-weight: 600;
 `;

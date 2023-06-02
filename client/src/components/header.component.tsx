@@ -1,42 +1,51 @@
-import React from 'react';
+import React from "react";
 import styled from "styled-components";
-import {faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Badge} from "@mui/material";
-import {ShoppingCartOutlined} from "@mui/icons-material";
-import {mobile} from "../utils/responsive";
-import {Link} from "react-router-dom";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Badge } from "@mui/material";
+import { ShoppingCartOutlined } from "@mui/icons-material";
+import { mobile } from "../utils/responsive";
+import { Link } from "react-router-dom";
 
-
-  
 const Header: React.FC = () => {
-    return (
-        <div>
-            <Container>
-                <Wrapper>
-                    <Left>
-                        <Language>EN</Language>
-                        <SearchContainer>
-                            <Input placeholder="Search"/>
-                            <FontAwesomeIcon icon={faMagnifyingGlass} style={{color: 'gray'}} />
-                        </SearchContainer>
-                    </Left>
-                    <Center>
-                        <Logo><StyledLink to="/">MERN.</StyledLink></Logo>
-                    </Center>
-                    <Right>
-                        <MenuItem><StyledLink to="/register">Register</StyledLink></MenuItem>
-                        <MenuItem><StyledLink to="/login">Sign In</StyledLink></MenuItem>
-                        <MenuItem>
-                            <Badge badgeContent={4} color="primary">
-                                <StyledLink to="/cart"><ShoppingCartOutlined/></StyledLink>
-                            </Badge>
-                        </MenuItem>
-                    </Right>
-                </Wrapper>
-            </Container>
-        </div>
-    );
+  return (
+    <div>
+      <Container>
+        <Wrapper>
+          <Left>
+            <Language>EN</Language>
+            <SearchContainer>
+              <Input placeholder="Search" />
+              <FontAwesomeIcon
+                icon={faMagnifyingGlass}
+                style={{ color: "gray" }}
+              />
+            </SearchContainer>
+          </Left>
+          <Center>
+            <Logo>
+              <StyledLink to="/">MERN.</StyledLink>
+            </Logo>
+          </Center>
+          <Right>
+            <MenuItem>
+              <StyledLink to="/register">Register</StyledLink>
+            </MenuItem>
+            <MenuItem>
+              <StyledLink to="/login">Sign In</StyledLink>
+            </MenuItem>
+            <MenuItem>
+              <Badge badgeContent={4} color="primary">
+                <StyledLink to="/cart">
+                  <ShoppingCartOutlined />
+                </StyledLink>
+              </Badge>
+            </MenuItem>
+          </Right>
+        </Wrapper>
+      </Container>
+    </div>
+  );
 };
 
 export const StyledLink = styled(Link)`
@@ -108,4 +117,3 @@ const MenuItem = styled.div`
 `;
 
 export default Header;
-

@@ -1,28 +1,28 @@
 import styled from "styled-components";
-import {mobile} from "../utils/responsive";
+import { mobile } from "../utils/responsive";
+import React from "react";
 
-
-const Register = () => {
-    return (
-        <Container>
-            <Wrapper>
-                <Title>CREATE AN ACCOUNT</Title>
-                <Form>
-                    <Input placeholder="name" type="text" />
-                    <Input placeholder="last name" type="text"/>
-                    <Input placeholder="username" type="text" />
-                    <Input placeholder="email" type="email" />
-                    <Input placeholder="password" type="password"/>
-                    <Input placeholder="confirm password" type="password"/>
-                    <Agreement>
-                        By creating an account, I consent to the processing of my personal
-                        data in accordance with the <b>PRIVACY POLICY</b>
-                    </Agreement>
-                    <Button>CREATE</Button>
-                </Form>
-            </Wrapper>
-        </Container>
-    );
+const Register: React.FC = () => {
+  return (
+    <Container>
+      <Wrapper>
+        <Title>CREATE AN ACCOUNT</Title>
+        <Form>
+          <Input placeholder="name" type="text" />
+          <Input placeholder="last name" type="text" />
+          <Input placeholder="username" type="text" />
+          <Input placeholder="email" type="email" />
+          <Input placeholder="password" type="password" />
+          <Input placeholder="confirm password" type="password" />
+          <Agreement>
+            By creating an account, I consent to the processing of my personal
+            data in accordance with the <b>PRIVACY POLICY</b>
+          </Agreement>
+          <Button>CREATE</Button>
+        </Form>
+      </Wrapper>
+    </Container>
+  );
 };
 
 const Container = styled.div`
@@ -44,7 +44,7 @@ const Wrapper = styled.div`
   width: 40%;
   padding: 20px;
   background-color: white;
-  
+
   ${mobile({ width: "75%" })}
 `;
 
