@@ -5,8 +5,8 @@ export interface IProduct {
     desc: string;
     img: string;
     categories?: string[];
-    size: string;
-    color: string;
+    size: string[];
+    color: string[];
     price: number;
     createdAt?: Date;
     updatedAt?: Date;

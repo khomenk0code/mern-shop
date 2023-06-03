@@ -11,13 +11,11 @@ import { useLocation } from "react-router-dom";
 const ProductList: React.FC = () => {
   const location = useLocation();
   const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState("newest");
+  const [sort, setSort] = useState<string>("newest");
 
   const category: string = location.pathname.split("/")[2];
 
-  const handleFilters: ChangeEventHandler<
-    HTMLInputElement | HTMLSelectElement
-  > = (e) => {
+  const handleFilters: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (e) => {
     const value = e.target.value;
     setFilters({
       ...filters,
@@ -29,7 +27,7 @@ const ProductList: React.FC = () => {
     <Container>
       <Announcement />
       <Navbar />
-      <Title>Dresses</Title>
+      <Title>{category}</Title>
       <FilterContainer>
         <Filter>
           <FilterText>Filter Products:</FilterText>

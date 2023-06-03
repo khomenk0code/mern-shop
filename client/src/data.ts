@@ -59,7 +59,7 @@ export const categories = [
 ];
 
 export interface IPopularProducts {
-  id: number;
+  _id: number;
   img: string;
 }
 

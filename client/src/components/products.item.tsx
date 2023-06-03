@@ -20,7 +20,7 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
       <Image src={item.img} />
       <Info>
         <Icon>
-          <StyledLink to="/product">
+          <StyledLink to={`/product/${item._id}`}>
             <SearchOutlined />
           </StyledLink>
         </Icon>
