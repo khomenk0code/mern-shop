@@ -8,17 +8,17 @@ import Newsletter from "../components/newsletter.component";
 import Footer from "../components/footer";
 
 const Home: React.FC = () => {
-  return (
-    <>
-      <Announcement />
-      <Navbar />
-      <Slider />
-      <Categories />
-      <Products />
-      <Newsletter />
-      <Footer />
-    </>
-  );
+    return (
+        <>
+            <Announcement />
+            <Navbar />
+            <Slider />
+            <Categories />
+            <Products />
+            <Newsletter />
+            <Footer />
+        </>
+    );
 };
 
 export default Home;
