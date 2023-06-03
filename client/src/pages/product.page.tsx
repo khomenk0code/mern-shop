@@ -9,6 +9,8 @@ import { mobile } from "../utils/responsive";
 import { useLocation } from "react-router-dom";
 import { IProduct } from "../components/products.component";
 import { publicRequest } from "../utils/requestMethods";
+import { addProduct } from "../redux/cart.slice";
+import { useDispatch } from "react-redux";
 
 const Product = () => {
     const location = useLocation();
@@ -17,6 +19,7 @@ const Product = () => {
     const [quantity, setQuantity] = useState(1);
     const [color, setColor] = useState("");
     const [size, setSize] = useState("");
+    const dispatch = useDispatch();
 
     const handleQuantity = (type: "inc" | "dec") => {
         setQuantity((prevState) => {
@@ -33,8 +36,14 @@ const Product = () => {
     };
 
     const handleClick = () => {
-        setSize("")
-    }
+        if (product) {
+            dispatch(
+                addProduct({ ...product, quantity, color, size }),
+            );
+        }
+        console.log(product);
+    };
+
 
     useEffect(() => {
         const getProducts = async () => {
