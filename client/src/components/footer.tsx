@@ -1,6 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import { Facebook, Instagram, MailOutline, Phone, Pinterest, Room, Twitter } from "@mui/icons-material";
+import {
+    Facebook,
+    Instagram,
+    MailOutline,
+    Phone,
+    Pinterest,
+    Room,
+    Twitter,
+} from "@mui/icons-material";
 import { mobile } from "../utils/responsive";
 
 const Footer: React.FC = () => {
@@ -66,74 +74,74 @@ const Footer: React.FC = () => {
 };
 
 const Container = styled.footer`
-  margin-top: 4rem;
-  display: flex;
-  ${mobile({ flexDirection: "column" })}
+    margin-top: 4rem;
+    display: flex;
+    ${mobile({ flexDirection: "column" })}
 `;
 
 const Left = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
 `;
 const Logo = styled.h2``;
 const Description = styled.p`
-  margin: 2rem 0;
+    margin: 2rem 0;
 `;
 const SocialContainer = styled.div`
-  display: flex;
-  ${mobile({ justifyContent: "center" })}
+    display: flex;
+    ${mobile({ justifyContent: "center" })}
 `;
 const SocialIcon = styled.div`
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  color: #fff;
-  background-color: #${(props) => props.color};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 1.5rem;
-  cursor: pointer;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    color: #fff;
+    background-color: #${(props) => props.color};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1.5rem;
+    cursor: pointer;
 `;
 
 const Center = styled.div`
-  flex: 1;
-  padding: 1.5rem;
-  ${mobile({ display: "none" })}
+    flex: 1;
+    padding: 1.5rem;
+    ${mobile({ display: "none" })}
 `;
 
 const Title = styled.h3`
-  margin-bottom: 2rem;
+    margin-bottom: 2rem;
 `;
 
 const List = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
 `;
 
 const ListItem = styled.li`
-  width: 50%;
-  margin-bottom: 0.5rem;
+    width: 50%;
+    margin-bottom: 0.5rem;
 `;
 
 const Right = styled.div`
-  flex: 1;
-  padding: 1.5rem;
-  ${mobile({ backgroundColor: "#fff8f8" })}
+    flex: 1;
+    padding: 1.5rem;
+    ${mobile({ backgroundColor: "#fff8f8" })}
 `;
 const ContactItem = styled.div`
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
 `;
 const Payment = styled.img`
-  width: 50%;
-  ${mobile({ marginBottom: "2rem" })}
+    width: 50%;
+    ${mobile({ marginBottom: "2rem" })}
 `;
 
 export default Footer;

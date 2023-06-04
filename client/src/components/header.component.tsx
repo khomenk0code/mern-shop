@@ -52,71 +52,71 @@ const Header: React.FC = () => {
 };
 
 export const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: #000000;
+    text-decoration: none;
+    color: #000000;
 `;
 
 const Container = styled.header`
-  height: 65px;
-  ${mobile({ height: "50px" })}
+    height: 65px;
+    ${mobile({ height: "50px" })}
 `;
 
 const Wrapper = styled.div`
-  padding: 15px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  ${mobile({ padding: "10px 0px" })}
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    ${mobile({ padding: "10px 0px" })}
 `;
 
 const Left = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
 `;
 
 const Language = styled.span`
-  font-size: 14px;
-  cursor: pointer;
-  ${mobile({ display: "none" })}
+    font-size: 14px;
+    cursor: pointer;
+    ${mobile({ display: "none" })}
 `;
 
 const SearchContainer = styled.div`
-  border: 0.5px solid lightgray;
-  display: flex;
-  align-items: center;
-  margin-left: 25px;
-  padding: 5px;
-  ${mobile({ marginLeft: "10px" })}
+    border: 0.5px solid lightgray;
+    display: flex;
+    align-items: center;
+    margin-left: 25px;
+    padding: 5px;
+    ${mobile({ marginLeft: "10px" })}
 `;
 
 const Input = styled.input`
-  border: none;
-  ${mobile({ width: "50px" })}
+    border: none;
+    ${mobile({ width: "50px" })}
 `;
 
 const Center = styled.div`
-  flex: 1;
-  text-align: center;
+    flex: 1;
+    text-align: center;
 `;
 
 const Logo = styled.h1`
-  font-weight: bold;
-  ${mobile({ fontSize: "24px", marginLeft: "20px" })}
+    font-weight: bold;
+    ${mobile({ fontSize: "24px", marginLeft: "20px" })}
 `;
 const Right = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  ${mobile({ flex: 2, justifyContent: "center" })}
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    ${mobile({ flex: 2, justifyContent: "center" })}
 `;
 
 const MenuItem = styled.div`
-  font-size: 14px;
-  cursor: pointer;
-  margin-left: 25px;
-  ${mobile({ fontSize: "12px", marginLeft: "10px" })}
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 25px;
+    ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 
 export default Header;

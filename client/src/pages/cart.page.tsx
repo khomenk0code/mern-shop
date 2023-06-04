@@ -5,6 +5,8 @@ import { Add, Announcement, Remove } from "@mui/icons-material";
 import Footer from "../components/footer";
 import Navbar from "../components/header.component";
 import axios from "axios";
+import { IProduct } from "../components/products.component";
+import { useAppSelector } from "../hooks/hooks";
 
 type StyledTypesProps = {
     types?: "filled" | "total";
@@ -13,17 +15,22 @@ type StyledTypesProps = {
 const Cart = () => {
     const [dataValue, setDataValue] = useState("");
     const [signatureValue, setSignatureValue] = useState("");
+
+    const cart = useAppSelector((state) => state.cart);
+
     const axiosClient = axios.create({ baseURL: "http://localhost:5000/api" });
+
 
     useEffect(() => {
         const fetchForm = async () => {
+            const total = cart.total || "0";
             try {
                 const response = await axiosClient.post(
                     "/payment",
                     {
-                        amount: 100,
+                        amount: total,
                         description: "Оплата заказа",
-                        order_id: "order1234",
+                        currency: "USD",
                     },
                     {
                         headers: {
@@ -53,7 +60,30 @@ const Cart = () => {
         };
 
         fetchForm();
-    });
+    }, [cart.total]);
+
+    // useEffect(() => {
+    //     const handleLiqPayCallback = async () => {
+    //         try {
+    //             const response = await axiosClient.post("/payment/liqpay-callback", {
+    //                 data: dataValue,
+    //                 signature: signatureValue,
+    //             });
+    //
+    //             if (response.status === 200) {
+    //                 console.log("ez", response.data);
+    //             } else {
+    //               console.error("errrrrr")
+    //             }
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     };
+    //
+    //     if (dataValue && signatureValue) {
+    //         handleLiqPayCallback();
+    //     }
+    // }, [dataValue, signatureValue]);
 
     return (
         <Container>
@@ -71,63 +101,54 @@ const Cart = () => {
                 </Top>
                 <Bottom>
                     <Info>
-                        <Product>
-                            <ProductDetail>
-                                <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" />
-                                <Details>
-                                    <ProductName>
-                                        <b>Product:</b> JESSIE THUNDER SHOES
-                                    </ProductName>
-                                    <ProductId>
-                                        <b>ID:</b> 93813718293
-                                    </ProductId>
-                                    <ProductColor color="black" />
-                                    <ProductSize>
-                                        <b>Size:</b> 37.5
-                                    </ProductSize>
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
-                                    <Add />
-                                    <ProductAmount>2</ProductAmount>
-                                    <Remove />
-                                </ProductAmountContainer>
-                                <ProductPrice>$ 30</ProductPrice>
-                            </PriceDetail>
-                        </Product>
-                        <Hr />
-                        <Product>
-                            <ProductDetail>
-                                <Image src="https://i.pinimg.com/originals/2d/af/f8/2daff8e0823e51dd752704a47d5b795c.png" />
-                                <Details>
-                                    <ProductName>
-                                        <b>Product:</b> HAKURA T-SHIRT
-                                    </ProductName>
-                                    <ProductId>
-                                        <b>ID:</b> 93813718293
-                                    </ProductId>
-                                    <ProductColor color="gray" />
-                                    <ProductSize>
-                                        <b>Size:</b> M
-                                    </ProductSize>
-                                </Details>
-                            </ProductDetail>
-                            <PriceDetail>
-                                <ProductAmountContainer>
-                                    <Add />
-                                    <ProductAmount>1</ProductAmount>
-                                    <Remove />
-                                </ProductAmountContainer>
-                                <ProductPrice>$ 20</ProductPrice>
-                            </PriceDetail>
-                        </Product>
+
+                        {cart.products.map((product: IProduct) => (
+                            <>
+                            <Product key={product.id}>
+                                <ProductDetail>
+                                    <Image src={product.img} />
+                                    <Details>
+                                        <ProductName>
+                                            <b>Product:</b> {product.title}
+                                        </ProductName>
+                                        <ProductId>
+                                            <b>ID:</b> {product._id}
+                                        </ProductId>
+                                        <b>Color:</b>
+                                        {product.color &&
+                                            typeof product.color ===
+                                                "string" && (
+                                                <ProductColor
+                                                    color={product.color}
+                                                />
+                                            )}
+
+                                        <ProductSize>
+                                            <b>Size:</b> {product.size}
+                                        </ProductSize>
+                                    </Details>
+                                </ProductDetail>
+                                <PriceDetail>
+                                    <ProductAmountContainer>
+                                        <Add />
+                                        <ProductAmount>
+                                            {product.quantity}
+                                        </ProductAmount>
+                                        <Remove />
+                                    </ProductAmountContainer>
+                                    <ProductPrice>
+                                        $ {product.price * product.quantity}
+                                    </ProductPrice>
+                                </PriceDetail>
+                            </Product>
+                               <Hr/></>
+                        ))}
                     </Info>
                     <Summary>
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Subtotal</SummaryItemText>
-                            <SummaryItemPrice>$ 80</SummaryItemPrice>
+                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText>
@@ -141,12 +162,13 @@ const Cart = () => {
                         </SummaryItem>
                         <SummaryItem types="total">
                             <SummaryItemText>Total</SummaryItemText>
-                            <SummaryItemPrice>$ 80</SummaryItemPrice>
+                            <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <form
                             method="POST"
                             action="https://www.liqpay.ua/api/3/checkout"
                             acceptCharset="utf-8"
+                            target="_blank"
                         >
                             <input
                                 type="hidden"

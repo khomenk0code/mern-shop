@@ -15,7 +15,9 @@ interface ProductsProps {
 }
 
 export interface IProduct {
+    quantity: number;
     id: string;
+    _id: string;
     title: string;
     desc: string;
     img: string;

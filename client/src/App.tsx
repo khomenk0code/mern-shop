@@ -11,9 +11,10 @@ import Product from "./pages/product.page";
 import Cart from "./pages/cart.page";
 import Login from "./pages/login.page";
 import Register from "./pages/register.page";
+import { useAppSelector } from "./hooks/hooks";
 
 const App = () => {
-    const user = true;
+    const user = useAppSelector(state => state.user.currentUser);
     return (
         <Router>
             <Routes>

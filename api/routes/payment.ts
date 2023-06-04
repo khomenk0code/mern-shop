@@ -12,7 +12,7 @@ router.post("/", async (req: Request, res: Response) => {
     const order = liqpay.cnb_form({
         'action': 'pay',
         'amount': req.body.amount,
-        'currency': 'UAH',
+        'currency': 'USD',
         'description': 'description text',
         'order_id': req.body.tokenId,
         'version': '3'
@@ -21,5 +21,17 @@ router.post("/", async (req: Request, res: Response) => {
 })
 
 
+router.post("/liqpay-callback", async (req: Request, res: Response) => {
+    const { data, signature } = req.body;
+
+    const sign = liqpay.str_to_sign(process.env.LIQPAY_PRIVATE_KEY + data + process.env.LIQPAY_PRIVATE_KEY);
+    if (signature !== sign) {
+
+        res.sendStatus(400);
+        return;
+    }
+
+    res.sendStatus(200);
+});
 
 module.exports = router;
