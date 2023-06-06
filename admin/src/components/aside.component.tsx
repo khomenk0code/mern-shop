@@ -23,14 +23,14 @@ const Sidebar: React.FC = () => {
                 <SidebarMenu>
                     <SidebarTitle>Dashboard</SidebarTitle>
                     <SidebarList>
-                        {/*<Link to="/">*/}
+                        <Link to="/">
                             <SidebarListItem>
                                 <SidebarIcon>
                                     <LineStyle />
                                 </SidebarIcon>
                                 Home
                             </SidebarListItem>
-                        {/*</Link>*/}
+                        </Link>
                         <SidebarListItem>
                             <SidebarIcon>
                                 <Timeline />
@@ -48,21 +48,21 @@ const Sidebar: React.FC = () => {
                 <SidebarMenu>
                     <SidebarTitle>Quick Menu</SidebarTitle>
                     <SidebarList>
-                        {/*<Link to="/users">*/}
+                        <Link to="/users">
                             <SidebarListItem>
                                 <SidebarIcon>
                                     <PermIdentity />
                                 </SidebarIcon>
                                 Users
                             </SidebarListItem>
-                        {/*</Link>*/}
+                        </Link>
                         {/*<Link to="/products">*/}
-                            <SidebarListItem>
-                                <SidebarIcon>
-                                    <Storefront />
-                                </SidebarIcon>
-                                Products
-                            </SidebarListItem>
+                        <SidebarListItem>
+                            <SidebarIcon>
+                                <Storefront />
+                            </SidebarIcon>
+                            Products
+                        </SidebarListItem>
                         {/*</Link>*/}
                         <SidebarListItem>
                             <SidebarIcon>
@@ -130,30 +130,30 @@ const Sidebar: React.FC = () => {
 };
 
 const SidebarContainer = styled.aside`
-  flex: 1;
-  height: calc(100vh - 50px);
-  background-color: rgb(251, 251, 255);
-  position: sticky;
-  top: 50px;
+    flex: 1;
+    height: calc(100vh - 50px);
+    background-color: rgb(251, 251, 255);
+    position: sticky;
+    top: 50px;
 `;
 
 const SidebarWrapper = styled.div`
-  padding: 20px;
-  color: #555;
+    padding: 20px;
+    color: #555;
 `;
 
 const SidebarMenu = styled.div`
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 `;
 
 const SidebarTitle = styled.h3`
-  font-size: 13px;
-  color: rgb(187, 186, 186);
+    font-size: 13px;
+    color: rgb(187, 186, 186);
 `;
 
 const SidebarList = styled.ul`
-  list-style: none;
-  padding: 5px;
+    list-style: none;
+    padding: 5px;
 `;
 
 const SidebarListItem = styled.li`
@@ -168,10 +168,9 @@ const SidebarListItem = styled.li`
   }
 `;
 
-
 const SidebarIcon = styled.span`
-  margin-right: 5px;
-  font-size: 20px !important;
+    margin-right: 5px;
+    font-size: 20px !important;
 `;
 
 export default Sidebar;
