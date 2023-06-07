@@ -1,41 +1,41 @@
 import React, { useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { userRows } from "../data.mock";
+import { DataGrid } from "@mui/x-data-grid";
+import { productRows } from "../data.mock";
 import { DeleteOutline } from "@mui/icons-material";
 
-const UserList = () => {
-    const [data, setData] = useState(userRows);
+const ProductList = () => {
+    const [data, setData] = useState(productRows);
 
-    const handleDelete = (id: any) => {
-        setData(data.filter((item: any) => item.id !== id));
+    const handleDelete = (id: number) => {
+        setData(data.filter((item) => item.id !== id));
     };
 
     const columns = [
         { field: "id", headerName: "ID", width: 90 },
         {
-            field: "user",
-            headerName: "User",
+            field: "product",
+            headerName: "Product",
             width: 200,
             renderCell: (params: any) => {
                 return (
-                    <User>
-                        <UserImage src={params.row.avatar} alt="" />
-                        {params.row.username}
-                    </User>
+                    <ProductListItem>
+                        <ProductListImg src={params.row.img} alt="" />
+                        {params.row.name}
+                    </ProductListItem>
                 );
             },
         },
-        { field: "email", headerName: "Email", width: 200 },
+        { field: "stock", headerName: "Stock", width: 200 },
         {
             field: "status",
             headerName: "Status",
             width: 120,
         },
         {
-            field: "transaction",
-            headerName: "Transaction Volume",
+            field: "price",
+            headerName: "Price",
             width: 160,
         },
         {
@@ -45,10 +45,10 @@ const UserList = () => {
             renderCell: (params: any) => {
                 return (
                     <>
-                        <Link to={`/user/${params.row.id}`}>
-                            <EditButton>Edit</EditButton>
+                        <Link to={"/product/" + params.row.id}>
+                            <ProductListEdit>Edit</ProductListEdit>
                         </Link>
-                        <DeleteOutlineIcon
+                        <ProductListDelete
                             onClick={() => handleDelete(params.row.id)}
                         />
                     </>
@@ -58,28 +58,28 @@ const UserList = () => {
     ];
 
     return (
-        <Container>
-            <StyledDataGrid
+        <ProductListContainer>
+            <DataGrid
                 rows={data}
-                disableSelectionOnClick
+                disableRowSelectionOnClick
                 columns={columns}
                 rowCount={8}
                 checkboxSelection
             />
-        </Container>
+        </ProductListContainer>
     );
 };
 
-const Container = styled.div`
+const ProductListContainer = styled.div`
     flex: 4;
 `;
 
-const User = styled.div`
+const ProductListItem = styled.div`
     display: flex;
     align-items: center;
 `;
 
-const UserImage = styled.img`
+const ProductListImg = styled.img`
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -87,7 +87,7 @@ const UserImage = styled.img`
     margin-right: 10px;
 `;
 
-const EditButton = styled.button`
+const ProductListEdit = styled.button`
     border: none;
     border-radius: 10px;
     padding: 5px 10px;
@@ -97,15 +97,9 @@ const EditButton = styled.button`
     margin-right: 20px;
 `;
 
-const DeleteOutlineIcon = styled(DeleteOutline)`
+const ProductListDelete = styled(DeleteOutline)`
     color: red;
     cursor: pointer;
 `;
 
-const StyledDataGrid = styled(DataGrid)<any>`
-    && {
-        /* Add any additional styles for the DataGrid here */
-    }
-`;
-
-export default UserList;
+export default ProductList;

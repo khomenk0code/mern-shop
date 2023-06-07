@@ -6,24 +6,34 @@ import Sidebar from "./components/aside.component";
 import Home from "./pages/home.page";
 import UserList from "./pages/user-list.page";
 import User from "./pages/user.page";
+import NewUser from "./pages/new-user.page";
+import ProductList from "./pages/product-list.page";
+import Product from "./pages/product.page";
+import NewProduct from "./pages/new-product.page";
+import Transactions from "./pages/transactions.page";
+import Reports from "./pages/reports.page";
 
-function App() {
-    return (
-        <Router>
-            <>
-                <HeaderComponent />
-                <Container>
-                    <Sidebar />
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/users" element={<UserList />} />
-                        <Route path="/user/:userId" element={<User />} />
-                    </Routes>
-                </Container>
-            </>
-        </Router>
-    );
-}
+const App = () => (
+    <Router>
+        <>
+            <HeaderComponent />
+            <Container>
+                <Sidebar />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/users" element={<UserList />} />
+                    <Route path="/user/:userId" element={<User />} />
+                    <Route path="/user/add" element={<NewUser />} />
+                    <Route path="/products" element={<ProductList />} />
+                    <Route path="/product/:productId" element={<Product />} />
+                    <Route path="/product/add" element={<NewProduct />} />
+                    <Route path="/transactions" element={<Transactions />} />
+                    <Route path="/reports" element={<Reports />} />
+                </Routes>
+            </Container>
+        </>
+    </Router>
+);
 
 const Container = styled.div`
     display: flex;

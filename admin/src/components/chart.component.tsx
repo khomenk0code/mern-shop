@@ -1,20 +1,31 @@
 import React from "react";
 import styled from "styled-components";
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
-
-interface ChartData {
+import {
+    CartesianGrid,
+    Line,
+    LineChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+} from "recharts";
+export interface ChartData {
     name: string;
-    "ActiveUsers": number;
+    ActiveUsers?: number;
 }
 
-interface ChartProps {
+export interface ChartProps<T extends ChartData> {
     title: string;
-    data: ChartData[];
-    dataKey: string;
-    grid: boolean;
+    data: T[];
+    dataKey: keyof T | string;
+    grid?: boolean;
 }
 
-const Chart: React.FC<ChartProps> = ({ title, data, dataKey, grid }) => {
+const Chart = <T extends ChartData>({
+    title,
+    data,
+    dataKey,
+    grid,
+}: ChartProps<ChartData>) => {
     return (
         <ChartContainer>
             <ChartTitle>{title}</ChartTitle>
@@ -23,7 +34,9 @@ const Chart: React.FC<ChartProps> = ({ title, data, dataKey, grid }) => {
                     <XAxis dataKey="name" stroke="#5550bd" />
                     <Line type="monotone" dataKey={dataKey} stroke="#5550bd" />
                     <Tooltip />
-                    {grid && <CartesianGrid stroke="#e0dfdf" strokeDasharray="5 5" />}
+                    {grid && (
+                        <CartesianGrid stroke="#e0dfdf" strokeDasharray="5 5" />
+                    )}
                 </LineChart>
             </ResponsiveContainer>
         </ChartContainer>
@@ -31,14 +44,14 @@ const Chart: React.FC<ChartProps> = ({ title, data, dataKey, grid }) => {
 };
 
 const ChartContainer = styled.div`
-  margin: 20px;
-  padding: 20px;
-  -webkit-box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
-  box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
+    margin: 20px;
+    padding: 20px;
+    -webkit-box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
 `;
 
 const ChartTitle = styled.h3`
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 `;
 
 export default Chart;

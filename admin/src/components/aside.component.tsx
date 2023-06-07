@@ -56,26 +56,30 @@ const Sidebar: React.FC = () => {
                                 Users
                             </SidebarListItem>
                         </Link>
-                        {/*<Link to="/products">*/}
-                        <SidebarListItem>
-                            <SidebarIcon>
-                                <Storefront />
-                            </SidebarIcon>
-                            Products
-                        </SidebarListItem>
-                        {/*</Link>*/}
-                        <SidebarListItem>
-                            <SidebarIcon>
-                                <AttachMoney />
-                            </SidebarIcon>
-                            Transactions
-                        </SidebarListItem>
-                        <SidebarListItem>
-                            <SidebarIcon>
-                                <BarChart />
-                            </SidebarIcon>
-                            Reports
-                        </SidebarListItem>
+                        <Link to="/products">
+                            <SidebarListItem>
+                                <SidebarIcon>
+                                    <Storefront />
+                                </SidebarIcon>
+                                Products
+                            </SidebarListItem>
+                        </Link>
+                        <Link to="/transactions">
+                            <SidebarListItem>
+                                <SidebarIcon>
+                                    <AttachMoney />
+                                </SidebarIcon>
+                                Transactions
+                            </SidebarListItem>
+                        </Link>
+                        <Link to="/reports">
+                            <SidebarListItem>
+                                <SidebarIcon>
+                                    <BarChart />
+                                </SidebarIcon>
+                                Reports
+                            </SidebarListItem>
+                        </Link>
                     </SidebarList>
                 </SidebarMenu>
                 <SidebarMenu>

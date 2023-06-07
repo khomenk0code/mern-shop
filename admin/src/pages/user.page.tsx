@@ -15,7 +15,7 @@ const User: React.FC = () => {
         <UserContainer>
             <UserTitleContainer>
                 <h1>Edit User</h1>
-                <Link to="/newUser">
+                <Link to="/user/add">
                     <UserAddButton>Create</UserAddButton>
                 </Link>
             </UserTitleContainer>
