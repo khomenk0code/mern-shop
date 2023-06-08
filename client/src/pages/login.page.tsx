@@ -8,11 +8,13 @@ const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useAppDispatch();
-    const {isFetching, error} = useAppSelector(state => state.user)
+    const { isFetching, error } = useAppSelector(state => state.user);
+
 
     function handleLoginClick(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         login(dispatch, { username, password });
+
     }
 
     return (
@@ -83,6 +85,7 @@ const Button = styled.button`
   align-items: center;
   align-self: center;
   justify-content: center;
+
   &:disabled {
     color: green;
     cursor: not-allowed;
