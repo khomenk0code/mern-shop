@@ -9,10 +9,11 @@ let TOKEN = localStorageItem
     ? JSON.parse(JSON.parse(localStorageItem)?.user)?.currentUser?.accessToken || "" : "";
 
 
+
 export const publicRequest = axios.create({
     baseURL: BASE_URL,
 });
 export const userRequest = axios.create({
     baseURL: BASE_URL,
-    headers: { token: `Bearer ${TOKEN}` },
+    headers: { Authorization: `Bearer ${TOKEN}` },
 });

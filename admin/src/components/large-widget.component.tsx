@@ -1,11 +1,69 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
+import { userRequest } from "../utils/requestMethods";
+import { Users } from "./small-widget.component";
 
 type ButtonProps = {
     type: string;
 };
 
+interface OrderProduct {
+    productId: string;
+    quantity: number;
+}
+
+interface OrderAddress {}
+
+interface Order {
+    _id: any;
+    userId: string;
+    products: OrderProduct[];
+    amount: number;
+    address: OrderAddress;
+    status: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
 const LargeWidget: React.FC = () => {
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [users, setUsers] = useState<Users[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const orderResponse = await userRequest.get("orders");
+                setOrders(orderResponse.data);
+                const userResponse = await userRequest.get("users/?new=true");
+                setUsers(userResponse.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const formatDate = (dateString: string | undefined) => {
+        if (!dateString) return "";
+
+        const date = new Date(dateString);
+        const options: Intl.DateTimeFormatOptions = {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        };
+
+        const formattedDate = date.toLocaleDateString("en-US", options);
+        const parts = formattedDate.split(" ");
+        const DateFormat = `${parts[1]} ${parts[0]} ${parts[2]}`;
+
+        return DateFormat.replace(",", "");
+    };
+
+
+
+
     const Button = ({ type }: ButtonProps) => {
         return <ButtonContainer type={type}>{type}</ButtonContainer>;
     };
@@ -15,86 +73,35 @@ const LargeWidget: React.FC = () => {
             <Title>Latest transactions</Title>
             <Table>
                 <tbody>
-                    <tr>
-                        <TableHeader>Customer</TableHeader>
-                        <TableHeader>Date</TableHeader>
-                        <TableHeader>Amount</TableHeader>
-                        <TableHeader>Status</TableHeader>
-                    </tr>
-                    <tr>
-                        <TableCell>
-                            <ImgContainer>
-                                <Image
-                                    src="https://images.pexels.com/photos/4172933/pexels-photo-4172933.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                                    alt=""
-                                />
-                                <Name>Susan Carol</Name>
-                            </ImgContainer>
-                        </TableCell>
-                        <TableCell>2 Jun 2021</TableCell>
-                        <TableCell>$122.00</TableCell>
-                        <TableCell>
-                            <Status>
-                                <Button type="Approved" />
-                            </Status>
-                        </TableCell>
-                    </tr>
-                </tbody>
-            </Table>
-            <Table>
-                <tbody>
-                    <tr>
-                        <TableHeader>Customer</TableHeader>
-                        <TableHeader>Date</TableHeader>
-                        <TableHeader>Amount</TableHeader>
-                        <TableHeader>Status</TableHeader>
-                    </tr>
-                    <tr>
-                        <TableCell>
-                            <ImgContainer>
-                                <Image
-                                    src="https://mediaslide-europe.storage.googleapis.com/louisamodels/pictures/3725/13933/profile-1640014292-4a26a41437da03f345e9f0ed8fa0d60e.jpg"
-                                    alt=""
-                                />
-                                <Name>S Carol</Name>
-                            </ImgContainer>
-                        </TableCell>
-                        <TableCell>5 Jun 2023</TableCell>
-                        <TableCell>$822.00</TableCell>
-                        <TableCell>
-                            <Status>
-                                <Button type="Declined" />
-                            </Status>
-                        </TableCell>
-                    </tr>
-                </tbody>
-            </Table>
-            <Table>
-                <tbody>
-                    <tr>
-                        <TableHeader>Customer</TableHeader>
-                        <TableHeader>Date</TableHeader>
-                        <TableHeader>Amount</TableHeader>
-                        <TableHeader>Status</TableHeader>
-                    </tr>
-                    <tr>
-                        <TableCell>
-                            <ImgContainer>
-                                <Image
-                                    src="https://mediaslide-europe.storage.googleapis.com/louisamodels/pictures/700/403/profile-1612010058-a467fb70a025956018368d3d77a5015f.jpg"
-                                    alt=""
-                                />
-                                <Name>Susan C</Name>
-                            </ImgContainer>
-                        </TableCell>
-                        <TableCell>3 Jun 2023</TableCell>
-                        <TableCell>$102.00</TableCell>
-                        <TableCell>
-                            <Status>
-                                <Button type="Pending" />
-                            </Status>
-                        </TableCell>
-                    </tr>
+                <tr>
+                    <TableHeader>Customer</TableHeader>
+                    <TableHeader>Date</TableHeader>
+                    <TableHeader>Amount</TableHeader>
+                    <TableHeader>Status</TableHeader>
+                </tr>
+                {orders.map((order) => {
+                    const user = users.find((user) => user._id === order.userId);
+                    return (
+                        <tr key={order._id}>
+                            <TableCell>
+                                <ImgContainer>
+                                    <Image
+                                        src={user?.image || "https://vyshnevyi-partners.com/wp-content/uploads/2016/12/no-avatar.png"}
+                                        alt=""
+                                    />
+                                    <Name>{user?.username}</Name>
+                                </ImgContainer>
+                            </TableCell>
+                            <TableCell>{formatDate(order.createdAt?.toString())}</TableCell>
+                            <TableCell>${order.amount}</TableCell>
+                            <TableCell>
+                                <Status>
+                                    <Button type={order.status} />
+                                </Status>
+                            </TableCell>
+                        </tr>
+                    );
+                })}
                 </tbody>
             </Table>
         </Container>
@@ -150,21 +157,21 @@ const ButtonContainer = styled.button<any>`
     border-radius: 10px;
 
     ${(props) =>
-        props.type === "Approved" &&
+        props.type === "approved" &&
         css`
             background-color: #e5faf2;
             color: #3bb077;
         `}
 
     ${(props) =>
-        props.type === "Declined" &&
+        props.type === "declined" &&
         css`
             background-color: #fff0f1;
             color: #d95087;
         `}
 
   ${(props) =>
-        props.type === "Pending" &&
+        props.type === "pending" &&
         css`
             background-color: #ebf1fe;
             color: #2a7ade;
