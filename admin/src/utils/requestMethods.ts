@@ -10,6 +10,7 @@ let TOKEN = localStorageItem
 
 
 
+
 export const publicRequest = axios.create({
     baseURL: BASE_URL,
 });
