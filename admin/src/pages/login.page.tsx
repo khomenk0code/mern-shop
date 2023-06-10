@@ -4,17 +4,29 @@ import { Button, TextField } from "@mui/material";
 import { AccountCircle, Lock } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import login from "../redux/auth.api";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useAppDispatch();
-    const { isFetching, error } = useAppSelector((state) => state.user);
+    const { isFetching, error, currentUser } = useAppSelector(
+        (state) => state.user
+    );
+    const navigate = useNavigate();
 
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        login(dispatch, { username, password });
+        await login(dispatch, { username, password });
     };
+
+
+    React.useEffect(() => {
+        if (currentUser && Object.keys(currentUser).length > 0) {
+            navigate("/");
+            window.location.reload();
+        }
+    }, [currentUser, navigate]);
 
     return (
         <Container>
@@ -55,33 +67,36 @@ const Login: React.FC = () => {
 };
 
 const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    flex: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex: 4;
 `;
 
 const LoginForm = styled.form`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const InputWrapper = styled.div`
-    margin: 10px;
+  margin: 10px;
 `;
 
-const Input = styled(TextField)``;
+const Input = styled(TextField)`
+ 
+`;
 
 const StyledButton = styled(Button)`
-    margin-top: 10px;
-    width: 247px;
+  margin-top: 10px;
+  width: 247px;
 `;
 
 const Error = styled.span`
-    color: red;
+  color: red;
+  margin-top: 10px;
 `;
 
 export default Login;

@@ -13,15 +13,19 @@ import NewProduct from "./pages/new-product.page";
 import Transactions from "./pages/transactions.page";
 import Reports from "./pages/reports.page";
 import Login from "./pages/login.page";
+import { admin } from "./utils/requestMethods";
 
-const App = () => (
-    <Router>
-        <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="*" element={<ContainedRoutes />} />
-        </Routes>
-    </Router>
-);
+const App = () => {
+
+    return (
+        <Router>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                {admin && <Route path="*" element={<ContainedRoutes />} />}
+            </Routes>
+        </Router>
+    );
+};
 
 const ContainedRoutes = () => (
     <>
