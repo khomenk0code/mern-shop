@@ -1,17 +1,25 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface UserState {
+    currentUser: any;
+    isFetching: boolean;
+    error: boolean;
+}
+
+const initialState: UserState = {
+    currentUser: {},
+    isFetching: false,
+    error: false,
+};
+
 const userSlice = createSlice({
     name: "user",
-    initialState: {
-        currentUser: {},
-        isFetching: false,
-        error: false,
-    },
+    initialState,
     reducers: {
         loginStart: (state) => {
             state.isFetching = true;
         },
-        loginSuccess: (state, action: PayloadAction<any>) => {
+        loginSuccess: (state, action: PayloadAction<UserState>) => {
             state.isFetching = false;
             state.currentUser = action.payload;
         },

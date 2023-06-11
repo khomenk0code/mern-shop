@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Button, TextField } from "@mui/material";
 import { AccountCircle, Lock } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import login from "../redux/auth.api";
+import { login } from "../redux/api.calls";
 import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {

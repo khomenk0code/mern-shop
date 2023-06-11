@@ -60,43 +60,6 @@ router.get("/", verifyTokenAndAdmin, async (req: Request, res: Response) => {
     }
 })
 
-router.get("/month", verifyTokenAndAdmin, async (req: Request, res: Response) => {
-    try {
-        const currentYear = new Date().getFullYear();
-        const currentMonth = new Date().getMonth() + 1;
-        const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
-
-
-        const [currentMonthCount, previousMonthCount] = await Promise.all([
-            Order.countDocuments({
-                createdAt: {
-                    $gte: new Date(`${currentYear}-${currentMonth}-01`),
-                    $lt: new Date(`${currentYear}-${currentMonth + 1}-01`)
-                }
-            }),
-            Order.countDocuments({
-                createdAt: {
-                    $gte: new Date(`${currentYear}-${previousMonth}-01`),
-                    $lt: new Date(`${currentYear}-${currentMonth}-01`)
-                }
-            })
-        ]);
-
-        const result = [
-            { _id: currentMonth, total: currentMonthCount },
-            { _id: previousMonth, total: previousMonthCount }
-        ];
-
-        res.status(200).json(result);
-    } catch (e) {
-        res.status(500).json(e);
-    }
-});
-
-
-
-
-
 
 router.get("/income", verifyTokenAndAdmin, async (req: Request, res: Response) => {
     const currentDate = new Date();
@@ -145,6 +108,38 @@ router.get("/topsales", verifyTokenAndAdmin, async (req: Request, res: Response)
     }
 });
 
+router.get("/month", verifyTokenAndAdmin, async (req: Request, res: Response) => {
+    try {
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1;
+        const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+
+
+        const [currentMonthCount, previousMonthCount] = await Promise.all([
+            Order.countDocuments({
+                createdAt: {
+                    $gte: new Date(`${currentYear}-${currentMonth}-01`),
+                    $lt: new Date(`${currentYear}-${currentMonth + 1}-01`)
+                }
+            }),
+            Order.countDocuments({
+                createdAt: {
+                    $gte: new Date(`${currentYear}-${previousMonth}-01`),
+                    $lt: new Date(`${currentYear}-${currentMonth}-01`)
+                }
+            })
+        ]);
+
+        const result = [
+            { _id: currentMonth, total: currentMonthCount },
+            { _id: previousMonth, total: previousMonthCount }
+        ];
+
+        res.status(200).json(result);
+    } catch (e) {
+        res.status(500).json(e);
+    }
+});
 
 
 

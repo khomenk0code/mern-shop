@@ -1,15 +1,7 @@
 import userReducer from "./user.slice";
+import productReducer from "./productsSlice";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import {
-    persistStore,
-    persistReducer,
-    FLUSH,
-    REHYDRATE,
-    PAUSE,
-    PERSIST,
-    PURGE,
-    REGISTER,
-} from "redux-persist";
+import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
@@ -18,7 +10,10 @@ const persistConfig = {
     storage,
 };
 
-const rootReducer = combineReducers({ user: userReducer });
+const rootReducer = combineReducers({
+    user: userReducer,
+    product: productReducer,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import FeaturedInfo from "../components/featured-info.component";
 import Chart from "../components/chart.component";
-import { userData } from "../data.mock";
 import SmallWidget from "../components/small-widget.component";
 import LargeWidget from "../components/large-widget.component";
 import { userRequest } from "../utils/requestMethods";
