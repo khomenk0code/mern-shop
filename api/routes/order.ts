@@ -64,7 +64,8 @@ router.get("/month", verifyTokenAndAdmin, async (req: Request, res: Response) =>
     try {
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth() + 1;
-        const previousMonth = currentMonth - 1;
+        const previousMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+
 
         const [currentMonthCount, previousMonthCount] = await Promise.all([
             Order.countDocuments({
@@ -99,7 +100,7 @@ router.get("/month", verifyTokenAndAdmin, async (req: Request, res: Response) =>
 
 router.get("/income", verifyTokenAndAdmin, async (req: Request, res: Response) => {
     const currentDate = new Date();
-    const previousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, currentDate.getDate());
+    const previousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
 
         try {
             const income = await Order.aggregate([

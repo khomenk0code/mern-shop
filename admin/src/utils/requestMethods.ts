@@ -1,15 +1,15 @@
 import axios from "axios";
 
-
 const BASE_URL = "http://localhost:5000/api";
 const localStorageItem = localStorage.getItem("persist:root");
 export const admin = localStorageItem
-    ? JSON.parse(JSON.parse(localStorageItem)?.user)?.currentUser?.isAdmin || false : false;
+    ? JSON.parse(JSON.parse(localStorageItem)?.user)?.currentUser?.isAdmin ||
+      false
+    : false;
 let TOKEN = localStorageItem
-    ? JSON.parse(JSON.parse(localStorageItem)?.user)?.currentUser?.accessToken || "" : "";
-
-
-
+    ? JSON.parse(JSON.parse(localStorageItem)?.user)?.currentUser
+          ?.accessToken || ""
+    : "";
 
 export const publicRequest = axios.create({
     baseURL: BASE_URL,

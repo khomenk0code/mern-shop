@@ -16,7 +16,6 @@ import Login from "./pages/login.page";
 import { admin } from "./utils/requestMethods";
 
 const App = () => {
-
     return (
         <Router>
             <Routes>

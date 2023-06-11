@@ -36,21 +36,19 @@ const Home: React.FC = () => {
     useEffect(() => {
         const getStats = async () => {
             try {
-                const res = await userRequest.get("/users/stats")
+                const res = await userRequest.get("/users/stats");
                 res.data.map((item: UserData) => {
-                    setUserStats(prev =>[
+                    setUserStats((prev) => [
                         ...prev,
-                        {name:MONTHS[item._id - 1], "ActiveUsers": item.total}
-                    ])
-                })
+                        { name: MONTHS[item._id - 1], ActiveUsers: item.total },
+                    ]);
+                });
             } catch (e) {
                 console.error(e);
             }
-        }
-        getStats()
-    },[MONTHS])
-
-
+        };
+        getStats();
+    }, [MONTHS]);
 
     return (
         <Container>

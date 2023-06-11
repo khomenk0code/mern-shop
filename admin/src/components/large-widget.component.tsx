@@ -61,9 +61,6 @@ const LargeWidget: React.FC = () => {
         return DateFormat.replace(",", "");
     };
 
-
-
-
     const Button = ({ type }: ButtonProps) => {
         return <ButtonContainer type={type}>{type}</ButtonContainer>;
     };
@@ -73,35 +70,42 @@ const LargeWidget: React.FC = () => {
             <Title>Latest transactions</Title>
             <Table>
                 <tbody>
-                <tr>
-                    <TableHeader>Customer</TableHeader>
-                    <TableHeader>Date</TableHeader>
-                    <TableHeader>Amount</TableHeader>
-                    <TableHeader>Status</TableHeader>
-                </tr>
-                {orders.map((order) => {
-                    const user = users.find((user) => user._id === order.userId);
-                    return (
-                        <tr key={order._id}>
-                            <TableCell>
-                                <ImgContainer>
-                                    <Image
-                                        src={user?.image || "https://vyshnevyi-partners.com/wp-content/uploads/2016/12/no-avatar.png"}
-                                        alt=""
-                                    />
-                                    <Name>{user?.username}</Name>
-                                </ImgContainer>
-                            </TableCell>
-                            <TableCell>{formatDate(order.createdAt?.toString())}</TableCell>
-                            <TableCell>${order.amount}</TableCell>
-                            <TableCell>
-                                <Status>
-                                    <Button type={order.status} />
-                                </Status>
-                            </TableCell>
-                        </tr>
-                    );
-                })}
+                    <tr>
+                        <TableHeader>Customer</TableHeader>
+                        <TableHeader>Date</TableHeader>
+                        <TableHeader>Amount</TableHeader>
+                        <TableHeader>Status</TableHeader>
+                    </tr>
+                    {orders.map((order) => {
+                        const user = users.find(
+                            (user) => user._id === order.userId
+                        );
+                        return (
+                            <tr key={order._id}>
+                                <TableCell>
+                                    <ImgContainer>
+                                        <Image
+                                            src={
+                                                user?.image ||
+                                                "https://vyshnevyi-partners.com/wp-content/uploads/2016/12/no-avatar.png"
+                                            }
+                                            alt=""
+                                        />
+                                        <Name>{user?.username}</Name>
+                                    </ImgContainer>
+                                </TableCell>
+                                <TableCell>
+                                    {formatDate(order.createdAt?.toString())}
+                                </TableCell>
+                                <TableCell>${order.amount}</TableCell>
+                                <TableCell>
+                                    <Status>
+                                        <Button type={order.status} />
+                                    </Status>
+                                </TableCell>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </Table>
         </Container>

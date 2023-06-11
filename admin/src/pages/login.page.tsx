@@ -20,7 +20,6 @@ const Login: React.FC = () => {
         await login(dispatch, { username, password });
     };
 
-
     React.useEffect(() => {
         if (currentUser && Object.keys(currentUser).length > 0) {
             navigate("/");
@@ -67,36 +66,34 @@ const Login: React.FC = () => {
 };
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  flex: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    flex: 4;
 `;
 
 const LoginForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const InputWrapper = styled.div`
-  margin: 10px;
+    margin: 10px;
 `;
 
-const Input = styled(TextField)`
- 
-`;
+const Input = styled(TextField)``;
 
 const StyledButton = styled(Button)`
-  margin-top: 10px;
-  width: 247px;
+    margin-top: 10px;
+    width: 247px;
 `;
 
 const Error = styled.span`
-  color: red;
-  margin-top: 10px;
+    color: red;
+    margin-top: 10px;
 `;
 
 export default Login;
