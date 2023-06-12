@@ -1,7 +1,16 @@
 import userReducer from "./user.slice";
 import productReducer from "./productsSlice";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from "redux-persist";
+import {
+    FLUSH,
+    PAUSE,
+    PERSIST,
+    persistReducer,
+    persistStore,
+    PURGE,
+    REGISTER,
+    REHYDRATE,
+} from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 const persistConfig = {

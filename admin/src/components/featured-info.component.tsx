@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import { ArrowDownward, ArrowUpward, ShoppingCart } from "@mui/icons-material";
 import { userRequest } from "../utils/requestMethods";
 
 interface IncomeData {
@@ -13,6 +13,8 @@ const FeaturedInfo: React.FC = () => {
     const [incomePercentage, setIncomePercentage] = useState(0);
     const [productDetails, setProductDetails] = useState<any[]>([]);
     const [monthOrdersCount, setMonthOrdersCount] = useState<any[]>([]);
+
+    console.log("pd",productDetails);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,7 +33,6 @@ const FeaturedInfo: React.FC = () => {
 
                 // Top sales and product details
                 const topSalesRes = await userRequest("/orders/topsales");
-
 
                 const productIds: string[] = topSalesRes.data.map(
                     (sale: any) => sale._id
@@ -82,10 +83,20 @@ const FeaturedInfo: React.FC = () => {
                     <FeaturedProductsList>
                         {productDetails.map((product: any) => (
                             <FeaturedProductName key={product?._id}>
-                                {product?.title}
-                                <Image src={product.img} />
+                                {product ? (
+                                    <>
+                                        {product.title}
+                                        <Image src={product.img} />
+                                    </>
+                                ) : (
+                                    <>
+                                    Product not found
+                                    <ShoppingCart/>
+                                    </>
+                                )}
                             </FeaturedProductName>
                         ))}
+
                     </FeaturedProductsList>
                 </FeaturedProductsContainer>
                 <FeaturedSub>Compared to last month</FeaturedSub>

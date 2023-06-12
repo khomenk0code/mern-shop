@@ -1,30 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
-import { productRows } from "../data.mock";
 import { DeleteOutline } from "@mui/icons-material";
-import { getProducts } from "../redux/api.calls";
+import { deleteProduct, getProducts } from "../redux/api.calls";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 
-
 const ProductList = () => {
-    const [data, setData] = useState(productRows);
     const dispatch = useAppDispatch();
-    const products = useAppSelector(state => state.product.products)
-
-    console.log(products);
+    const products = useAppSelector((state) => state.product.products);
 
     useEffect(() => {
-        getProducts(dispatch)
-
-    }, [dispatch])
+        getProducts(dispatch);
+    }, [dispatch]);
 
     const handleDelete = (id: number) => {
-        setData(data.filter((item) => item.id !== id));
+        deleteProduct(id, dispatch);
     };
-
-
 
     const columns = [
         { field: "_id", headerName: "ID", width: 220 },
@@ -41,7 +33,7 @@ const ProductList = () => {
                 );
             },
         },
-        { field: "inStock", headerName: "Stock", width: 200},
+        { field: "inStock", headerName: "Stock", width: 200 },
         {
             field: "price",
             headerName: "Price",
@@ -54,11 +46,11 @@ const ProductList = () => {
             renderCell: (params: any) => {
                 return (
                     <>
-                        <Link to={`/product/${params.row.id}`}>
+                        <Link to={`/product/${params.row._id}`}>
                             <ProductListEdit>Edit</ProductListEdit>
                         </Link>
                         <ProductListDelete
-                            onClick={() => handleDelete(params.row.id)}
+                            onClick={() => handleDelete(params.row._id)}
                         />
                     </>
                 );
@@ -72,7 +64,7 @@ const ProductList = () => {
                 rows={products}
                 disableRowSelectionOnClick
                 columns={columns}
-                getRowId={row => row._id}
+                getRowId={(row) => row._id}
                 rowCount={8}
                 checkboxSelection
             />

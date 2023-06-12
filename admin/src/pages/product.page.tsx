@@ -1,19 +1,86 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Chart, { ChartData } from "../components/chart.component";
-import { productData } from "../data.mock";
 import { Publish } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { getProducts } from "../redux/api.calls";
+import { userRequest } from "../utils/requestMethods";
 
 export interface ProductData extends ChartData {
     Sales: number;
 }
 
+interface ProductStatsData {
+    _id: number;
+    total: number;
+    name: string;
+}
+
 const Product = () => {
+    const [productStats, setProductStats] = useState<ProductStatsData[]>([]);
+
+    console.log(productStats);
+
+    const location = useLocation();
+    const dispatch = useAppDispatch();
+
+    const productId: string = location.pathname.split("/")[2];
+    const product = useAppSelector((state) =>
+        state.product.products.find((product) => product._id === productId)
+    );
+
+    const MONTHS = useMemo(
+        () => [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ],
+        []
+    );
+
+    useEffect(() => {
+        const getStats = async () => {
+            try {
+                const res = await userRequest.get(
+                    `orders/income?pid=${productId}`
+                );
+
+                const sortedRes = await res.data.sort(
+                    (a: ProductStatsData, b: ProductStatsData) => {
+                        return a._id - b._id;
+                    }
+                );
+                sortedRes.map((item: ProductStatsData) => {
+                    setProductStats((prev: any) => [
+                        ...prev,
+                        { name: MONTHS[item._id - 1], Sales: item.total },
+                    ]);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        };
+        getStats();
+    }, [MONTHS]);
+
+    useEffect(() => {
+        getProducts(dispatch);
+    }, [dispatch]);
+
     return (
         <ProductContainer>
             <ProductTitleContainer>
-                <h1>Product</h1>
+                <h1>{product?.title}</h1>
                 <Link to="/product/add">
                     <ProductAddButton>Create</ProductAddButton>
                 </Link>
@@ -21,7 +88,7 @@ const Product = () => {
             <ProductTop>
                 <ProductTopLeft>
                     <Chart
-                        data={productData}
+                        data={productStats}
                         dataKey="Sales"
                         grid
                         title="Sales Performance"
@@ -29,28 +96,25 @@ const Product = () => {
                 </ProductTopLeft>
                 <ProductTopRight>
                     <ProductInfoTop>
-                        <ProductInfoImg
-                            src="https://images.pexels.com/photos/7156886/pexels-photo-7156886.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                            alt=""
-                        />
-                        <ProductName>Apple Airpods</ProductName>
+                        <ProductInfoImg src={product?.img} alt="" />
+                        <ProductName>{product?.title}</ProductName>
                     </ProductInfoTop>
                     <ProductInfoBottom>
                         <ProductInfoItem>
                             <ProductInfoKey>id:</ProductInfoKey>
-                            <ProductInfoValue>123</ProductInfoValue>
+                            <ProductInfoValue>{product?._id}</ProductInfoValue>
                         </ProductInfoItem>
                         <ProductInfoItem>
-                            <ProductInfoKey>sales:</ProductInfoKey>
-                            <ProductInfoValue>5123</ProductInfoValue>
-                        </ProductInfoItem>
-                        <ProductInfoItem>
-                            <ProductInfoKey>active:</ProductInfoKey>
-                            <ProductInfoValue>yes</ProductInfoValue>
+                            <ProductInfoKey>price:</ProductInfoKey>
+                            <ProductInfoValue>
+                                {product?.price}
+                            </ProductInfoValue>
                         </ProductInfoItem>
                         <ProductInfoItem>
                             <ProductInfoKey>in stock:</ProductInfoKey>
-                            <ProductInfoValue>no</ProductInfoValue>
+                            <ProductInfoValue>
+                                {product?.inStock}
+                            </ProductInfoValue>
                         </ProductInfoItem>
                     </ProductInfoBottom>
                 </ProductTopRight>
@@ -58,8 +122,16 @@ const Product = () => {
             <ProductBottom>
                 <ProductForm>
                     <ProductFormLeft>
-                        <FormLeftTitle>Product Name</FormLeftTitle>
-                        <FormLeftInput type="text" placeholder="Apple AirPod" />
+                        <FormLeftTitle>Product Title</FormLeftTitle>
+                        <FormLeftInput
+                            type="text"
+                            placeholder={product?.title}
+                        />
+                        <FormLeftTitle>Product Description</FormLeftTitle>
+                        <FormLeftInput
+                            type="text"
+                            placeholder={product?.desc}
+                        />
                         <FormLeftTitle>In Stock</FormLeftTitle>
                         <FormLeftSelect name="inStock" id="inStock">
                             <option value="yes">Yes</option>
@@ -73,10 +145,7 @@ const Product = () => {
                     </ProductFormLeft>
                     <ProductFormRight>
                         <ProductUpload>
-                            <ProductUploadImg
-                                src="https://images.pexels.com/photos/7156886/pexels-photo-7156886.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                                alt=""
-                            />
+                            <ProductUploadImg src={product?.img} alt="" />
                             <label htmlFor="file">
                                 <Publish />
                             </label>
