@@ -14,7 +14,6 @@ const FeaturedInfo: React.FC = () => {
     const [productDetails, setProductDetails] = useState<any[]>([]);
     const [monthOrdersCount, setMonthOrdersCount] = useState<any[]>([]);
 
-    console.log("pd",productDetails);
 
     useEffect(() => {
         const fetchData = async () => {

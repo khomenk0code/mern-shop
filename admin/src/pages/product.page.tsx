@@ -20,7 +20,6 @@ interface ProductStatsData {
 const Product = () => {
     const [productStats, setProductStats] = useState<ProductStatsData[]>([]);
 
-    console.log(productStats);
 
     const location = useLocation();
     const dispatch = useAppDispatch();

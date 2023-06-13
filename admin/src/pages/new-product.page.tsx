@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import app from "../firebase";
+import { addProduct } from "../redux/api.calls";
+import { useAppDispatch } from "../hooks/hooks";
+
+
 
 const NewProduct = () => {
     const [inputs, setInputs] = useState({});
-    const [image, setImage] = useState<File | undefined>(undefined);
-    const [categoies, setCategoies] = useState([]);
-
-
+    const [image, setImage] = useState<File | null>(null);
+    const [categories, setCategoies] = useState([]);
+    const dispatch = useAppDispatch();
+    console.log(image);
 
     const handleChange = (e:any) => {
         setInputs(prev => {
@@ -19,8 +25,45 @@ const NewProduct = () => {
 
     const handleClick = (e:any) => {
         e.preventDefault();
+        if (image) {
+            const fileName = new Date().getTime() + image.name;
 
+
+        const storage = getStorage(app);
+        const storageRef = ref(storage, fileName)
+
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+
+        uploadTask.on('state_changed',
+            (snapshot: any) => {
+                // Observe state change events such as progress, pause, and resume
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                    default:
+                }
+            },
+            (error: any) => {
+                console.log(error);
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: any) => {
+                    const product =  {...inputs, img: downloadURL, categories};
+                    addProduct(product, dispatch)
+                });
+            }
+        );
+        }
     };
+
 
 
     return (
@@ -29,7 +72,7 @@ const NewProduct = () => {
             <AddProductForm>
                 <AddProductItem>
                     <Label>Image</Label>
-                    <Input type="file" id="file" onChange={e => setImage(e.target.files?.[0])}/>
+                    <Input type="file" id="file" onChange={e => setImage(e.target.files?.[0] as File)}/>
                 </AddProductItem>
                 <AddProductItem>
                     <Label>Title</Label>
@@ -37,7 +80,7 @@ const NewProduct = () => {
                 </AddProductItem>
                 <AddProductItem>
                     <Label>Description</Label>
-                    <Input name="description" type="text" placeholder="description" onChange={handleChange}/>
+                    <Input name="desc" type="text" placeholder="description" onChange={handleChange}/>
                 </AddProductItem>
                 <AddProductItem>
                     <Label>Categories</Label>
