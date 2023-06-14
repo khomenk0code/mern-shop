@@ -50,8 +50,8 @@ export const deleteProduct = async (id: number, dispatch: Dispatch) => {
 export const updateProduct = async (id: string, product: any, dispatch: Dispatch) => {
     dispatch(updateProductStart());
     try {
-        // const res = await userRequest.delete(`/products/${id}`);
-        //@ts-ignore
+        // const res = await userRequest.delete(`/products/${id}`)
+
         dispatch(updateProductSuccess({ id, product }));
     } catch (e) {
         console.log(e);
@@ -62,10 +62,13 @@ export const updateProduct = async (id: string, product: any, dispatch: Dispatch
 export const addProduct = async (product: any, dispatch: Dispatch) => {
     dispatch(addProductStart());
     try {
-        const res = await userRequest.post("/products", product );
+        const res = await userRequest.post("/products", product);
         dispatch(addProductSuccess(res.data));
+        return res.data;
     } catch (e) {
         console.log(e);
         dispatch(addProductFailure());
+        throw e;
     }
 };
+
