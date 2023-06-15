@@ -11,11 +11,13 @@ import { Checkbox, FormControlLabel, FormGroup, LinearProgress } from "@mui/mate
 const NewProduct = () => {
     const [inputs, setInputs] = useState({});
     const [image, setImage] = useState<File | null>(null);
-    const [categories, setCategoies] = useState([]);
-    const [colors, setColors] = useState([]);
     const [progress, setProgress] = useState(0);
     const dispatch = useAppDispatch();
     const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+    const [imgUrl, setImgUrl] = useState<string>("");
+    const [isProductSaved, setIsProductSaved] = useState(false);
+    const [isError, setIsError] = useState(false);
+
 
     const handleSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
@@ -27,79 +29,92 @@ const NewProduct = () => {
     };
 
     const handleChange = (e: any) => {
-        setInputs(prev => {
-            return { ...prev, [e.target.name]: e.target.value }
-        })
-    }
-    const handleCategories = (e: any) => {
-        setCategoies(e.target.value.split(",").map((category: string) => category.trim()))
-    }
-    const handleColors = (e: any) => {
-        setColors(e.target.value.split(",").map((category: string) => category.trim()))
-    }
+        const { name, value } = e.target;
+        setInputs((prev) => ({
+            ...prev,
+            [name]: name === 'categories' || name === 'colors' ? value.split(',').map((item:string) => item.trim()) : value,
+        }));
+    };
 
 
-    const handleClick = (e: any) => {
+
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
+        const image = e.target.files?.[0];
+        setImage(image as File);
+
         if (image) {
             const fileName = new Date().getTime() + image.name;
 
-
+            console.log(image);
             const storage = getStorage(app);
-            const storageRef = ref(storage, fileName)
+            const storageRef = ref(storage, fileName);
 
             const uploadTask = uploadBytesResumable(storageRef, image);
 
-
-            uploadTask.on('state_changed',
+            uploadTask.on(
+                "state_changed",
                 (snapshot: any) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    setProgress(progress)
+                    setProgress(progress);
                 },
                 (error: any) => {
                     console.log(error);
                 },
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: any) => {
-                        const product = { ...inputs, img: downloadURL, categories, colors };
-                        addProduct(product, dispatch)
+                        setImgUrl(downloadURL);
                     });
                 }
             );
         }
     };
 
+    const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        const product = { ...inputs, img: imgUrl, size: selectedSizes };
+        console.log(product);
+        try {
+            const savedProduct = await addProduct(product, dispatch);
+            console.log("Product saved", savedProduct);
+
+            setIsProductSaved(true);
+            setIsError(false);
+        } catch (error) {
+            console.log("Error with product saving:", error);
+            setIsProductSaved(false);
+            setIsError(true);
+        }
+    };
+
 
     return (
-        <NewProductWrapper>
+        <Wrapper>
             <h1 className="addProductTitle">New Product</h1>
-            <AddProductForm>
-                <AddProductItem>
-                    <Label>Image</Label>
-                    <Input type="file" id="file" onChange={e => setImage(e.target.files?.[0] as File)} />
-                    <LinearProgress variant="determinate" value={progress} />
-                </AddProductItem>
-                <AddProductItem>
+            <FormGroup>
+                <FieldWrapper>
                     <Label>Title</Label>
                     <Input name="title" type="text" placeholder="Apple Airpods" onChange={handleChange} />
-                </AddProductItem>
-                <AddProductItem>
+                </FieldWrapper>
+                <FieldWrapper>
                     <Label>Description</Label>
                     <Input name="desc" type="text" placeholder="Description" onChange={handleChange} />
-                </AddProductItem>
-                <AddProductItem>
+                </FieldWrapper>
+                <FieldWrapper>
                     <Label>Categories</Label>
-                    <Input name="categories" type="text" placeholder="Jeans, skirts" onChange={handleCategories} />
-                </AddProductItem>
-                <AddProductItem>
+                    <Input name="categories" type="text" placeholder="Jeans, skirts" onChange={handleChange} />
+                </FieldWrapper>
+                <FieldWrapper>
                     <Label>Colors</Label>
-                    <Input name="color" type="text" placeholder="Blue, white" onChange={handleColors} />
-                </AddProductItem>
-                <AddProductItem>
+                    <Input name="color" type="text" placeholder="Blue, white" onChange={handleChange} />
+                </FieldWrapper>
+                <FieldWrapper>
                     <Label>Price</Label>
                     <Input name="price" type="number" placeholder="Price" onChange={handleChange} />
-                </AddProductItem>
-                <AddProductItem>
+                </FieldWrapper>
+                <FieldWrapper>
                     <Label>Size</Label>
                     <FormGroup row>
                         <FormControlLabel
@@ -133,7 +148,7 @@ const NewProduct = () => {
                             label="XXL"
                         />
                     </FormGroup>
-                </AddProductItem>
+                </FieldWrapper>
                 <AddProductItem>
                     <Label>Stock</Label>
                     <select name="inStock" id="stock" onChange={handleChange}>
@@ -141,20 +156,125 @@ const NewProduct = () => {
                         <option value="false">No</option>
                     </select>
                 </AddProductItem>
-                <AddProductButton onClick={handleClick}>Create</AddProductButton>
-            </AddProductForm>
-        </NewProductWrapper>
+                <ImageWrapper>
+                    <Label htmlFor="image">Image</Label>
+                    <Input  accept="image/jpeg, image/png" name="image" type="file" id="file"  onChange={handleImageChange} />
+                    {progress > 0 &&
+                        <LinearProgressWrapper>
+                            <LinearProgress variant="determinate" value={progress} />
+                        </LinearProgressWrapper>
+                    }
+                    {imgUrl && <img src={imgUrl} alt="Product" className="uploaded-image" />}
+                </ImageWrapper>
+                <ButtonWrapper>
+                    <button type="submit" onClick={handleClick}>
+                        Save
+                    </button>
+                    {isProductSaved && !isError ? (
+                        <SuccessMessage>Product was saved!</SuccessMessage>
+                    ) : (
+                        isError && <ErrorMessage>Something went wrong</ErrorMessage>
+                    )}
+                </ButtonWrapper>
+            </FormGroup>
+        </Wrapper>
     );
 };
 
+const Wrapper = styled.div`
+  flex: 4;
+  padding: 50px;
+  
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
 
-const NewProductWrapper = styled.div`
-    flex: 4;
-`;
+  .error {
+    border: 1px solid red;
+  }
 
-const AddProductForm = styled.form`
+  .error-message {
+    color: red;
+    font-size: 14px;
+  }
+
+  .checkbox-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .uploaded-image {
+    width: 100px;
     margin-top: 10px;
+  }
 `;
+
+const FieldWrapper = styled.div`
+  margin-bottom: 20px;
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input,
+  textarea {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  margin-top: 20px;
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: darkblue;
+    font-weight: 600;
+    
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+`;
+
+const ImageWrapper = styled.div`
+  width: 250px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;
+
+const SuccessMessage = styled.div`
+  margin-top: 10px;
+  text-align: center;
+  color: green;
+`;
+const ErrorMessage = styled.div`
+  margin-top: 10px;
+  text-align: center;
+  color: red;
+`;
+
+const LinearProgressWrapper = styled.div`
+  align-items: center;
+  margin-top: 10px;
+`;
+
 
 const AddProductItem = styled.div`
     width: 250px;
@@ -173,18 +293,6 @@ const Input = styled.input`
     padding: 10px;
 `;
 
-
-
-const AddProductButton = styled.button`
-    margin-top: 10px;
-    padding: 7px 10px;
-    border: none;
-    border-radius: 10px;
-    background-color: darkblue;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-`;
 
 
 

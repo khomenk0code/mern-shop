@@ -50,12 +50,11 @@ export const deleteProduct = async (id: number, dispatch: Dispatch) => {
 export const updateProduct = async (id: string, product: any, dispatch: Dispatch) => {
     dispatch(updateProductStart());
     try {
-        // const res = await userRequest.delete(`/products/${id}`)
-
         dispatch(updateProductSuccess({ id, product }));
     } catch (e) {
         console.log(e);
         dispatch(updateProductFailure());
+        throw e;
     }
 };
 

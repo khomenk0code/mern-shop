@@ -4,8 +4,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import Chart, { ChartData } from "../components/chart.component";
 import { Publish } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import { getProducts } from "../redux/api.calls";
+import { getProducts, updateProduct } from "../redux/api.calls";
 import { userRequest } from "../utils/requestMethods";
+import { Checkbox, FormControlLabel, FormGroup, LinearProgress } from "@mui/material";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import app from "../firebase";
 
 export interface ProductData extends ChartData {
     Sales: number;
@@ -19,7 +22,13 @@ interface ProductStatsData {
 
 const Product = () => {
     const [productStats, setProductStats] = useState<ProductStatsData[]>([]);
-
+    const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+    const [inputs, setInputs] = useState({});
+    const [image, setImage] = useState<File | null>(null);
+    const [progress, setProgress] = useState(0);
+    const [imgUrl, setImgUrl] = useState<string>("");
+    const [isProductUpdated, setIsProductSaved] = useState(false);
+    const [isError, setIsError] = useState(false);
 
     const location = useLocation();
     const dispatch = useAppDispatch();
@@ -28,6 +37,8 @@ const Product = () => {
     const product = useAppSelector((state) =>
         state.product.products.find((product) => product._id === productId)
     );
+
+
 
     const MONTHS = useMemo(
         () => [
@@ -46,6 +57,7 @@ const Product = () => {
         ],
         []
     );
+
 
     useEffect(() => {
         const getStats = async () => {
@@ -72,9 +84,83 @@ const Product = () => {
         getStats();
     }, [MONTHS]);
 
+
+
     useEffect(() => {
         getProducts(dispatch);
     }, [dispatch]);
+
+
+    const handleSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = event.target;
+        if (checked) {
+            setSelectedSizes((prevSelectedSizes) => [...prevSelectedSizes, value]);
+        } else {
+            setSelectedSizes((prevSelectedSizes) => prevSelectedSizes.filter((size) => size !== value));
+        }
+    };
+
+    const handleChange = (e: any) => {
+        const { name, value } = e.target;
+        setInputs((prev) => ({
+            ...prev,
+            [name]: name === 'categories' || name === 'colors' ? value.split(',').map((item:string) => item.trim()) : value,
+        }));
+    };
+
+
+
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        const image = e.target.files?.[0];
+        setImage(image as File);
+
+        if (image) {
+            const fileName = new Date().getTime() + image.name;
+
+            console.log(image);
+            const storage = getStorage(app);
+            const storageRef = ref(storage, fileName);
+
+            const uploadTask = uploadBytesResumable(storageRef, image);
+
+            uploadTask.on(
+                "state_changed",
+                (snapshot: any) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setProgress(progress);
+                },
+                (error: any) => {
+                    console.log(error);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: any) => {
+                        setImgUrl(downloadURL);
+                    });
+                }
+            );
+        }
+    };
+
+    const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        const product = { ...inputs, img: imgUrl, size: selectedSizes };
+        console.log(product);
+
+        try {
+            const updatedProduct = await updateProduct(productId, product, dispatch);
+            console.log("Product upadated", updatedProduct);
+
+            setIsProductSaved(true);
+            setIsError(false);
+        } catch (error) {
+            console.log("Error with product saving:", error);
+            setIsProductSaved(false);
+            setIsError(true);
+        }
+    };
 
     return (
         <ProductContainer>
@@ -124,37 +210,103 @@ const Product = () => {
                         <FormLeftTitle>Product Title</FormLeftTitle>
                         <FormLeftInput
                             type="text"
+                            name="title"
                             placeholder={product?.title}
+                            onChange={handleChange}
                         />
                         <FormLeftTitle>Product Description</FormLeftTitle>
                         <FormLeftInput
                             type="text"
                             placeholder={product?.desc}
+                            name="desc"
+                            onChange={handleChange}
                         />
                         <FormLeftTitle>In Stock</FormLeftTitle>
                         <FormLeftSelect name="inStock" id="inStock">
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </FormLeftSelect>
-                        <FormLeftTitle>Active</FormLeftTitle>
-                        <FormLeftSelect name="active" id="active">
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
-                        </FormLeftSelect>
+                    </ProductFormLeft>
+                    <ProductFormLeft>
+                        <FormLeftTitle>Product Price</FormLeftTitle>
+                        <FormLeftInput
+                            type="number"
+                            name="price"
+                            placeholder={`${product?.price}`}
+                            onChange={handleChange}
+
+                        />
+                        <FormLeftTitle>Product Colors</FormLeftTitle>
+                        <FormLeftInput
+                            type="text"
+                            name="color"
+                            placeholder={product?.color.join(",")}
+                            onChange={handleChange}
+
+                        />
+                           <FormLeftTitle>Product Categories</FormLeftTitle>
+                        <FormLeftInput
+                            type="text"
+                            name="categories"
+                            placeholder={product?.categories?.join(",")}
+                            onChange={handleChange}
+                        />
+                        <FormLeftTitle>Size</FormLeftTitle>
+                        <FormGroup row>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox checked={selectedSizes.includes('XS')} onChange={handleSizeChange} value="XS" />}
+                                label="XS"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox checked={selectedSizes.includes('S')} onChange={handleSizeChange} value="S" />}
+                                label="S"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox checked={selectedSizes.includes('M')} onChange={handleSizeChange} value="M" />}
+                                label="M"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox checked={selectedSizes.includes('L')} onChange={handleSizeChange} value="L" />}
+                                label="L"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox checked={selectedSizes.includes('XL')} onChange={handleSizeChange} value="XL" />}
+                                label="XL"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox checked={selectedSizes.includes('XXL')} onChange={handleSizeChange} value="XXL" />}
+                                label="XXL"
+                            />
+                        </FormGroup>
                     </ProductFormLeft>
                     <ProductFormRight>
                         <ProductUpload>
-                            <ProductUploadImg src={product?.img} alt="" />
+
+                            {imgUrl ? (<ProductUploadImg src={imgUrl} alt="Product" className="uploaded-image" />) : (<ProductUploadImg src={product?.img} alt="" />)}
                             <label htmlFor="file">
                                 <Publish />
                             </label>
+
+
+
+
                             <input
                                 type="file"
                                 id="file"
                                 style={{ display: "none" }}
+                                accept="image/jpeg, image/png"
+                                name="image"
+                                onChange={handleImageChange}
                             />
+                                    <LinearProgress variant="determinate" value={progress} />
                         </ProductUpload>
-                        <ProductButton>Update</ProductButton>
+                        <ProductButton type="submit" onClick={handleClick}>Update</ProductButton>
                     </ProductFormRight>
                 </ProductForm>
             </ProductBottom>
@@ -171,6 +323,11 @@ const ProductTitleContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+`;
+
+const LinearProgressWrapper = styled.div`
+  align-items: center;
+  margin-top: 10px;
 `;
 
 const ProductAddButton = styled.button`
