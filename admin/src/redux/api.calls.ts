@@ -47,10 +47,16 @@ export const deleteProduct = async (id: number, dispatch: Dispatch) => {
     }
 };
 
-export const updateProduct = async (id: string, product: any, dispatch: Dispatch) => {
+export const updateProduct = async (
+    id: string,
+    product: any,
+    dispatch: Dispatch
+) => {
     dispatch(updateProductStart());
     try {
+        const res = await userRequest.put(`/products/${id}`, product);
         dispatch(updateProductSuccess({ id, product }));
+        return res.data;
     } catch (e) {
         console.log(e);
         dispatch(updateProductFailure());
@@ -70,4 +76,3 @@ export const addProduct = async (product: any, dispatch: Dispatch) => {
         throw e;
     }
 };
-

@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
@@ -15,8 +15,16 @@ const ProductList = () => {
     }, [dispatch]);
 
     const handleDelete = (id: number) => {
-        deleteProduct(id, dispatch);
+        deleteProduct(id, dispatch)
+            .then(() => {
+                console.log(`Product with id:${id} was deleted`);
+                getProducts(dispatch);
+            })
+            .catch((error) => {
+                console.log(`Error deleting product with id:${id}`, error);
+            });
     };
+
 
     const columns = [
         { field: "_id", headerName: "ID", width: 220 },

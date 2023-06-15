@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+    getStorage,
+    ref,
+    uploadBytesResumable,
+    getDownloadURL,
+} from "firebase/storage";
 import app from "../firebase";
 import { addProduct } from "../redux/api.calls";
 import { useAppDispatch } from "../hooks/hooks";
-import { Checkbox, FormControlLabel, FormGroup, LinearProgress } from "@mui/material";
-
-
+import {
+    Checkbox,
+    FormControlLabel,
+    FormGroup,
+    LinearProgress,
+} from "@mui/material";
 
 const NewProduct = () => {
     const [inputs, setInputs] = useState({});
@@ -18,13 +26,17 @@ const NewProduct = () => {
     const [isProductSaved, setIsProductSaved] = useState(false);
     const [isError, setIsError] = useState(false);
 
-
     const handleSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
         if (checked) {
-            setSelectedSizes((prevSelectedSizes) => [...prevSelectedSizes, value]);
+            setSelectedSizes((prevSelectedSizes) => [
+                ...prevSelectedSizes,
+                value,
+            ]);
         } else {
-            setSelectedSizes((prevSelectedSizes) => prevSelectedSizes.filter((size) => size !== value));
+            setSelectedSizes((prevSelectedSizes) =>
+                prevSelectedSizes.filter((size) => size !== value)
+            );
         }
     };
 
@@ -32,12 +44,12 @@ const NewProduct = () => {
         const { name, value } = e.target;
         setInputs((prev) => ({
             ...prev,
-            [name]: name === 'categories' || name === 'colors' ? value.split(',').map((item:string) => item.trim()) : value,
+            [name]:
+                name === "categories" || name === "colors"
+                    ? value.split(",").map((item: string) => item.trim())
+                    : value,
         }));
     };
-
-
-
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -56,16 +68,19 @@ const NewProduct = () => {
             uploadTask.on(
                 "state_changed",
                 (snapshot: any) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    const progress =
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     setProgress(progress);
                 },
                 (error: any) => {
                     console.log(error);
                 },
                 () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: any) => {
-                        setImgUrl(downloadURL);
-                    });
+                    getDownloadURL(uploadTask.snapshot.ref).then(
+                        (downloadURL: any) => {
+                            setImgUrl(downloadURL);
+                        }
+                    );
                 }
             );
         }
@@ -89,62 +104,116 @@ const NewProduct = () => {
         }
     };
 
-
     return (
         <Wrapper>
             <h1 className="addProductTitle">New Product</h1>
             <FormGroup>
                 <FieldWrapper>
                     <Label>Title</Label>
-                    <Input name="title" type="text" placeholder="Apple Airpods" onChange={handleChange} />
+                    <Input
+                        name="title"
+                        type="text"
+                        placeholder="Apple Airpods"
+                        onChange={handleChange}
+                    />
                 </FieldWrapper>
                 <FieldWrapper>
                     <Label>Description</Label>
-                    <Input name="desc" type="text" placeholder="Description" onChange={handleChange} />
+                    <Input
+                        name="desc"
+                        type="text"
+                        placeholder="Description"
+                        onChange={handleChange}
+                    />
                 </FieldWrapper>
                 <FieldWrapper>
                     <Label>Categories</Label>
-                    <Input name="categories" type="text" placeholder="Jeans, skirts" onChange={handleChange} />
+                    <Input
+                        name="categories"
+                        type="text"
+                        placeholder="Jeans, skirts"
+                        onChange={handleChange}
+                    />
                 </FieldWrapper>
                 <FieldWrapper>
                     <Label>Colors</Label>
-                    <Input name="color" type="text" placeholder="Blue, white" onChange={handleChange} />
+                    <Input
+                        name="color"
+                        type="text"
+                        placeholder="Blue, white"
+                        onChange={handleChange}
+                    />
                 </FieldWrapper>
                 <FieldWrapper>
                     <Label>Price</Label>
-                    <Input name="price" type="number" placeholder="Price" onChange={handleChange} />
+                    <Input
+                        name="price"
+                        type="number"
+                        placeholder="Price"
+                        onChange={handleChange}
+                    />
                 </FieldWrapper>
                 <FieldWrapper>
                     <Label>Size</Label>
                     <FormGroup row>
                         <FormControlLabel
                             control={
-                                <Checkbox checked={selectedSizes.includes('XS')} onChange={handleSizeChange} value="XS" />}
+                                <Checkbox
+                                    checked={selectedSizes.includes("XS")}
+                                    onChange={handleSizeChange}
+                                    value="XS"
+                                />
+                            }
                             label="XS"
                         />
                         <FormControlLabel
                             control={
-                                <Checkbox checked={selectedSizes.includes('S')} onChange={handleSizeChange} value="S" />}
+                                <Checkbox
+                                    checked={selectedSizes.includes("S")}
+                                    onChange={handleSizeChange}
+                                    value="S"
+                                />
+                            }
                             label="S"
                         />
                         <FormControlLabel
                             control={
-                                <Checkbox checked={selectedSizes.includes('M')} onChange={handleSizeChange} value="M" />}
+                                <Checkbox
+                                    checked={selectedSizes.includes("M")}
+                                    onChange={handleSizeChange}
+                                    value="M"
+                                />
+                            }
                             label="M"
                         />
                         <FormControlLabel
                             control={
-                                <Checkbox checked={selectedSizes.includes('L')} onChange={handleSizeChange} value="L" />}
+                                <Checkbox
+                                    checked={selectedSizes.includes("L")}
+                                    onChange={handleSizeChange}
+                                    value="L"
+                                />
+                            }
                             label="L"
                         />
                         <FormControlLabel
                             control={
-                                <Checkbox checked={selectedSizes.includes('XL')} onChange={handleSizeChange} value="XL" />}
+                                <Checkbox
+                                    checked={selectedSizes.includes("XL")}
+                                    onChange={handleSizeChange}
+                                    value="XL"
+                                />
+                            }
                             label="XL"
                         />
                         <FormControlLabel
                             control={
-                                <Checkbox checked={selectedSizes.includes('XXL')} onChange={handleSizeChange} value="XXL" />}
+                                <Checkbox
+                                    checked={selectedSizes.includes("XXL")}
+                                    onChange={handleSizeChange}
+                                    value="XXL"
+                                />
+                            }
                             label="XXL"
                         />
                     </FormGroup>
@@ -158,13 +227,28 @@ const NewProduct = () => {
                 </AddProductItem>
                 <ImageWrapper>
                     <Label htmlFor="image">Image</Label>
-                    <Input  accept="image/jpeg, image/png" name="image" type="file" id="file"  onChange={handleImageChange} />
-                    {progress > 0 &&
+                    <Input
+                        accept="image/jpeg, image/png"
+                        name="image"
+                        type="file"
+                        id="file"
+                        onChange={handleImageChange}
+                    />
+                    {progress > 0 && (
                         <LinearProgressWrapper>
-                            <LinearProgress variant="determinate" value={progress} />
+                            <LinearProgress
+                                variant="determinate"
+                                value={progress}
+                            />
                         </LinearProgressWrapper>
-                    }
-                    {imgUrl && <img src={imgUrl} alt="Product" className="uploaded-image" />}
+                    )}
+                    {imgUrl && (
+                        <img
+                            src={imgUrl}
+                            alt="Product"
+                            className="uploaded-image"
+                        />
+                    )}
                 </ImageWrapper>
                 <ButtonWrapper>
                     <button type="submit" onClick={handleClick}>
@@ -173,7 +257,9 @@ const NewProduct = () => {
                     {isProductSaved && !isError ? (
                         <SuccessMessage>Product was saved!</SuccessMessage>
                     ) : (
-                        isError && <ErrorMessage>Something went wrong</ErrorMessage>
+                        isError && (
+                            <ErrorMessage>Something went wrong</ErrorMessage>
+                        )
                     )}
                 </ButtonWrapper>
             </FormGroup>
@@ -182,99 +268,96 @@ const NewProduct = () => {
 };
 
 const Wrapper = styled.div`
-  flex: 4;
-  padding: 50px;
-  
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+    flex: 4;
+    padding: 50px;
 
-  .error {
-    border: 1px solid red;
-  }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-  .error-message {
-    color: red;
-    font-size: 14px;
-  }
+    .error {
+        border: 1px solid red;
+    }
 
-  .checkbox-group {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
+    .error-message {
+        color: red;
+        font-size: 14px;
+    }
 
-  .uploaded-image {
-    width: 100px;
-    margin-top: 10px;
-  }
+    .checkbox-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .uploaded-image {
+        width: 100px;
+        margin-top: 10px;
+    }
 `;
 
 const FieldWrapper = styled.div`
-  margin-bottom: 20px;
-  
-  label {
-    display: block;
-    margin-bottom: 5px;
-  }
+    margin-bottom: 20px;
 
-  input,
-  textarea {
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input,
+    textarea {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+`;
+
+const ButtonWrapper = styled.div`
+    margin-top: 20px;
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+        background-color: darkblue;
+        font-weight: 600;
+
+        &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    }
+`;
+
+const ImageWrapper = styled.div`
+    width: 250px;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
-  }
-`;
-
-const ButtonWrapper = styled.div`
-  margin-top: 20px;
-
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    background-color: darkblue;
-    font-weight: 600;
-    
-
-    &:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-  }
-`;
-
-const ImageWrapper = styled.div`
-  width: 250px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 `;
 
 const SuccessMessage = styled.div`
-  margin-top: 10px;
-  text-align: center;
-  color: green;
+    margin-top: 10px;
+    text-align: center;
+    color: green;
 `;
 const ErrorMessage = styled.div`
-  margin-top: 10px;
-  text-align: center;
-  color: red;
+    margin-top: 10px;
+    text-align: center;
+    color: red;
 `;
 
 const LinearProgressWrapper = styled.div`
-  align-items: center;
-  margin-top: 10px;
+    align-items: center;
+    margin-top: 10px;
 `;
-
 
 const AddProductItem = styled.div`
     width: 250px;
@@ -292,9 +375,5 @@ const Label = styled.label`
 const Input = styled.input`
     padding: 10px;
 `;
-
-
-
-
 
 export default NewProduct;

@@ -67,9 +67,14 @@ const ProductSlice = createSlice({
             state.isFetching = true;
             state.error = false;
         },
-        updateProductSuccess: (state, action: PayloadAction<{ id: string; product: Product }>) => {
+        updateProductSuccess: (
+            state,
+            action: PayloadAction<{ id: string; product: Product }>
+        ) => {
             state.isFetching = false;
-            const index = state.products.findIndex((item) => item._id === action.payload.id);
+            const index = state.products.findIndex(
+                (item) => item._id === action.payload.id
+            );
             if (index !== -1) {
                 state.products[index] = action.payload.product;
             }

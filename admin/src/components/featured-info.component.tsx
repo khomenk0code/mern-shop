@@ -14,7 +14,6 @@ const FeaturedInfo: React.FC = () => {
     const [productDetails, setProductDetails] = useState<any[]>([]);
     const [monthOrdersCount, setMonthOrdersCount] = useState<any[]>([]);
 
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -89,13 +88,12 @@ const FeaturedInfo: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                    Product not found
-                                    <ShoppingCart/>
+                                        Product not found
+                                        <ShoppingCart />
                                     </>
                                 )}
                             </FeaturedProductName>
                         ))}
-
                     </FeaturedProductsList>
                 </FeaturedProductsContainer>
                 <FeaturedSub>Compared to last month</FeaturedSub>
