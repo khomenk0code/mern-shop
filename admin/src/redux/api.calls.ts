@@ -1,5 +1,14 @@
 import { Dispatch } from "redux";
-import { loginFailure, loginStart, loginSuccess } from "./user.slice";
+import {
+    deleteUserFailure,
+    deleteUserStart, deleteUserSuccess,
+    getUserFailure,
+    getUserStart,
+    getUserSuccess,
+    loginFailure,
+    loginStart,
+    loginSuccess,
+} from "./user.slice";
 import { publicRequest, userRequest } from "../utils/requestMethods";
 import {
     addProductFailure,
@@ -35,6 +44,15 @@ export const getProducts = async (dispatch: Dispatch) => {
         dispatch(getProductFailure());
     }
 };
+export const getUsers = async (dispatch: Dispatch) => {
+    dispatch(getUserStart());
+    try {
+        const res = await userRequest.get("/users");
+        dispatch(getUserSuccess(res.data));
+    } catch (e) {
+        dispatch(getUserFailure());
+    }
+};
 
 export const deleteProduct = async (id: number, dispatch: Dispatch) => {
     dispatch(deleteProductStart());
@@ -46,6 +64,17 @@ export const deleteProduct = async (id: number, dispatch: Dispatch) => {
         dispatch(deleteProductFailure());
     }
 };
+export const deleteUser = async (id: number, dispatch: Dispatch) => {
+    dispatch(deleteUserStart());
+    try {
+        const res = await userRequest.delete(`/users/${id}`);
+        dispatch(deleteUserSuccess(res.data));
+    } catch (e) {
+        console.log(e);
+        dispatch(deleteUserFailure());
+    }
+};
+
 
 export const updateProduct = async (
     id: string,

@@ -1,27 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { userRows } from "../data.mock";
+
 import { DeleteOutline } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import {  deleteUser, getUsers } from "../redux/api.calls";
 
 const UserList = () => {
-    const [data, setData] = useState(userRows);
+    const dispatch = useAppDispatch();
+    const users = useAppSelector((state) => state.user);
 
-    const handleDelete = (id: any) => {
-        setData(data.filter((item: any) => item.id !== id));
+    useEffect(() => {
+        getUsers(dispatch);
+    }, [dispatch]);
+
+
+    const handleDelete = (id: number) => {
+        deleteUser(id, dispatch)
+            .then(() => {
+                console.log(`User with id:${id} was deleted`);
+                getUsers(dispatch);
+            })
+            .catch((error) => {
+                console.log(`Error deleting user with id:${id}`, error);
+            });
     };
 
     const columns = [
-        { field: "id", headerName: "ID", width: 90 },
+        { field: "_id", headerName: "ID", width: 230 },
         {
-            field: "user",
+            field: "username",
             headerName: "User",
             width: 200,
             renderCell: (params: any) => {
                 return (
                     <User>
-                        <UserImage src={params.row.avatar} alt="" />
+                        <UserImage src={params.row.image} alt="" />
                         {params.row.username}
                     </User>
                 );
@@ -29,40 +44,55 @@ const UserList = () => {
         },
         { field: "email", headerName: "Email", width: 200 },
         {
-            field: "status",
-            headerName: "Status",
+            field: "isAdmin",
+            headerName: "Is admin",
             width: 120,
         },
         {
-            field: "transaction",
-            headerName: "Transaction Volume",
+            field: "createdAt",
+            headerName: "Created",
             width: 160,
+            renderCell: (params: any) => {
+                const createdAt = new Date(params.row.createdAt).toLocaleDateString();
+                return <>{createdAt}</>;
+            },
         },
         {
             field: "action",
             headerName: "Action",
             width: 150,
             renderCell: (params: any) => {
-                return (
-                    <>
-                        <Link to={`/user/${params.row.id}`}>
+                if (params.row.isAdmin) {
+                    return (
+                        <Link to={`/user/${params.row._id}`}>
                             <EditButton>Edit</EditButton>
                         </Link>
-                        <DeleteOutlineIcon
-                            onClick={() => handleDelete(params.row.id)}
-                        />
-                    </>
-                );
+                    );
+                } else {
+                    return (
+                        <>
+                            <Link to={`/user/${params.row._id}`}>
+                                <EditButton>Edit</EditButton>
+                            </Link>
+                            <DeleteOutlineIcon onClick={() => handleDelete(params.row._id)} />
+                        </>
+                    );
+                }
             },
         },
     ];
 
+
+
+
+
     return (
         <Container>
             <StyledDataGrid
-                rows={data}
+                rows={users.users}
                 disableSelectionOnClick
                 columns={columns}
+                getRowId={(row:any) => row._id}
                 rowCount={8}
                 checkboxSelection
             />

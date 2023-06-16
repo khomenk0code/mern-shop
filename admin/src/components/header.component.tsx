@@ -1,33 +1,44 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Language, NotificationsNone, Settings } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 
-const HeaderComponent: React.FC = () => (
-    <HeaderContainer>
-        <HeaderWrapper>
-            <TopLeft>
-                <Logo>MERN. admin</Logo>
-            </TopLeft>
-            <TopRight>
-                <TopbarIconContainer>
-                    <NotificationsNone />
-                    <TopIconBadge>2</TopIconBadge>
-                </TopbarIconContainer>
-                <TopbarIconContainer>
-                    <Language />
-                    <TopIconBadge>2</TopIconBadge>
-                </TopbarIconContainer>
-                <TopbarIconContainer>
-                    <Settings />
-                </TopbarIconContainer>
-                <TopAvatar
-                    src="https://img.freepik.com/free-photo/gorgeous-white-girl-with-long-wavy-hair-chilling-autumn-day-outdoor-portrait-interested-ginger-female-model-with-cup-coffee_197531-11735.jpg?w=900&t=st=1685967970~exp=1685968570~hmac=0f1a374985bcf6ccf1d9fd1203d1d9e4b0e7ee1efb88d279edf67779151d8439"
-                    alt="Admin avatar"
-                />
-            </TopRight>
-        </HeaderWrapper>
-    </HeaderContainer>
-);
+const HeaderComponent: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(state => state.user.currentUser)
+
+    useEffect(() => {
+
+    },)
+
+    return (
+        <HeaderContainer>
+            <HeaderWrapper>
+                <TopLeft>
+                    <Logo>MERN. admin</Logo>
+                </TopLeft>
+                <TopRight>
+                    <TopbarIconContainer>
+                        <NotificationsNone />
+                        <TopIconBadge>2</TopIconBadge>
+                    </TopbarIconContainer>
+                    <TopbarIconContainer>
+                        <Language />
+                        <TopIconBadge>2</TopIconBadge>
+                    </TopbarIconContainer>
+                    <TopbarIconContainer>
+                        <Settings />
+                    </TopbarIconContainer>
+                    Loged as {user.username}
+                    <TopAvatar
+                        src={user.image}
+                        alt="Admin avatar"
+                    />
+                </TopRight>
+            </HeaderWrapper>
+        </HeaderContainer>
+    );
+};
 
 const HeaderContainer = styled.header`
     width: 100%;
