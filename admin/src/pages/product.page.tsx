@@ -12,13 +12,7 @@ import {
     FormGroup,
     LinearProgress,
 } from "@mui/material";
-import {
-    getDownloadURL,
-    getStorage,
-    ref,
-    uploadBytesResumable,
-} from "firebase/storage";
-import app from "../firebase";
+import handleImageChange from "../utils/uploadImg.helper";
 
 export interface ProductData extends ChartData {
     Sales: number;
@@ -120,37 +114,8 @@ const Product = () => {
         }));
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const image = e.target.files?.[0];
-        setImage(image as File);
-
-        if (image) {
-            const fileName = new Date().getTime() + image.name;
-            const storage = getStorage(app);
-            const storageRef = ref(storage, fileName);
-
-            const uploadTask = uploadBytesResumable(storageRef, image);
-
-            uploadTask.on(
-                "state_changed",
-                (snapshot: any) => {
-                    const progress =
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    setProgress(progress);
-                },
-                (error: any) => {
-                    console.log(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(
-                        (downloadURL: any) => {
-                            setImgUrl(downloadURL);
-                        }
-                    );
-                }
-            );
-        }
+    const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleImageChange(e, setImage, setProgress, setImgUrl);
     };
 
     const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -364,13 +329,13 @@ const Product = () => {
                                 style={{ display: "none" }}
                                 accept="image/jpeg, image/png"
                                 name="image"
-                                onChange={handleImageChange}
+                                onChange={onImageChange}
                             />
+                        </ProductUpload>
                             <LinearProgress
                                 variant="determinate"
                                 value={progress}
                             />
-                        </ProductUpload>
 
                         <ProductButton type="submit" onClick={handleClick}>
                             Update
@@ -404,10 +369,6 @@ const ProductTitleContainer = styled.div`
     justify-content: space-between;
 `;
 
-const LinearProgressWrapper = styled.div`
-    align-items: center;
-    margin-top: 10px;
-`;
 
 const ProductAddButton = styled.button`
     width: 80px;

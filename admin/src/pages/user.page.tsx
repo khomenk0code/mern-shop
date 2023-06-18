@@ -1,139 +1,222 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import {
-    CalendarMonth,
-    LocationOn,
+    Cake,
     MailOutline,
     PermIdentity,
     PhoneAndroid,
     Publish,
 } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { LinearProgress } from "@mui/material";
 
-const User: React.FC = () => {
-    return (
-        <UserContainer>
-            <UserTitleContainer>
-                <h1>Edit User</h1>
-                <Link to="/user/add">
-                    <UserAddButton>Create</UserAddButton>
-                </Link>
-            </UserTitleContainer>
-            <Wrapper>
-                <UserShow>
-                    <UserShowTop>
-                        <UserShowImg
-                            src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-                            alt=""
-                        />
-                        <UserShowTopTitle>
-                            <UserShowUsername>Anna Becker</UserShowUsername>
-                            <UserShowUserTitle>
-                                Software Engineer
-                            </UserShowUserTitle>
-                        </UserShowTopTitle>
-                    </UserShowTop>
-                    <UserShowBottom>
-                        <UserShowTitle>Account Details</UserShowTitle>
-                        <UserShowInfo>
-                            <UserShowIcon>
-                                <PermIdentity />
-                            </UserShowIcon>
-                            <UserShowInfoTitle>annabeck99</UserShowInfoTitle>
-                        </UserShowInfo>
-                        <UserShowInfo>
-                            <UserShowIcon>
-                                <CalendarMonth />
-                            </UserShowIcon>
-                            <UserShowInfoTitle>10.12.1999</UserShowInfoTitle>
-                        </UserShowInfo>
-                        <UserShowTitle>Contact Details</UserShowTitle>
-                        <UserShowInfo>
-                            <UserShowIcon>
-                                <PhoneAndroid />
-                            </UserShowIcon>
-                            <UserShowInfoTitle>+1 123 456 67</UserShowInfoTitle>
-                        </UserShowInfo>
-                        <UserShowInfo>
-                            <UserShowIcon>
-                                {" "}
-                                <MailOutline />
-                            </UserShowIcon>
-                            <UserShowInfoTitle>
-                                annabeck99@gmail.com
-                            </UserShowInfoTitle>
-                        </UserShowInfo>
-                        <UserShowInfo>
-                            <UserShowIcon>
-                                <LocationOn />
-                            </UserShowIcon>
-                            <UserShowInfoTitle>
-                                New York | USA
-                            </UserShowInfoTitle>
-                        </UserShowInfo>
-                    </UserShowBottom>
-                </UserShow>
-                <UserUpdate>
-                    <UserUpdateTitle>Edit</UserUpdateTitle>
-                    <UserUpdateForm>
-                        <UserUpdateLeft>
-                            <UserUpdateItem>
-                                <label>Username</label>
-                                <UserUpdateInput
-                                    type="text"
-                                    placeholder="annabeck99"
-                                />
-                            </UserUpdateItem>
-                            <UserUpdateItem>
-                                <label>Full Name</label>
-                                <UserUpdateInput
-                                    type="text"
-                                    placeholder="Anna Becker"
-                                />
-                            </UserUpdateItem>
-                            <UserUpdateItem>
-                                <label>Email</label>
-                                <UserUpdateInput
-                                    type="text"
-                                    placeholder="annabeck99@gmail.com"
-                                />
-                            </UserUpdateItem>
-                            <UserUpdateItem>
-                                <label>Phone</label>
-                                <UserUpdateInput
-                                    type="text"
-                                    placeholder="+1 123 456 67"
-                                />
-                            </UserUpdateItem>
-                            <UserUpdateItem>
-                                <label>Address</label>
-                                <UserUpdateInput
-                                    type="text"
-                                    placeholder="New York | USA"
-                                />
-                            </UserUpdateItem>
-                        </UserUpdateLeft>
-                        <UserUpdateRight>
-                            <UserUpdateUpload>
-                                <UserUpdateImg
-                                    src="https://images.pexels.com/photos/1152994/pexels-photo-1152994.jpeg?auto=compress
 
-    &cs=tinysrgb&dpr=2&w=500"
-                                    alt=""
-                                />
-                                <label htmlFor="file">
-                                    <UserUpdateIcon />
-                                </label>
-                                <File type="file" id="file" />
-                            </UserUpdateUpload>
-                            <UserUpdateButton>Update</UserUpdateButton>
-                        </UserUpdateRight>
-                    </UserUpdateForm>
-                </UserUpdate>
-            </Wrapper>
-        </UserContainer>
-    );
-};
+import handleImageChange from "../utils/uploadImg.helper";
+import {  updateUser } from "../redux/api.calls";
+
+
+    const User: React.FC = () => {
+        const [image, setImage] = useState<File | null>(null);
+        const [imgUrl, setImgUrl] = useState<string>("");
+        const [progress, setProgress] = useState(0);
+        const [inputs, setInputs] = useState({});
+        const [isUserSaved, setIsUserSaved] = useState(false);
+        const [isError, setIsError] = useState(false);
+
+        const location = useLocation();
+        const dispatch = useAppDispatch();
+
+        const userId: string = location.pathname.split("/")[2];
+        const user: any = useAppSelector((state) =>
+            state.user.users.find((user) => user._id === userId)
+        );
+
+        const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            handleImageChange(e, setImage, setProgress, setImgUrl);
+        };
+
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const { name, value } = e.target;
+            setInputs((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        };
+
+
+        const handleClick = async (
+            e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+        ) => {
+            e.preventDefault();
+
+            try {
+                let updatedUser: any = { ...user };
+                if (imgUrl) {
+                    updatedUser.image = imgUrl;
+                }
+
+                updatedUser = {
+                    ...updatedUser,
+                    ...inputs,
+                };
+
+                const savedUser: any = await updateUser(userId, updatedUser, dispatch);
+                setIsError(false);
+                setIsUserSaved(true);
+            } catch (error) {
+                console.log("Error with user saving:", error);
+                setIsError(true);
+                setIsUserSaved(false);
+            }
+        };
+
+        const formattedBirthDate = user.birthDate
+            ? new Date(user.birthDate).toLocaleDateString()
+            : "Your birthdate";
+
+        return (
+            <UserContainer>
+                <UserTitleContainer>
+                    <h1>Edit User</h1>
+                    <Link to="/user/add">
+                        <UserAddButton>Create</UserAddButton>
+                    </Link>
+                </UserTitleContainer>
+                <Wrapper>
+                    <UserShow>
+                        <UserShowTop>
+                            <UserShowImg src={user.image} alt="" />
+                            <UserShowTopTitle>
+                                <UserShowUsername>{user.username}</UserShowUsername>
+                            </UserShowTopTitle>
+                        </UserShowTop>
+                        <UserShowBottom>
+                            <UserShowTitle>Account Details</UserShowTitle>
+                            <UserShowInfo>
+                                <UserShowIcon>
+                                    <PermIdentity />
+                                </UserShowIcon>
+                                <UserShowInfoTitle>
+                                    {user.username || "username"}
+                                </UserShowInfoTitle>
+                            </UserShowInfo>
+                            <UserShowInfo>
+                                <UserShowIcon>
+                                    <Cake />
+                                </UserShowIcon>
+                                <UserShowInfoTitle>{formattedBirthDate}</UserShowInfoTitle>
+                            </UserShowInfo>
+                            <UserShowTitle>Contact Details</UserShowTitle>
+                            <UserShowInfo>
+                                <UserShowIcon>
+                                    <PhoneAndroid />
+                                </UserShowIcon>
+                                <UserShowInfoTitle>
+                                    {user.phone || "Your phone"}
+                                </UserShowInfoTitle>
+                            </UserShowInfo>
+                            <UserShowInfo>
+                                <UserShowIcon>
+                                    {" "}
+                                    <MailOutline />
+                                </UserShowIcon>
+                                <UserShowInfoTitle>
+                                    {user.email || "Your email"}
+                                </UserShowInfoTitle>
+                            </UserShowInfo>
+                        </UserShowBottom>
+                    </UserShow>
+                    <UserUpdate>
+                        <UserUpdateTitle>Edit</UserUpdateTitle>
+                        <UserUpdateForm>
+                            <UserUpdateLeft>
+                                <UserUpdateItem>
+                                    <label>Username</label>
+                                    <UserUpdateInput
+                                        type="text"
+                                        name="username"
+                                        onChange={handleChange}
+                                        placeholder={user.username}
+                                    />
+                                </UserUpdateItem>
+
+                                <UserUpdateItem>
+                                    <label>Full Name</label>
+                                    <UserUpdateInput
+                                        type="text"
+                                        name="fullName"
+                                        onChange={handleChange}
+                                        placeholder={user.fullName || "Anna Backer"}
+                                    />
+                                </UserUpdateItem>
+                                <UserUpdateItem>
+                                    <label>Email</label>
+                                    <UserUpdateInput
+                                        type="text"
+                                        name="email"
+                                        onChange={handleChange}
+                                        placeholder={user.email}
+                                    />
+                                </UserUpdateItem>
+                                <UserUpdateItem>
+                                    <label>Phone</label>
+                                    <UserUpdateInput
+                                        type="tel"
+                                        name="phone"
+                                        onChange={handleChange}
+                                        placeholder={user.phone || "+1 233 256 589"}
+                                    />
+                                </UserUpdateItem>
+                                <UserUpdateItem>
+                                    <label>Birth Date</label>
+                                    <UserUpdateInput
+                                        type="date"
+                                        name="birthDate"
+                                        onChange={handleChange}
+                                    />
+                                </UserUpdateItem>
+                            </UserUpdateLeft>
+                            <UserUpdateRight>
+                                <UserUpload>
+                                    {imgUrl ? (
+                                        <UserUploadImg
+                                            src={imgUrl}
+                                            alt="User"
+                                            className="uploaded-image"
+                                        />
+                                    ) : (
+                                        <UserUploadImg src={user?.image} alt="User image" />
+                                    )}
+                                    <label htmlFor="file">
+                                        <Publish />
+                                    </label>
+
+                                    <input
+                                        type="file"
+                                        id="file"
+                                        style={{ display: "none" }}
+                                        accept="image/jpeg, image/png"
+                                        name="image"
+                                        onChange={onImageChange}
+                                    />
+                                </UserUpload>
+                                <LinearProgress variant="determinate" value={progress} />
+                                {isUserSaved && !isError ? (
+                                    <SuccessMessage>User was updated!</SuccessMessage>
+                                ) : (
+                                    isError && (
+                                        <ErrorMessage>Something went wrong</ErrorMessage>
+                                    )
+                                )}
+                                <UserUpdateButton onClick={handleClick}>Update</UserUpdateButton>
+                            </UserUpdateRight>
+                        </UserUpdateForm>
+                    </UserUpdate>
+                </Wrapper>
+            </UserContainer>
+        );
+    };
 
 const UserContainer = styled.div`
     flex: 4;
@@ -196,9 +279,6 @@ const UserShowUsername = styled.span`
     font-weight: 600;
 `;
 
-const UserShowUserTitle = styled.span`
-    font-weight: 300;
-`;
 
 const UserShowBottom = styled.div`
     margin-top: 20px;
@@ -261,12 +341,12 @@ const UserUpdateRight = styled.div`
     justify-content: space-between;
 `;
 
-const UserUpdateUpload = styled.div`
+const UserUpload = styled.div`
     display: flex;
     align-items: center;
 `;
 
-const UserUpdateImg = styled.img`
+const UserUploadImg = styled.img`
     width: 100px;
     height: 100px;
     border-radius: 10px;
@@ -274,12 +354,7 @@ const UserUpdateImg = styled.img`
     margin-right: 20px;
 `;
 
-const UserUpdateIcon = styled(Publish)`
-    cursor: pointer;
-`;
-const File = styled.input`
-    display: none;
-`;
+
 
 const UserUpdateButton = styled.button`
     border-radius: 5px;
@@ -289,6 +364,16 @@ const UserUpdateButton = styled.button`
     background-color: darkblue;
     color: white;
     font-weight: 600;
+`;
+const SuccessMessage = styled.div`
+    margin-top: 10px;
+    text-align: center;
+    color: green;
+`;
+const ErrorMessage = styled.div`
+    margin-top: 10px;
+    text-align: center;
+    color: red;
 `;
 
 export default User;

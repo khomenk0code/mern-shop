@@ -83,7 +83,7 @@ const ProductSlice = createSlice({
             state.isFetching = false;
             state.error = true;
         },
-        //Add one product
+        //Add product
         addProductStart: (state) => {
             state.isFetching = true;
             state.error = false;

@@ -1,13 +1,16 @@
 import { Dispatch } from "redux";
 import {
+    addUserFailure,
+    addUserStart, addUserSuccess,
     deleteUserFailure,
-    deleteUserStart, deleteUserSuccess,
+    deleteUserStart,
+    deleteUserSuccess,
     getUserFailure,
     getUserStart,
     getUserSuccess,
     loginFailure,
     loginStart,
-    loginSuccess,
+    loginSuccess, updateUserFailure, updateUserStart, updateUserSuccess,
 } from "./user.slice";
 import { publicRequest, userRequest } from "../utils/requestMethods";
 import {
@@ -79,7 +82,7 @@ export const deleteUser = async (id: number, dispatch: Dispatch) => {
 export const updateProduct = async (
     id: string,
     product: any,
-    dispatch: Dispatch
+    dispatch: Dispatch,
 ) => {
     dispatch(updateProductStart());
     try {
@@ -92,6 +95,23 @@ export const updateProduct = async (
         throw e;
     }
 };
+export const updateUser = async (
+    id: string,
+    user: any,
+    dispatch: Dispatch,
+) => {
+    dispatch(updateUserStart());
+    try {
+        const res = await userRequest.put(`/users/${id}`, user);
+        dispatch(updateUserSuccess({ id, user }));
+        return res.data;
+    } catch (e) {
+        console.log(e);
+        dispatch(updateUserFailure());
+        throw e;
+    }
+};
+
 
 export const addProduct = async (product: any, dispatch: Dispatch) => {
     dispatch(addProductStart());
@@ -102,6 +122,18 @@ export const addProduct = async (product: any, dispatch: Dispatch) => {
     } catch (e) {
         console.log(e);
         dispatch(addProductFailure());
+        throw e;
+    }
+};
+export const addUser = async (user: any, dispatch: Dispatch) => {
+    dispatch(addUserStart());
+    try {
+        const res = await userRequest.post("/auth/register", user);
+        dispatch(addUserSuccess(res.data));
+        return res.data;
+    } catch (e) {
+        console.log(e);
+        dispatch(addUserFailure());
         throw e;
     }
 };

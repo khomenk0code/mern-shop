@@ -50,7 +50,7 @@ const userSlice = createSlice({
         },
         getUserSuccess: (state, action: PayloadAction<User[]>) => {
             state.isFetching = false;
-            state.users = action.payload
+            state.users = action.payload;
             state.error = false;
         },
         getUserFailure: (state) => {
@@ -66,10 +66,44 @@ const userSlice = createSlice({
             state.isFetching = false;
             state.users.splice(
                 state.users.findIndex((item) => item._id === action.payload),
-                1
+                1,
             );
         },
         deleteUserFailure: (state) => {
+            state.isFetching = false;
+            state.error = true;
+        },
+        //Update one product
+        updateUserStart: (state) => {
+            state.isFetching = true;
+            state.error = false;
+        },
+        updateUserSuccess: (
+            state,
+            action: PayloadAction<{ id: string; user: User }>,
+        ) => {
+            state.isFetching = false;
+            const index = state.users.findIndex(
+                (item) => item._id === action.payload.id,
+            );
+            if (index !== -1) {
+                state.users[index] = action.payload.user;
+            }
+        },
+        updateUserFailure: (state) => {
+            state.isFetching = false;
+            state.error = true;
+        },
+        //Add user
+        addUserStart: (state) => {
+            state.isFetching = true;
+            state.error = false;
+        },
+        addUserSuccess: (state, action: PayloadAction<User>) => {
+            state.isFetching = false;
+            state.users.push(action.payload);
+        },
+        addUserFailure: (state) => {
             state.isFetching = false;
             state.error = true;
         },
@@ -79,13 +113,19 @@ const userSlice = createSlice({
 export const {
     loginStart,
     loginSuccess,
-    loginFailure ,
+    loginFailure,
     getUserFailure,
     getUserSuccess,
     getUserStart,
     deleteUserFailure,
     deleteUserSuccess,
     deleteUserStart,
+    updateUserFailure,
+    updateUserSuccess,
+    updateUserStart,
+    addUserFailure,
+    addUserSuccess,
+    addUserStart,
 
 } = userSlice.actions;
 export default userSlice.reducer;

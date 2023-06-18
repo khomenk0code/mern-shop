@@ -1,12 +1,5 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import {
-    getStorage,
-    ref,
-    uploadBytesResumable,
-    getDownloadURL,
-} from "firebase/storage";
-import app from "../firebase";
 import { addProduct } from "../redux/api.calls";
 import { useAppDispatch } from "../hooks/hooks";
 import {
@@ -15,16 +8,17 @@ import {
     FormGroup,
     LinearProgress,
 } from "@mui/material";
+import handleImageChange from "../utils/uploadImg.helper";
 
 const NewProduct = () => {
     const [inputs, setInputs] = useState({});
     const [image, setImage] = useState<File | null>(null);
     const [progress, setProgress] = useState(0);
-    const dispatch = useAppDispatch();
     const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
     const [imgUrl, setImgUrl] = useState<string>("");
     const [isProductSaved, setIsProductSaved] = useState(false);
     const [isError, setIsError] = useState(false);
+    const dispatch = useAppDispatch();
 
     const handleSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
@@ -51,46 +45,15 @@ const NewProduct = () => {
         }));
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const image = e.target.files?.[0];
-        setImage(image as File);
-
-        if (image) {
-            const fileName = new Date().getTime() + image.name;
-
-            console.log(image);
-            const storage = getStorage(app);
-            const storageRef = ref(storage, fileName);
-
-            const uploadTask = uploadBytesResumable(storageRef, image);
-
-            uploadTask.on(
-                "state_changed",
-                (snapshot: any) => {
-                    const progress =
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    setProgress(progress);
-                },
-                (error: any) => {
-                    console.log(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(
-                        (downloadURL: any) => {
-                            setImgUrl(downloadURL);
-                        }
-                    );
-                }
-            );
-        }
+    const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        handleImageChange(e, setImage, setProgress, setImgUrl);
     };
 
     const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
         const product = { ...inputs, img: imgUrl, size: selectedSizes };
-        console.log(product);
+
         try {
             const savedProduct = await addProduct(product, dispatch);
             console.log("Product saved", savedProduct);
@@ -232,7 +195,7 @@ const NewProduct = () => {
                         name="image"
                         type="file"
                         id="file"
-                        onChange={handleImageChange}
+                        onChange={onImageChange}
                     />
                     {progress > 0 && (
                         <LinearProgressWrapper>
