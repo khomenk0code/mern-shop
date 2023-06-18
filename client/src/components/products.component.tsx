@@ -34,13 +34,15 @@ const Products: React.FC<ProductsProps> = ({ category, filters, sort }) => {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
 
+    const BASE_URL = "https://mern-shop-api.vercel.app/api";
+
     useEffect(() => {
         const getProducts = async () => {
             try {
                 const res = await axios.get(
                     category
-                        ? `http://localhost:5000/api/products?category=${category}`
-                        : "http://localhost:5000/api/products"
+                        ? `${BASE_URL}/products?category=${category}`
+                        : `${BASE_URL}/products`
                 );
                 setProducts(res.data);
             } catch (e) {

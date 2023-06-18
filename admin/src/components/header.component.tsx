@@ -1,15 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Language, NotificationsNone, Settings } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
+import { loginOut } from "../redux/user.slice";
+import { useNavigate } from "react-router-dom";
 
 const HeaderComponent: React.FC = () => {
     const dispatch = useAppDispatch();
     const user = useAppSelector(state => state.user.currentUser)
+    const navigate = useNavigate();
 
-    useEffect(() => {
-
-    },)
+    const handleLogout = () => {
+        dispatch(loginOut());
+        navigate("/login");
+    };
 
     return (
         <HeaderContainer>
@@ -34,6 +38,9 @@ const HeaderComponent: React.FC = () => {
                         src={user.image}
                         alt="Admin avatar"
                     />
+                    <TopbarIconContainer>
+                        <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+                    </TopbarIconContainer>
                 </TopRight>
             </HeaderWrapper>
         </HeaderContainer>
@@ -48,6 +55,20 @@ const HeaderContainer = styled.header`
     top: 0;
     z-index: 999;
 `;
+const LogoutButton = styled.button`
+  padding: 10px 20px;
+  background-color: #ff5a5f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #e54246;
+  }
+`;
+
 
 const HeaderWrapper = styled.div`
     height: 100%;

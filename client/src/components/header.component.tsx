@@ -6,10 +6,20 @@ import { Badge } from "@mui/material";
 import { ShoppingCartOutlined } from "@mui/icons-material";
 import { mobile } from "../utils/responsive";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { loginOut } from "../redux/user.slice";
+
+
+
 
 const Header: React.FC = () => {
-    const quantity = useSelector((state: any) => state.cart.quantity);
+    const quantity = useAppSelector((state: any) => state.cart.quantity);
+    const user = useAppSelector((state: any) => state.user.currentUser);
+    const dispatch = useAppDispatch();
+
+    const handleLogout = () => {
+        dispatch(loginOut());
+    };
 
     return (
         <div>
@@ -19,10 +29,7 @@ const Header: React.FC = () => {
                         <Language>EN</Language>
                         <SearchContainer>
                             <Input placeholder="Search" />
-                            <FontAwesomeIcon
-                                icon={faMagnifyingGlass}
-                                style={{ color: "gray" }}
-                            />
+                            <FontAwesomeIcon icon={faMagnifyingGlass} style={{ color: "gray" }} />
                         </SearchContainer>
                     </Left>
                     <Center>
@@ -32,24 +39,38 @@ const Header: React.FC = () => {
                     </Center>
                     <Right>
                         <MenuItem>
-                            <StyledLink to="/register">Register</StyledLink>
+                            <StyledLink to="https://mern-shop-admin.vercel.app/login">Admin dashboard</StyledLink>
                         </MenuItem>
-                        <MenuItem>
-                            <StyledLink to="/login">Sign In</StyledLink>
-                        </MenuItem>
-                        <MenuItem>
-                            <Badge badgeContent={quantity} color="primary">
-                                <StyledLink to="/cart">
-                                    <ShoppingCartOutlined />
-                                </StyledLink>
-                            </Badge>
-                        </MenuItem>
+                        {user ? (
+                            <>
+                                <MenuItem>
+                                    <Badge badgeContent={quantity} color="primary">
+                                        <StyledLink to="/cart">
+                                            <ShoppingCartOutlined />
+                                        </StyledLink>
+                                    </Badge>
+                                </MenuItem>
+                                <MenuItem>
+                                    <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+                                </MenuItem>
+                            </>
+                        ) : (
+                            <>
+                                <MenuItem>
+                                    <StyledLink to="/register">Register</StyledLink>
+                                </MenuItem>
+                                <MenuItem>
+                                    <StyledLink to="/login">Sign In</StyledLink>
+                                </MenuItem>
+                            </>
+                        )}
                     </Right>
                 </Wrapper>
             </Container>
         </div>
     );
 };
+
 
 export const StyledLink = styled(Link)`
     text-decoration: none;
@@ -67,6 +88,20 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     ${mobile({ padding: "10px 0px" })}
+`;
+
+const LogoutButton = styled.button`
+  padding: 10px 20px;
+  background-color: #ff5a5f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #e54246;
+  }
 `;
 
 const Left = styled.div`

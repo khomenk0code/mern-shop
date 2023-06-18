@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Button, TextField } from "@mui/material";
 import { AccountCircle, Lock } from "@mui/icons-material";
@@ -20,7 +20,7 @@ const Login: React.FC = () => {
         await login(dispatch, { username, password });
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (currentUser && Object.keys(currentUser).length > 0) {
             navigate("/");
             window.location.reload();

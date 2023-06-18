@@ -43,6 +43,12 @@ const userSlice = createSlice({
             state.error = true;
             console.log("Error occurred");
         },
+        loginOut: (state) => {
+            state.isFetching = false;
+            state.error = false;
+            state.currentUser = {};
+
+        },
         //Get all users
         getUserStart: (state) => {
             state.isFetching = true;
@@ -114,6 +120,7 @@ export const {
     loginStart,
     loginSuccess,
     loginFailure,
+    loginOut,
     getUserFailure,
     getUserSuccess,
     getUserStart,

@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = "https://mern-shop-api.vercel.app/api";
+
 const TOKEN =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NzRjYjQ1YjIxNzEwODNhNjhhMDlmMSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTY4NTgwNjE2MCwiZXhwIjoxNjg2MDY1MzYwfQ.qWRCtMEtaTpAolctoLxtWFQuXlT-9mhIUAuMHwBV72Y";
 
