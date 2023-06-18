@@ -51,13 +51,14 @@ export const getUsers = async (dispatch: Dispatch) => {
     dispatch(getUserStart());
     try {
         const res = await userRequest.get("/users");
+
         dispatch(getUserSuccess(res.data));
     } catch (e) {
         dispatch(getUserFailure());
     }
 };
 
-export const deleteProduct = async (id: number, dispatch: Dispatch) => {
+export const deleteProduct = async (id: string, dispatch: Dispatch) => {
     dispatch(deleteProductStart());
     try {
         const res = await userRequest.delete(`/products/${id}`);
@@ -67,7 +68,7 @@ export const deleteProduct = async (id: number, dispatch: Dispatch) => {
         dispatch(deleteProductFailure());
     }
 };
-export const deleteUser = async (id: number, dispatch: Dispatch) => {
+export const deleteUser = async (id: string, dispatch: Dispatch) => {
     dispatch(deleteUserStart());
     try {
         const res = await userRequest.delete(`/users/${id}`);

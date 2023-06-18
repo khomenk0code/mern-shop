@@ -1,13 +1,25 @@
-import React, { useEffect } from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import React, { useEffect, useState } from "react";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-
-import { DeleteOutline } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
-import { deleteUser, getUsers } from "../redux/api.calls";
+import { deleteProduct, deleteUser, getProducts, getUsers } from "../redux/api.calls";
+import {
+    ConfirmationButton,
+    ConfirmationButtons,
+    ConfirmationPopup, ConfirmationText,
+    ProductListContainer,
+    ProductListDelete,
+    ProductListEdit,
+    ProductListImg,
+    ProductListItem,
+} from "./product-list.page";
 
 const UserList = () => {
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [UserIdToDelete, setUserIdToDelete] = useState("");
+
+
     const dispatch = useAppDispatch();
     const users = useAppSelector((state) => state.user.users);
 
@@ -15,29 +27,42 @@ const UserList = () => {
         getUsers(dispatch);
     }, [dispatch]);
 
-    const handleDelete = (id: number) => {
-        deleteUser(id, dispatch)
+    const handleDelete = (id: string) => {
+        setUserIdToDelete(id);
+        setShowConfirmation(true);
+    };
+
+    const confirmDelete = () => {
+        deleteUser(UserIdToDelete, dispatch)
             .then(() => {
-                console.log(`User with id:${id} was deleted`);
+                console.log(`User with id:${UserIdToDelete} was deleted`);
                 getUsers(dispatch);
+                setShowConfirmation(false);
             })
             .catch((error) => {
-                console.log(`Error deleting user with id:${id}`, error);
+                console.log(`Error deleting user with id:${UserIdToDelete}`, error);
+                setShowConfirmation(false);
             });
     };
 
-    const columns = [
+    const cancelDelete = () => {
+        setShowConfirmation(false);
+    };
+
+    const columns: GridColDef[] = [
         {
             field: "_id",
             headerName: "ID",
-            width: 230 ,
             align: "center",
             headerAlign: 'center',
+            flex: 300,
+
         },
         {
             field: "username",
             headerName: "User",
-            width: 200,
+            headerAlign: "center",
+            flex: 200,
             renderCell: (params: any) => {
                 return (
                     <User>
@@ -50,21 +75,21 @@ const UserList = () => {
         {
             field: "email",
             headerName: "Email",
-            width: 200 ,
+            flex: 200,
             align: "center",
             headerAlign: 'center',
         },
         {
             field: "isAdmin",
             headerName: "Is admin",
-            width: 120,
+            flex: 100,
             align: "center",
             headerAlign: 'center',
         },
         {
             field: "createdAt",
             headerName: "Created",
-            width: 160,
+            flex: 150,
             align: "center",
             headerAlign: 'center',
             renderCell: (params: any) => {
@@ -75,9 +100,10 @@ const UserList = () => {
         {
             field: "action",
             headerName: "Action",
-            width: 150,
+            flex: 100,
             headerAlign: 'center',
             sortable: false,
+            filterable: false,
             renderCell: (params: any) => {
                 if (params.row.isAdmin) {
                     return (
@@ -101,9 +127,9 @@ const UserList = () => {
 
     return (
         <Container>
-            <StyledDataGrid
+            <DataGrid
                 rows={users}
-                disableSelectionOnClick
+                disableRowSelectionOnClick
                 columns={columns}
                 getRowId={(row: any) => row._id}
                 rowCount={users.length}
@@ -119,46 +145,45 @@ const UserList = () => {
                     toolbar: GridToolbar,
                 }}
             />
+            {showConfirmation && (
+                <UserConfirmationPopup>
+                    <UserConfirmationText>Are you sure you want to delete this product?</UserConfirmationText>
+                    <UserConfirmationButtons>
+                        <UserConfirmationButton onClick={confirmDelete}>Yes</UserConfirmationButton>
+                        <ConfirmationButton onClick={cancelDelete}>No</ConfirmationButton>
+                    </UserConfirmationButtons>
+                </UserConfirmationPopup>
+            )}
         </Container>
     );
 };
 
-const Container = styled.div`
-  flex: 4;
+
+export const UserConfirmationPopup = styled(ConfirmationPopup)`
+
 `;
 
-const User = styled.div`
-  display: flex;
-  align-items: center;
+export const UserConfirmationText = styled(ConfirmationText)`
+
 `;
 
-const UserImage = styled.img`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
+export const UserConfirmationButtons = styled(ConfirmationButtons)`
+
 `;
 
-const EditButton = styled.button`
-  border: none;
-  border-radius: 10px;
-  padding: 5px 10px;
-  background-color: #3bb077;
-  color: white;
-  cursor: pointer;
-  margin-right: 20px;
+export const UserConfirmationButton = styled(ConfirmationButton)``;
+
+const Container = styled(ProductListContainer)`
 `;
 
-const DeleteOutlineIcon = styled(DeleteOutline)`
-  color: red;
-  cursor: pointer;
-`;
+const User = styled(ProductListItem)``;
 
-const StyledDataGrid = styled(DataGrid)<any>`
-  && {
-    /* Add any additional styles for the DataGrid here */
-  }
-`;
+const UserImage = styled(ProductListImg)``;
+
+const EditButton = styled(ProductListEdit)``;
+
+const DeleteOutlineIcon = styled(ProductListDelete)``;
+
+
 
 export default UserList;

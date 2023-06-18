@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Visibility } from "@mui/icons-material";
 import { userRequest } from "../utils/requestMethods";
+import { Link } from "react-router-dom";
 
 export interface Users {
     name: any;
@@ -45,14 +46,15 @@ const SmallWidget: React.FC = () => {
                         />
                         <User>
                             <Username>{user.username}</Username>
-                            {/*<UserTitle>Software Engineer</UserTitle>*/}
                         </User>
-                        <Button>
-                            <Icon>
-                                <Visibility />
-                            </Icon>
-                            Display
-                        </Button>
+
+                           <StyledLink to={`/user/${user._id}`}>
+                               <Icon>
+                                   <Visibility />
+                               </Icon>
+                               Edit
+                           </StyledLink>
+
                     </ListItem>
                 ))}
             </List>
@@ -93,6 +95,24 @@ const Image = styled.img`
     object-fit: cover;
 `;
 
+const StyledLink = styled(Link)`
+  text-decoration: none;
+ 
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: 10px;
+  padding: 7px 10px;
+  background-color: #eeeef7;
+  color: #555;
+  opacity: 0.8;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
+  }
+  
+`
+
 const User = styled.div`
     display: flex;
     flex-direction: column;
@@ -102,20 +122,6 @@ const Username = styled.span`
     font-weight: 600;
 `;
 
-// const UserTitle = styled.span`
-//   font-weight: 300;
-// `;
-
-const Button = styled.button`
-    display: flex;
-    align-items: center;
-    border: none;
-    border-radius: 10px;
-    padding: 7px 10px;
-    background-color: #eeeef7;
-    color: #555;
-    cursor: pointer;
-`;
 
 const Icon = styled.span`
     font-size: 16px !important;

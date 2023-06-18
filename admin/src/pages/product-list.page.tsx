@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
@@ -14,6 +14,10 @@ interface Product {
 }
 
 const ProductList = () => {
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [productIdToDelete, setProductIdToDelete] = useState("");
+
+
     const dispatch = useAppDispatch();
     const products = useAppSelector((state) => state.product.products);
 
@@ -21,30 +25,41 @@ const ProductList = () => {
         getProducts(dispatch);
     }, [dispatch]);
 
-    const handleDelete = (id: number) => {
-        deleteProduct(id, dispatch)
+    const handleDelete = (id: string) => {
+        setProductIdToDelete(id);
+        setShowConfirmation(true);
+    };
+
+    const confirmDelete = () => {
+        deleteProduct(productIdToDelete, dispatch)
             .then(() => {
-                console.log(`Product with id:${id} was deleted`);
+                console.log(`Product with id:${productIdToDelete} was deleted`);
                 getProducts(dispatch);
+                setShowConfirmation(false);
             })
             .catch((error) => {
-                console.log(`Error deleting product with id:${id}`, error);
+                console.log(`Error deleting product with id:${productIdToDelete}`, error);
+                setShowConfirmation(false);
             });
+    };
+
+    const cancelDelete = () => {
+        setShowConfirmation(false);
     };
 
     const columns: GridColDef[] = [
         {
             field: "_id",
             headerName: "ID",
-            width: 220,
             align: "center",
-            headerAlign: 'center',
+            headerAlign: "center",
+            flex: 300,
         },
         {
             field: "product",
             headerName: "Product",
-            width: 200,
-            headerAlign: 'center',
+            headerAlign: "center",
+            flex: 300,
             renderCell: (params) => {
                 return (
                     <ProductListItem>
@@ -57,38 +72,37 @@ const ProductList = () => {
         {
             field: "inStock",
             headerName: "Stock",
-            width: 200,
-            headerAlign: 'center',
+            headerAlign: "center",
             align: "center",
+            flex: 100,
         },
         {
             field: "price",
             headerName: "Price",
-            width: 160,
             align: "center",
-            headerAlign: 'center',
+            headerAlign: "center",
+            flex: 100,
         },
         {
             field: "action",
             headerName: "Action",
-            width: 150,
             align: "center",
             sortable: false,
-            headerAlign: 'center',
+            filterable: false,
+            headerAlign: "center",
             renderCell: (params) => {
                 return (
                     <>
                         <Link to={`/product/${params.row._id}`}>
                             <ProductListEdit>Edit</ProductListEdit>
                         </Link>
-                        <ProductListDelete
-                            onClick={() => handleDelete(params.row._id)}
-                        />
+                        <ProductListDelete onClick={() => handleDelete(params.row._id)} />
                     </>
                 );
             },
         },
     ];
+
 
     return (
         <ProductListContainer>
@@ -111,20 +125,66 @@ const ProductList = () => {
                     toolbar: GridToolbar,
                 }}
             />
+            {showConfirmation && (
+                <ConfirmationPopup>
+                    <ConfirmationText>Are you sure you want to delete this product?</ConfirmationText>
+                    <ConfirmationButtons>
+                        <ConfirmationButton onClick={confirmDelete}>Yes</ConfirmationButton>
+                        <ConfirmationButton onClick={cancelDelete}>No</ConfirmationButton>
+                    </ConfirmationButtons>
+                </ConfirmationPopup>
+            )}
         </ProductListContainer>
     );
 };
 
-const ProductListContainer = styled.div`
-  flex: 4;
+
+
+export const ConfirmationPopup = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 60px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
 `;
 
-const ProductListItem = styled.div`
+export const ConfirmationText = styled.div`
+  margin-bottom: 10px;
+  font-size: 22px;
+`;
+
+export const ConfirmationButtons = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+export const ConfirmationButton = styled.button`
+  margin: 20px 15px;
+  padding: 15px 40px;
+  background-color: #3bb077;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #2d8a5f;
+  }
+`;
+
+export const ProductListContainer = styled.div`
+  width: 100%;
+`;
+export const ProductListItem = styled.div`
   display: flex;
   align-items: center;
 `;
 
-const ProductListImg = styled.img`
+export const ProductListImg = styled.img`
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -132,7 +192,7 @@ const ProductListImg = styled.img`
   margin-right: 10px;
 `;
 
-const ProductListEdit = styled.button`
+export const ProductListEdit = styled.button`
   border: none;
   border-radius: 10px;
   padding: 5px 10px;
@@ -140,11 +200,19 @@ const ProductListEdit = styled.button`
   color: white;
   cursor: pointer;
   margin-right: 20px;
+
+  &:hover {
+    background-color: #2d8a5f;
+  }
 `;
 
-const ProductListDelete = styled(DeleteOutline)`
+export const ProductListDelete = styled(DeleteOutline)`
   color: red;
   cursor: pointer;
+
+  &:hover {
+    color: darkred;
+  }
 `;
 
 export default ProductList;

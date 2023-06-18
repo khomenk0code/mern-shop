@@ -38,6 +38,7 @@ const Home: React.FC = () => {
         const getStats = async () => {
             try {
                 const res = await userRequest.get("/users/stats");
+                res.data.sort((a: UserData, b: UserData) => a.total - b.total);
                 res.data.map((item: UserData) => {
                     setUserStats((prev) => [
                         ...prev,
@@ -50,6 +51,7 @@ const Home: React.FC = () => {
         };
         getStats();
     }, [MONTHS]);
+
 
     return (
         <Container>
