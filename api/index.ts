@@ -32,7 +32,7 @@ app.use("/api/orders", ordersRouter)
 app.use("/api/cart", cartRouter)
 app.use("/api/payment", paymentRouter)
 
-app.options("/api/payment", cors()); // Add an OPTIONS route to handle preflight requests for /api/payment
+app.options("/api/payment", cors());
 
 
 
