@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import {
     AttachMoney,
     BarChart,
-    ChatBubbleOutline,
+    ChatBubbleOutline, ChevronLeft, ChevronRight,
     DynamicFeed,
     LineStyle,
     MailOutline,
@@ -17,43 +17,64 @@ import {
 } from "@mui/icons-material";
 
 const Sidebar: React.FC = () => {
+    const [hideTitles, setHideTitles] = useState(false);
+
+    const handleToggleTitles = () => {
+        setHideTitles(!hideTitles);
+    };
+
     return (
         <SidebarContainer>
             <SidebarWrapper>
                 <SidebarMenu>
-                    <SidebarTitle>Dashboard</SidebarTitle>
+                    <SidebarTitleContainer justify={hideTitles ? "center" : "flex-end"}>
+                        {!hideTitles && <SidebarTitle>Dashboard</SidebarTitle>}
+                        <ToggleTitlesButton
+                            onClick={handleToggleTitles}
+                            title={hideTitles ? "Expand" : "Collapse"}
+                        >
+                            {!hideTitles ? <ArrowLeft /> : <ArrowRight />}
+                        </ToggleTitlesButton>
+                    </SidebarTitleContainer>
                     <SidebarList>
                         <Link to="/">
                             <SidebarListItem>
                                 <SidebarIcon>
                                     <LineStyle />
                                 </SidebarIcon>
-                                Home
+                                {!hideTitles && "Home"}
                             </SidebarListItem>
                         </Link>
-                        <SidebarListItem>
-                            <SidebarIcon>
-                                <Timeline />
-                            </SidebarIcon>
-                            Analytics
-                        </SidebarListItem>
-                        <SidebarListItem>
-                            <SidebarIcon>
-                                <TrendingUp />
-                            </SidebarIcon>
-                            Sales
-                        </SidebarListItem>
+                        {!hideTitles && (
+                            <SidebarListItem>
+                                <SidebarIcon>
+                                    <Timeline />
+                                </SidebarIcon>
+                                Analytics
+                            </SidebarListItem>
+                        )}
+                        {!hideTitles && (
+                            <SidebarListItem>
+                                <SidebarIcon>
+                                    <TrendingUp />
+                                </SidebarIcon>
+                                Sales
+                            </SidebarListItem>
+                        )}
                     </SidebarList>
                 </SidebarMenu>
+                <SeparatorLine />
                 <SidebarMenu>
-                    <SidebarTitle>Quick Menu</SidebarTitle>
+                    <SidebarTitle>
+                        {!hideTitles && "Quick Menu"}
+                    </SidebarTitle>
                     <SidebarList>
                         <Link to="/users">
                             <SidebarListItem>
                                 <SidebarIcon>
                                     <PermIdentity />
                                 </SidebarIcon>
-                                Users
+                                {!hideTitles && "Users"}
                             </SidebarListItem>
                         </Link>
                         <Link to="/products">
@@ -61,7 +82,7 @@ const Sidebar: React.FC = () => {
                                 <SidebarIcon>
                                     <Storefront />
                                 </SidebarIcon>
-                                Products
+                                {!hideTitles && "Products"}
                             </SidebarListItem>
                         </Link>
                         <Link to="/transactions">
@@ -69,7 +90,7 @@ const Sidebar: React.FC = () => {
                                 <SidebarIcon>
                                     <AttachMoney />
                                 </SidebarIcon>
-                                Transactions
+                                {!hideTitles && "Transactions"}
                             </SidebarListItem>
                         </Link>
                         <Link to="/reports">
@@ -77,87 +98,103 @@ const Sidebar: React.FC = () => {
                                 <SidebarIcon>
                                     <BarChart />
                                 </SidebarIcon>
-                                Reports
+                                {!hideTitles && "Reports"}
                             </SidebarListItem>
                         </Link>
                     </SidebarList>
                 </SidebarMenu>
+                <SeparatorLine />
                 <SidebarMenu>
-                    <SidebarTitle>Notifications</SidebarTitle>
+                    <SidebarTitle>
+                        {!hideTitles && "Notifications"}
+                    </SidebarTitle>
                     <SidebarList>
                         <SidebarListItem>
                             <SidebarIcon>
                                 <MailOutline />
                             </SidebarIcon>
-                            Mail
+                            {!hideTitles && "Mail"}
                         </SidebarListItem>
                         <SidebarListItem>
                             <SidebarIcon>
                                 <DynamicFeed />
                             </SidebarIcon>
-                            Feedback
+                            {!hideTitles && "Feedback"}
                         </SidebarListItem>
                         <SidebarListItem>
                             <SidebarIcon>
                                 <ChatBubbleOutline />
                             </SidebarIcon>
-                            Messages
+                            {!hideTitles && "Messages"}
                         </SidebarListItem>
                     </SidebarList>
                 </SidebarMenu>
+                <SeparatorLine />
                 <SidebarMenu>
-                    <SidebarTitle>Staff</SidebarTitle>
+                    <SidebarTitle>
+                        {!hideTitles && "Staff"}
+                    </SidebarTitle>
                     <SidebarList>
                         <SidebarListItem>
                             <SidebarIcon>
                                 <WorkOutline />
                             </SidebarIcon>
-                            Manage
+                            {!hideTitles && "Manage"}
                         </SidebarListItem>
                         <SidebarListItem>
                             <SidebarIcon>
                                 <Timeline />
                             </SidebarIcon>
-                            Analytics
+                            {!hideTitles && "Analytics"}
                         </SidebarListItem>
                         <SidebarListItem>
                             <SidebarIcon>
                                 <Report />
                             </SidebarIcon>
-                            Reports
+                            {!hideTitles && "Reports"}
                         </SidebarListItem>
                     </SidebarList>
                 </SidebarMenu>
+                <SeparatorLine />
             </SidebarWrapper>
         </SidebarContainer>
     );
 };
 
 const SidebarContainer = styled.aside`
-  
-    height: calc(100vh - 50px);
-    background-color: rgb(251, 251, 255);
-    position: sticky;
-    top: 50px;
+  height: calc(100vh - 50px);
+  background-color: rgb(251, 251, 255);
+  position: sticky;
+  top: 50px;
 `;
 
 const SidebarWrapper = styled.div`
-    padding: 20px;
-    color: #555;
+  padding: 20px;
+  color: #555;
 `;
 
 const SidebarMenu = styled.div`
-    margin-bottom: 10px;
+  margin-bottom: 10px;
+`;
+
+const SidebarTitleContainer = styled.div<{ justify: string }>`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: ${props => props.justify};
+  
 `;
 
 const SidebarTitle = styled.h3`
-    font-size: 13px;
-    color: rgb(187, 186, 186);
+  display: flex;
+  justify-content: center;
+  font-size: 13px;
+  color: rgb(187, 186, 186);
 `;
 
 const SidebarList = styled.ul`
-    list-style: none;
-    padding: 5px;
+  list-style: none;
+  padding: 5px;
 `;
 
 const SidebarListItem = styled.li`
@@ -167,14 +204,41 @@ const SidebarListItem = styled.li`
   align-items: center;
   border-radius: 10px;
 
-  &:active:hover {
-    rgb(240, 240, 255);
+  
+`;
+
+const ArrowLeft = styled(ChevronLeft)`
+  &:hover {
+    background-color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+`;
+
+const ArrowRight = styled(ChevronRight)`
+  &:hover {
+    background-color: #eee;
+    border-radius: 5px;
+    cursor: pointer;
   }
 `;
 
 const SidebarIcon = styled.span`
-    margin-right: 5px;
-    font-size: 20px !important;
+  margin-right: 5px;
+  font-size: 20px !important;
+`;
+
+const ToggleTitlesButton = styled.button`
+  padding: 5px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+`;
+
+const SeparatorLine = styled.div`
+  height: 1px;
+  background-color: #ccc;
+  margin: 10px 0;
 `;
 
 export default Sidebar;
