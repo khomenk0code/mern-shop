@@ -18,7 +18,7 @@ const Cart = () => {
 
     const cart = useAppSelector((state) => state.cart);
 
-    const axiosClient = axios.create({ baseURL: "http://localhost:5000/api" });
+    const axiosClient = axios.create({ baseURL: "https://mern-shop-api.vercel.app/api" });
 
 
     useEffect(() => {
