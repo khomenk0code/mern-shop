@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/header.component";
 import Announcement from "../components/anonouncement.component";
-import Footer from "../components/footer";
+import FooterComponent from "../components/footer.component";
 import Newsletter from "../components/newsletter.component";
 import { Add, Remove } from "@mui/icons-material";
 import styled from "styled-components";
@@ -126,7 +126,7 @@ const Product = () => {
                 </InfoContainer>
             </Wrapper>
             <Newsletter />
-            <Footer />
+            <FooterComponent />
         </Container>
     );
 };

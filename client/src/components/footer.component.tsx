@@ -11,7 +11,7 @@ import {
 } from "@mui/icons-material";
 import { mobile } from "../utils/responsive";
 
-const Footer: React.FC = () => {
+const FooterComponent: React.FC = () => {
     return (
         <Container>
             <Left>
@@ -144,4 +144,4 @@ const Payment = styled.img`
     ${mobile({ marginBottom: "2rem" })}
 `;
 
-export default Footer;
+export default FooterComponent;

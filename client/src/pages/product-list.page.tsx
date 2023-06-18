@@ -4,7 +4,7 @@ import Navbar from "../components/header.component";
 import Announcement from "../components/anonouncement.component";
 import Products from "../components/products.component";
 import Newsletter from "../components/newsletter.component";
-import Footer from "../components/footer";
+import FooterComponent from "../components/footer.component";
 import { mobile } from "../utils/responsive";
 import { useLocation } from "react-router-dom";
 
@@ -62,7 +62,7 @@ const ProductList: React.FC = () => {
             </FilterContainer>
             <Products category={category} filters={filters} sort={sort} />
             <Newsletter />
-            <Footer />
+            <FooterComponent />
         </Container>
     );
 };

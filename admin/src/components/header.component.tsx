@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Language, NotificationsNone, Settings } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
 import { loginOut } from "../redux/user.slice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const HeaderComponent: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -19,7 +19,9 @@ const HeaderComponent: React.FC = () => {
         <HeaderContainer>
             <HeaderWrapper>
                 <TopLeft>
-                    <Logo>MERN. admin</Logo>
+
+                    <Link to="/"><Logo>MERN. admin</Logo></Link>
+                    <Link to="https://mern-shop-client.vercel.app/">Back to main site</Link>
                 </TopLeft>
                 <TopRight>
                     <TopbarIconContainer>
@@ -78,7 +80,11 @@ const HeaderWrapper = styled.div`
     justify-content: space-between;
 `;
 
-const TopLeft = styled.div``;
+const TopLeft = styled.div`
+    display: flex;
+  align-items: center;
+  gap: 20px;
+`;
 
 const Logo = styled.div`
     font-weight: bold;

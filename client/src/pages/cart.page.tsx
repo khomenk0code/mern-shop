@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { mobile } from "../utils/responsive";
 import { Add, Announcement, Remove } from "@mui/icons-material";
-import Footer from "../components/footer";
+import FooterComponent from "../components/footer.component";
 import Navbar from "../components/header.component";
 import axios from "axios";
 import { IProduct } from "../components/products.component";
@@ -185,7 +185,7 @@ const Cart = () => {
                     </Summary>
                 </Bottom>
             </Wrapper>
-            <Footer />
+            <FooterComponent />
         </Container>
     );
 };

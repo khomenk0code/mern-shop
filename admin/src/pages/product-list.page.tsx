@@ -73,7 +73,7 @@ const ProductList = () => {
                 disableRowSelectionOnClick
                 columns={columns}
                 getRowId={(row) => row._id}
-                rowCount={8}
+                rowCount={products.length}
                 checkboxSelection
             />
         </ProductListContainer>

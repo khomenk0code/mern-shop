@@ -38,9 +38,9 @@ const Header: React.FC = () => {
                         </Logo>
                     </Center>
                     <Right>
-                        <MenuItem>
+                        {user.isAdmin && <MenuItem>
                             <StyledLink to="https://mern-shop-admin.vercel.app/login">Admin dashboard</StyledLink>
-                        </MenuItem>
+                        </MenuItem>}
                         {user ? (
                             <>
                                 <MenuItem>

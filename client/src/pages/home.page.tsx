@@ -5,7 +5,7 @@ import Slider from "../components/slider.component";
 import Categories from "../components/categories.component";
 import Products from "../components/products.component";
 import Newsletter from "../components/newsletter.component";
-import Footer from "../components/footer";
+import FooterComponent from "../components/footer.component";
 
 const Home: React.FC = () => {
     return (
@@ -16,7 +16,7 @@ const Home: React.FC = () => {
             <Categories />
             <Products />
             <Newsletter />
-            <Footer />
+            <FooterComponent />
         </>
     );
 };
