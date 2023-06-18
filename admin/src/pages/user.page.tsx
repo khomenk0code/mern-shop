@@ -8,12 +8,13 @@ import {
     PhoneAndroid,
     Publish,
 } from "@mui/icons-material";
-import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
 import { LinearProgress } from "@mui/material";
 
 
 import handleImageChange from "../utils/uploadImg.helper";
 import {  updateUser } from "../redux/api.calls";
+import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
 
 
     const User: React.FC = () => {
@@ -26,6 +27,7 @@ import {  updateUser } from "../redux/api.calls";
 
         const location = useLocation();
         const dispatch = useAppDispatch();
+        const firebaseConfig = useFirebaseConfig();
 
         const userId: string = location.pathname.split("/")[2];
         const user: any = useAppSelector((state) =>
@@ -33,7 +35,7 @@ import {  updateUser } from "../redux/api.calls";
         );
 
         const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            handleImageChange(e, setImage, setProgress, setImgUrl);
+            handleImageChange(e, setImage, setProgress, setImgUrl, firebaseConfig);
         };
 
         const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

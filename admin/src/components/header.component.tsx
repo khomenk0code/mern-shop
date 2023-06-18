@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Language, NotificationsNone, Settings } from "@mui/icons-material";
-import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
 
 const HeaderComponent: React.FC = () => {
     const dispatch = useAppDispatch();

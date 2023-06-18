@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { DeleteOutline } from "@mui/icons-material";
-import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
 import {  deleteUser, getUsers } from "../redux/api.calls";
 
 const UserList = () => {

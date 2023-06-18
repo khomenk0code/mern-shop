@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useAppDispatch } from "../hooks/hooks";
-import { LinearProgress } from "@mui/material";
-import handleImageChange from "../utils/uploadImg.helper";
-import { Publish } from "@mui/icons-material";
+import { useAppDispatch } from "../hooks/redux.hooks";
 import {  addUser } from "../redux/api.calls";
 
 const NewUser: React.FC = () => {
     const [isUserSaved, setIsUserSaved] = useState(false);
     const [isError, setIsError] = useState(false);
-    const [image, setImage] = useState<File | null>(null);
-    const [imgUrl, setImgUrl] = useState<string>("");
-    const [progress, setProgress] = useState(0);
     const [inputs, setInputs] = useState({});
     const dispatch = useAppDispatch();
 
@@ -114,60 +108,6 @@ const NewUserInput = styled.input`
   border-radius: 5px;
 `;
 
-const NewUserGender = styled.div`
-  display: flex;
-  margin-top: 15px;
-`;
-
-const NewUserGenderLabel = styled.label`
-  margin: 10px;
-  font-size: 18px;
-  color: #555;
-`;
-
-const NewUserSelect = styled.select`
-  height: 40px;
-  border-radius: 5px;
-`;
-
-const Label = styled.label`
-  color: gray;
-  font-weight: 600;
-  margin-bottom: 10px;
-`;
-
-const UploadImg = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 10px;
-  object-fit: cover;
-  margin-right: 20px;
-`;
-
-const UserAvatarUpload = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 20px;
-`;
-
-const ImageWrapper = styled.div`
-  width: 250px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-`;
-
-
-const LinearProgressWrapper = styled.div`
-  align-items: center;
-  margin-top: 10px;
-`;
-
-
-const Input = styled.input`
-  padding: 10px;
-`;
 
 const ButtonWrapper = styled.div`
 

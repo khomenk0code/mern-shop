@@ -3,7 +3,7 @@ import styled from "styled-components";
 import React, { useEffect, useMemo, useState } from "react";
 import Chart, { ChartData } from "../components/chart.component";
 import { Publish } from "@mui/icons-material";
-import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
 import { getProducts, updateProduct } from "../redux/api.calls";
 import { userRequest } from "../utils/requestMethods";
 import {
@@ -13,6 +13,7 @@ import {
     LinearProgress,
 } from "@mui/material";
 import handleImageChange from "../utils/uploadImg.helper";
+import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
 
 export interface ProductData extends ChartData {
     Sales: number;
@@ -33,6 +34,8 @@ const Product = () => {
     const [imgUrl, setImgUrl] = useState<string>("");
     const [isProductUpdated, setIsProductSaved] = useState(false);
     const [isError, setIsError] = useState(false);
+
+    const firebaseConfig = useFirebaseConfig();
 
     const location = useLocation();
     const dispatch = useAppDispatch();
@@ -115,7 +118,7 @@ const Product = () => {
     };
 
     const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleImageChange(e, setImage, setProgress, setImgUrl);
+        handleImageChange(e, setImage, setProgress, setImgUrl, firebaseConfig);
     };
 
     const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {

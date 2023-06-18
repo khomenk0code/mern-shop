@@ -8,6 +8,7 @@ const productsRouter = require("./routes/product")
 const ordersRouter = require("./routes/order")
 const cartRouter = require("./routes/cart")
 const paymentRouter = require("./routes/payment")
+const configRouter = require("./routes/firebase-config")
 const cors = require('cors');
 
 dotenv.config()
@@ -31,6 +32,8 @@ app.use("/api/products", productsRouter)
 app.use("/api/orders", ordersRouter)
 app.use("/api/cart", cartRouter)
 app.use("/api/payment", paymentRouter)
+app.use('/api/config', configRouter);
+
 
 app.options("/api/payment", cors());
 

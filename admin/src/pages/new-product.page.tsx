@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { addProduct } from "../redux/api.calls";
-import { useAppDispatch } from "../hooks/hooks";
+import { useAppDispatch } from "../hooks/redux.hooks";
 import {
     Checkbox,
     FormControlLabel,
@@ -9,6 +9,7 @@ import {
     LinearProgress,
 } from "@mui/material";
 import handleImageChange from "../utils/uploadImg.helper";
+import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
 
 const NewProduct = () => {
     const [inputs, setInputs] = useState({});
@@ -19,6 +20,7 @@ const NewProduct = () => {
     const [isProductSaved, setIsProductSaved] = useState(false);
     const [isError, setIsError] = useState(false);
     const dispatch = useAppDispatch();
+    const firebaseConfig = useFirebaseConfig();
 
     const handleSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
@@ -46,7 +48,7 @@ const NewProduct = () => {
     };
 
     const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleImageChange(e, setImage, setProgress, setImgUrl);
+        handleImageChange(e, setImage, setProgress, setImgUrl, firebaseConfig);
     };
 
     const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
