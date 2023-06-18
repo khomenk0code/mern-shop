@@ -50,7 +50,7 @@ export const getProducts = async (dispatch: Dispatch) => {
 export const getUsers = async (dispatch: Dispatch) => {
     dispatch(getUserStart());
     try {
-        const res = await publicRequest.get("/users");
+        const res = await userRequest.get("/users");
         dispatch(getUserSuccess(res.data));
     } catch (e) {
         dispatch(getUserFailure());

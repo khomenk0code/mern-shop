@@ -2,15 +2,16 @@ import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import React, { useEffect, useMemo, useState } from "react";
 import Chart, { ChartData } from "../components/chart.component";
-import { Publish } from "@mui/icons-material";
+import { CheckCircle, CloudUpload, Error } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
 import { getProducts, updateProduct } from "../redux/api.calls";
 import { userRequest } from "../utils/requestMethods";
 import {
+    Button,
     Checkbox,
     FormControlLabel,
     FormGroup,
-    LinearProgress,
+    LinearProgress, Typography,
 } from "@mui/material";
 import handleImageChange from "../utils/uploadImg.helper";
 import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
@@ -311,21 +312,16 @@ const Product = () => {
                             />
                         </FormGroup>
                     </ProductFormLeft>
-                    <ProductFormRight>
+                    <ProductUpdateRight>
                         <ProductUpload>
                             {imgUrl ? (
-                                <ProductUploadImg
-                                    src={imgUrl}
-                                    alt="Product"
-                                    className="uploaded-image"
-                                />
+                                <ProductUploadImg src={imgUrl} alt="User" className="uploaded-image" />
                             ) : (
-                                <ProductUploadImg src={product?.img} alt="" />
+                                <ProductUploadImg src={product?.img} alt="User image" />
                             )}
-                            <label htmlFor="file">
-                                <Publish />
-                            </label>
-
+                            <UploadButton htmlFor="file">
+                                <UploadIcon />
+                            </UploadButton>
                             <input
                                 type="file"
                                 id="file"
@@ -335,31 +331,106 @@ const Product = () => {
                                 onChange={onImageChange}
                             />
                         </ProductUpload>
-                            <LinearProgress
-                                variant="determinate"
-                                value={progress}
-                            />
-
-                        <ProductButton type="submit" onClick={handleClick}>
-                            Update
-                        </ProductButton>
+                        <ProgressBar variant="determinate" value={progress} />
                         {isProductUpdated && !isError ? (
-                            <SuccessMessage>
-                                Product was updated!
-                            </SuccessMessage>
+                            <FeedbackMessage>
+                                <SuccessIcon />
+                                User was updated!
+                            </FeedbackMessage>
                         ) : (
                             isError && (
-                                <ErrorMessage>
+                                <FeedbackMessage>
+                                    <ErrorIcon />
                                     Something went wrong
-                                </ErrorMessage>
+                                </FeedbackMessage>
                             )
                         )}
-                    </ProductFormRight>
+                        <UpdateButton onClick={handleClick}>Update</UpdateButton>
+                    </ProductUpdateRight>
                 </ProductForm>
             </ProductBottom>
         </ProductContainer>
     );
 };
+
+const ProductUpdateRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ProductUpload = styled.div`
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+`;
+
+const ProductUploadImg = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+`;
+
+const UploadButton = styled.label`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
+`;
+
+const UploadIcon = styled(CloudUpload)`
+  color: #555;
+`;
+
+const ProgressBar = styled(LinearProgress)`
+  width: 100%;
+  margin-bottom: 20px;
+`;
+
+const FeedbackMessage = styled(Typography)`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+`;
+
+const SuccessIcon = styled(CheckCircle)`
+  margin-right: 5px;
+  color: green;
+`;
+
+const ErrorIcon = styled(Error)`
+  margin-right: 5px;
+  color: red;
+`;
+
+const UpdateButton = styled(Button)`
+  && {
+    background-color: darkblue;
+    color: white;
+    font-weight: 600;
+
+    &:hover {
+      background-color: #0f4dff;
+    }
+  }
+`;
+
+
+
 
 const ProductContainer = styled.div`
     flex: 4;
@@ -466,44 +537,5 @@ const FormLeftSelect = styled.select`
     margin-bottom: 10px;
 `;
 
-const ProductFormRight = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-`;
-
-const ProductUploadImg = styled.img`
-    width: 100px;
-    height: 100px;
-    border-radius: 10px;
-    object-fit: cover;
-    margin-right: 20px;
-`;
-
-const ProductUpload = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const ProductButton = styled.button`
-    border: none;
-    padding: 5px;
-    border-radius: 5px;
-    background-color: darkblue;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-`;
-
-const SuccessMessage = styled.div`
-    margin-top: 10px;
-    text-align: center;
-    color: green;
-`;
-const ErrorMessage = styled.div`
-    margin-top: 10px;
-    text-align: center;
-    color: red;
-`;
 
 export default Product;

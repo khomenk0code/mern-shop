@@ -1,20 +1,19 @@
 import React, { useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { DeleteOutline } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
-import {  deleteUser, getUsers } from "../redux/api.calls";
+import { deleteUser, getUsers } from "../redux/api.calls";
 
 const UserList = () => {
     const dispatch = useAppDispatch();
-    const users = useAppSelector((state) => state.user);
+    const users = useAppSelector((state) => state.user.users);
 
     useEffect(() => {
         getUsers(dispatch);
     }, [dispatch]);
-
 
     const handleDelete = (id: number) => {
         deleteUser(id, dispatch)
@@ -28,7 +27,13 @@ const UserList = () => {
     };
 
     const columns = [
-        { field: "_id", headerName: "ID", width: 230 },
+        {
+            field: "_id",
+            headerName: "ID",
+            width: 230 ,
+            align: "center",
+            headerAlign: 'center',
+        },
         {
             field: "username",
             headerName: "User",
@@ -42,16 +47,26 @@ const UserList = () => {
                 );
             },
         },
-        { field: "email", headerName: "Email", width: 200 },
+        {
+            field: "email",
+            headerName: "Email",
+            width: 200 ,
+            align: "center",
+            headerAlign: 'center',
+        },
         {
             field: "isAdmin",
             headerName: "Is admin",
             width: 120,
+            align: "center",
+            headerAlign: 'center',
         },
         {
             field: "createdAt",
             headerName: "Created",
             width: 160,
+            align: "center",
+            headerAlign: 'center',
             renderCell: (params: any) => {
                 const createdAt = new Date(params.row.createdAt).toLocaleDateString();
                 return <>{createdAt}</>;
@@ -61,6 +76,8 @@ const UserList = () => {
             field: "action",
             headerName: "Action",
             width: 150,
+            headerAlign: 'center',
+            sortable: false,
             renderCell: (params: any) => {
                 if (params.row.isAdmin) {
                     return (
@@ -82,60 +99,66 @@ const UserList = () => {
         },
     ];
 
-
-
-
-
     return (
         <Container>
             <StyledDataGrid
-                rows={users.users}
+                rows={users}
                 disableSelectionOnClick
                 columns={columns}
-                getRowId={(row:any) => row._id}
-                rowCount={8}
+                getRowId={(row: any) => row._id}
+                rowCount={users.length}
                 checkboxSelection
+                localeText={{
+                    toolbarDensity: 'Size',
+                    toolbarDensityLabel: 'Size',
+                    toolbarDensityCompact: 'Small',
+                    toolbarDensityStandard: 'Medium',
+                    toolbarDensityComfortable: 'Large',
+                }}
+                slots={{
+                    toolbar: GridToolbar,
+                }}
             />
         </Container>
     );
 };
 
 const Container = styled.div`
-    flex: 4;
+  flex: 4;
 `;
 
 const User = styled.div`
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 `;
 
 const UserImage = styled.img`
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
 `;
 
 const EditButton = styled.button`
-    border: none;
-    border-radius: 10px;
-    padding: 5px 10px;
-    background-color: #3bb077;
-    color: white;
-    cursor: pointer;
-    margin-right: 20px;
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  background-color: #3bb077;
+  color: white;
+  cursor: pointer;
+  margin-right: 20px;
 `;
 
 const DeleteOutlineIcon = styled(DeleteOutline)`
-    color: red;
-    cursor: pointer;
+  color: red;
+  cursor: pointer;
 `;
 
 const StyledDataGrid = styled(DataGrid)<any>`
-    && {
-        /* Add any additional styles for the DataGrid here */
-    }
+  && {
+    /* Add any additional styles for the DataGrid here */
+  }
 `;
 
 export default UserList;

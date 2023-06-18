@@ -49,6 +49,8 @@ const ContainedRoutes = () => (
 const Container = styled.div`
     display: flex;
     margin-top: 10px;
+  overflow-x: hidden;
+  
 `;
 
 export default App;

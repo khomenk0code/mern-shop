@@ -1,10 +1,17 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { DeleteOutline } from "@mui/icons-material";
 import { deleteProduct, getProducts } from "../redux/api.calls";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
+
+interface Product {
+    _id: string;
+    product: string;
+    inStock: number;
+    price: number;
+}
 
 const ProductList = () => {
     const dispatch = useAppDispatch();
@@ -25,14 +32,20 @@ const ProductList = () => {
             });
     };
 
-
-    const columns = [
-        { field: "_id", headerName: "ID", width: 220 },
+    const columns: GridColDef[] = [
+        {
+            field: "_id",
+            headerName: "ID",
+            width: 220,
+            align: "center",
+            headerAlign: 'center',
+        },
         {
             field: "product",
             headerName: "Product",
             width: 200,
-            renderCell: (params: any) => {
+            headerAlign: 'center',
+            renderCell: (params) => {
                 return (
                     <ProductListItem>
                         <ProductListImg src={params.row.img} alt="productImg" />
@@ -41,17 +54,28 @@ const ProductList = () => {
                 );
             },
         },
-        { field: "inStock", headerName: "Stock", width: 200 },
+        {
+            field: "inStock",
+            headerName: "Stock",
+            width: 200,
+            headerAlign: 'center',
+            align: "center",
+        },
         {
             field: "price",
             headerName: "Price",
             width: 160,
+            align: "center",
+            headerAlign: 'center',
         },
         {
             field: "action",
             headerName: "Action",
             width: 150,
-            renderCell: (params: any) => {
+            align: "center",
+            sortable: false,
+            headerAlign: 'center',
+            renderCell: (params) => {
                 return (
                     <>
                         <Link to={`/product/${params.row._id}`}>
@@ -75,41 +99,52 @@ const ProductList = () => {
                 getRowId={(row) => row._id}
                 rowCount={products.length}
                 checkboxSelection
+                autoHeight
+                localeText={{
+                    toolbarDensity: 'Size',
+                    toolbarDensityLabel: 'Size',
+                    toolbarDensityCompact: 'Small',
+                    toolbarDensityStandard: 'Medium',
+                    toolbarDensityComfortable: 'Large',
+                }}
+                slots={{
+                    toolbar: GridToolbar,
+                }}
             />
         </ProductListContainer>
     );
 };
 
 const ProductListContainer = styled.div`
-    flex: 4;
+  flex: 4;
 `;
 
 const ProductListItem = styled.div`
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 `;
 
 const ProductListImg = styled.img`
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
 `;
 
 const ProductListEdit = styled.button`
-    border: none;
-    border-radius: 10px;
-    padding: 5px 10px;
-    background-color: #3bb077;
-    color: white;
-    cursor: pointer;
-    margin-right: 20px;
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  background-color: #3bb077;
+  color: white;
+  cursor: pointer;
+  margin-right: 20px;
 `;
 
 const ProductListDelete = styled(DeleteOutline)`
-    color: red;
-    cursor: pointer;
+  color: red;
+  cursor: pointer;
 `;
 
 export default ProductList;
