@@ -48,8 +48,14 @@ const Product: React.FC = () => {
         });
     };
 
+
+
     const handleClick = () => {
-        if (product && (!color || color === "")) {
+        const hasValidColors = product?.color
+            .filter((c) => validColors.includes(c.toLowerCase()))
+            .length !== 0;
+
+        if (hasValidColors && (!color || color === "")) {
             setIsColorSelected(true);
             return;
         }
@@ -64,8 +70,6 @@ const Product: React.FC = () => {
                     p.size.includes(size)
             );
 
-            console.log(existingProduct);
-
             if (existingProduct) {
                 setShowNotification(true);
                 return;
@@ -74,6 +78,7 @@ const Product: React.FC = () => {
             dispatch(addProduct({ ...product, quantity, color, size }));
         }
     };
+
 
     useEffect(() => {
         const getProducts = async () => {
@@ -106,7 +111,9 @@ const Product: React.FC = () => {
                     <Desc>{product?.desc}</Desc>
                     <Price>{product?.price} $</Price>
                     <FilterContainer>
-                        {product?.color.length !== 0 ? (
+                        {product?.color
+                            .filter((c) => validColors.includes(c.toLowerCase()))
+                            .length !== 0 ? (
                             <Filter>
                                 <FilterTitle>
                                     {product &&
@@ -132,6 +139,8 @@ const Product: React.FC = () => {
                                     ))}
                             </Filter>
                         ) : null}
+
+
                         {product?.size?.length !== 0 ? (
                             <Filter>
                                 <FilterTitle>Size: </FilterTitle>
