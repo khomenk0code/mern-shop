@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { mobile } from "../utils/responsive";
-import { Add, Announcement, Remove } from "@mui/icons-material";
+import { Add, Announcement, DeleteOutline, Remove } from "@mui/icons-material";
 import FooterComponent from "../components/footer.component";
 import Navbar from "../components/header.component";
 import axios from "axios";
 import { IProduct } from "../components/products.component";
-import { useAppSelector } from "../hooks/hooks";
+import { useAppSelector, useAppDispatch } from "../hooks/hooks";
+import { clearCart, removeProduct, updateQuantity } from "../redux/cart.slice";
 
 type StyledTypesProps = {
     types?: "filled" | "total";
@@ -17,9 +18,11 @@ const Cart = () => {
     const [signatureValue, setSignatureValue] = useState("");
 
     const cart = useAppSelector((state) => state.cart);
+    const dispatch = useAppDispatch();
 
-    const axiosClient = axios.create({ baseURL: "https://mern-shop-api.vercel.app/api" });
-
+    const axiosClient = axios.create({
+        baseURL: "https://mern-shop-api.vercel.app/api",
+    });
 
     useEffect(() => {
         const fetchForm = async () => {
@@ -62,86 +65,122 @@ const Cart = () => {
         fetchForm();
     }, [cart.total]);
 
-    // useEffect(() => {
-    //     const handleLiqPayCallback = async () => {
-    //         try {
-    //             const response = await axiosClient.post("/payment/liqpay-callback", {
-    //                 data: dataValue,
-    //                 signature: signatureValue,
-    //             });
-    //
-    //             if (response.status === 200) {
-    //                 console.log("ez", response.data);
-    //             } else {
-    //               console.error("errrrrr")
-    //             }
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     };
-    //
-    //     if (dataValue && signatureValue) {
-    //         handleLiqPayCallback();
-    //     }
-    // }, [dataValue, signatureValue]);
+    const handleRemoveFromCart = (
+        productId: string,
+        color: string,
+        size: string
+    ) => {
+        dispatch(removeProduct({ productId, color, size }));
+    };
+
+    const updateProductQuantity = (
+        productId: string,
+        color: string,
+        size: string,
+        quantity: number
+    ) => {
+        dispatch(updateQuantity({ productId, color, size, quantity }));
+    };
+
+    const handleRemove = (
+        productId: string,
+        color: string,
+        size: string,
+        quantity: number
+    ) => {
+        if (cart.quantity > cart.products.length) {
+            dispatch(updateQuantity({ productId, color, size, quantity }));
+        }
+    };
+    const handleClearCart = () => {
+        dispatch(clearCart());
+    };
 
     return (
         <Container>
             <Navbar />
             <Announcement />
             <Wrapper>
-                <Title>YOUR BAG</Title>
+                <Title>Cart</Title>
                 <Top>
                     <TopButton>CONTINUE SHOPPING</TopButton>
-                    <TopTexts>
-                        <TopText>Shopping Bag(2)</TopText>
-                        <TopText>Your Wishlist (0)</TopText>
-                    </TopTexts>
-                    <TopButton types="filled">CHECKOUT NOW</TopButton>
+                    <button onClick={handleClearCart}>Очистить корзину</button>
+                    <TopButton types="filled">Your Wishlist (0)</TopButton>
                 </Top>
                 <Bottom>
                     <Info>
-
-                        {cart.products.map((product: IProduct) => (
+                        {cart.products.map((product: IProduct, index) => (
                             <>
-                            <Product key={product.id}>
-                                <ProductDetail>
-                                    <Image src={product.img} />
-                                    <Details>
-                                        <ProductName>
-                                            <b>Product:</b> {product.title}
-                                        </ProductName>
-                                        <ProductId>
-                                            <b>ID:</b> {product._id}
-                                        </ProductId>
-                                        <b>Color:</b>
-                                        {product.color &&
-                                            typeof product.color ===
-                                                "string" && (
-                                                <ProductColor
-                                                    color={product.color}
-                                                />
-                                            )}
+                                <Product key={index}>
+                                    <ProductDetail>
+                                        <Image src={product.img} />
+                                        <Details>
+                                            <ProductName>
+                                                <b>Product:</b> {product.title}
+                                            </ProductName>
+                                            <ProductId>
+                                                <b>ID:</b> {product._id}
+                                            </ProductId>
+                                            <b>Color:</b>
+                                            {product.color &&
+                                                typeof product.color ===
+                                                    "string" && (
+                                                    <ProductColor
+                                                        color={product.color}
+                                                    />
+                                                )}
+                                            <ProductSize>
+                                                <b>Size:</b> {product.size}
+                                            </ProductSize>
+                                        </Details>
+                                    </ProductDetail>
+                                    <PriceDetail>
+                                        <ButtonWrapper>
+                                            <DeleteButton
+                                                onClick={() =>
+                                                    handleRemoveFromCart(
+                                                        product._id,
+                                                        product.color[0],
+                                                        product.size[0]
+                                                    )
+                                                }
+                                            >
+                                                <DeleteOutline />
+                                            </DeleteButton>
+                                        </ButtonWrapper>
 
-                                        <ProductSize>
-                                            <b>Size:</b> {product.size}
-                                        </ProductSize>
-                                    </Details>
-                                </ProductDetail>
-                                <PriceDetail>
-                                    <ProductAmountContainer>
-                                        <Add />
-                                        <ProductAmount>
-                                            {product.quantity}
-                                        </ProductAmount>
-                                        <Remove />
-                                    </ProductAmountContainer>
-                                    <ProductPrice>
-                                        $ {product.price * product.quantity}
-                                    </ProductPrice>
-                                </PriceDetail>
-                            </Product>
-                               <Hr/></>
+                                        <ProductAmountContainer>
+                                            <Add
+                                                onClick={() =>
+                                                    updateProductQuantity(
+                                                        product._id,
+                                                        product.color[0],
+                                                        product.size[0],
+                                                        product.quantity + 1
+                                                    )
+                                                }
+                                            />
+                                            <ProductAmount>
+                                                {product.quantity}
+                                            </ProductAmount>
+                                            <Remove
+                                                onClick={() =>
+                                                    handleRemove(
+                                                        product._id,
+                                                        product.color[0],
+                                                        product.size[0],
+                                                        product.quantity - 1
+                                                    )
+                                                }
+                                            />
+                                        </ProductAmountContainer>
+                                        <ProductPrice>
+                                            $ {product.price * product.quantity}
+                                        </ProductPrice>
+                                    </PriceDetail>
+                                </Product>
+                                <Hr />
+                            </>
                         ))}
                     </Info>
                     <Summary>
@@ -219,16 +258,6 @@ const TopButton = styled.button<StyledTypesProps>`
     color: ${(props) => props.types === "filled" && "white"};
 `;
 
-const TopTexts = styled.div`
-    ${mobile({ display: "none" })}
-`;
-
-const TopText = styled.span`
-    text-decoration: underline;
-    cursor: pointer;
-    margin: 0 10px;
-`;
-
 const Bottom = styled.div`
     display: flex;
     justify-content: space-between;
@@ -265,7 +294,7 @@ const ProductName = styled.span``;
 
 const ProductId = styled.span``;
 
-const ProductColor = styled.div`
+const ProductColor = styled.span<StyledTypesProps>`
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -282,22 +311,29 @@ const PriceDetail = styled.div`
     justify-content: center;
 `;
 
+const ButtonWrapper = styled.div`
+    display: flex;
+`;
+
+const DeleteButton = styled.button`
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+`;
+
 const ProductAmountContainer = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin: 5px 0;
 `;
 
-const ProductAmount = styled.div`
-    font-size: 24px;
+const ProductAmount = styled.span`
     margin: 5px;
-    ${mobile({ margin: "5px 15px" })}
+    font-weight: 500;
 `;
 
-const ProductPrice = styled.div`
-    font-size: 30px;
-    font-weight: 200;
-    ${mobile({ marginBottom: "20px" })}
+const ProductPrice = styled.span`
+    font-weight: 500;
 `;
 
 const Hr = styled.hr`
@@ -336,7 +372,6 @@ const Button = styled.button`
     background-color: black;
     color: white;
     font-weight: 600;
-    cursor: pointer;
 `;
 
 export default Cart;

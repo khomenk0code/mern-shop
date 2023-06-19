@@ -12,6 +12,7 @@ import { publicRequest } from "../utils/requestMethods";
 import { addProduct } from "../redux/cart.slice";
 import { useDispatch } from "react-redux";
 import cssColorNames from "css-color-names";
+import { useAppSelector } from "../hooks/hooks";
 
 interface FilterColorProps {
     color: string;
@@ -24,7 +25,9 @@ const Product: React.FC = () => {
     const [quantity, setQuantity] = useState<number>(1);
     const [color, setColor] = useState<string>("");
     const [size, setSize] = useState<string>("");
-    const [isColorSelected, setIsColorSelected] = useState<boolean>(false); // New state to track color selection
+    const [isColorSelected, setIsColorSelected] = useState<boolean>(false);
+    const products = useAppSelector((state) => state.cart.products);
+    const [showNotification, setShowNotification] = useState(false);
 
     const dispatch = useDispatch();
     const location = useLocation();
@@ -46,12 +49,28 @@ const Product: React.FC = () => {
     };
 
     const handleClick = () => {
-        if (!color && product?.color.length) {
+        if (product && (!color || color === "")) {
             setIsColorSelected(true);
             return;
         }
 
+        setShowNotification(false);
+
         if (product) {
+            const existingProduct = products.find(
+                (p) =>
+                    p._id === product._id &&
+                    p.color.includes(color) &&
+                    p.size.includes(size)
+            );
+
+            console.log(existingProduct);
+
+            if (existingProduct) {
+                setShowNotification(true);
+                return;
+            }
+
             dispatch(addProduct({ ...product, quantity, color, size }));
         }
     };
@@ -87,37 +106,57 @@ const Product: React.FC = () => {
                     <Desc>{product?.desc}</Desc>
                     <Price>{product?.price} $</Price>
                     <FilterContainer>
-                        <Filter>
-                            <FilterTitle>
-                                {product && product.color && product.color.length <= 1
-                                    ? "Color: "
-                                    : "Colors: "}
-                            </FilterTitle>
-                            {product?.color
-                                .filter((c) => validColors.includes(c.toLowerCase()))
-                                .map((c) => (
-                                    <FilterColor
-                                        color={c}
-                                        key={c}
-                                        onClick={() => {
-                                            setColor(c);
-                                            setIsColorSelected(false);
-                                        }}
-                                        isSelected={c === color}
-                                    />
-                                ))}
-                        </Filter>
+                        {product?.color.length !== 0 ? (
+                            <Filter>
+                                <FilterTitle>
+                                    {product &&
+                                    product.color &&
+                                    product.color.length <= 1
+                                        ? "Color: "
+                                        : "Colors: "}
+                                </FilterTitle>
+                                {product?.color
+                                    .filter((c) =>
+                                        validColors.includes(c.toLowerCase())
+                                    )
+                                    .map((c) => (
+                                        <FilterColor
+                                            color={c}
+                                            key={c}
+                                            onClick={() => {
+                                                setColor(c);
+                                                setIsColorSelected(false);
+                                            }}
+                                            isSelected={c === color}
+                                        />
+                                    ))}
+                            </Filter>
+                        ) : null}
                         {product?.size?.length !== 0 ? (
                             <Filter>
                                 <FilterTitle>Size: </FilterTitle>
-                                <FilterSize onChange={(e) => setSize(e.target.value)}>
+                                <FilterSize
+                                    onChange={(e) => setSize(e.target.value)}
+                                >
                                     {product?.size
                                         .sort((a, b) => {
-                                            const sizesOrder = ["XS", "S", "M", "L", "XL", "XXL"];
-                                            return sizesOrder.indexOf(a) - sizesOrder.indexOf(b);
+                                            const sizesOrder = [
+                                                "XS",
+                                                "S",
+                                                "M",
+                                                "L",
+                                                "XL",
+                                                "XXL",
+                                            ];
+                                            return (
+                                                sizesOrder.indexOf(a) -
+                                                sizesOrder.indexOf(b)
+                                            );
                                         })
                                         .map((s) => (
-                                            <FilterSizeOption key={s}>{s}</FilterSizeOption>
+                                            <FilterSizeOption key={s}>
+                                                {s}
+                                            </FilterSizeOption>
                                         ))}
                                 </FilterSize>
                             </Filter>
@@ -138,6 +177,11 @@ const Product: React.FC = () => {
                             {isColorSelected && (
                                 <WarningText>Please select a color</WarningText>
                             )}
+                            {showNotification && (
+                                <WarningText>
+                                    Product already in the cart
+                                </WarningText>
+                            )}
                             <Button onClick={handleClick}>ADD TO CART</Button>
                         </ButtonContainer>
                     </AddContainer>
@@ -150,9 +194,9 @@ const Product: React.FC = () => {
 };
 
 const WarningText = styled.span`
-  color: red;
-  font-size: 14px;
-  margin-top: 5px;
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
 `;
 
 const Container = styled.div``;
@@ -201,8 +245,6 @@ const FilterContainer = styled.div`
     ${mobile({ width: "100%" })}
 `;
 
-
-
 const Filter = styled.div`
     display: flex;
     align-items: center;
@@ -214,18 +256,17 @@ const FilterTitle = styled.span`
 `;
 
 const FilterColor = styled.div<FilterColorProps>`
-  width: ${(props) => (props.color === "White" ? "19px" : "20px")};
-  height: ${(props) => (props.color === "White" ? "19px" : "20px")};
-  border-radius: 50%;
-  background-color: ${(props) => props.color};
-  margin: 0 5px;
-  cursor: pointer;
-  border: ${(props) =>
-          props.color?.toLowerCase() === "white" ? "1px solid black" : "none"};
-  transform: ${(props) => (props.isSelected ? "scale(1.4)" : "scale(1)")};
-  transition: transform 0.2s ease-in-out;
+    width: ${(props) => (props.color === "White" ? "19px" : "20px")};
+    height: ${(props) => (props.color === "White" ? "19px" : "20px")};
+    border-radius: 50%;
+    background-color: ${(props) => props.color};
+    margin: 0 5px;
+    cursor: pointer;
+    border: ${(props) =>
+        props.color?.toLowerCase() === "white" ? "1px solid black" : "none"};
+    transform: ${(props) => (props.isSelected ? "scale(1.4)" : "scale(1)")};
+    transition: transform 0.2s ease-in-out;
 `;
-
 
 const FilterSize = styled.select`
     margin-left: 10px;
@@ -235,7 +276,7 @@ const FilterSize = styled.select`
 const FilterSizeOption = styled.option``;
 
 const AddContainer = styled.div`
-    width: 50%;
+    width: 70%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -265,27 +306,25 @@ const Amount = styled.span`
 
 const ButtonContainer = styled.div`
     display: flex;
-  flex-direction: column;
-  align-items: center;
-    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
     margin-left: 1rem;
-  
+
     ${mobile({ width: "100%" })}
 `;
 
 const Button = styled.button`
-  margin: 5px;
+    margin: 5px;
     padding: 15px;
     border: 2px solid teal;
     background-color: white;
     cursor: pointer;
     font-weight: 500;
-  
 
     &:hover {
         background-color: #f8f4f4;
     }
 `;
-
 
 export default Product;

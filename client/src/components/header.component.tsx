@@ -9,9 +9,6 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { loginOut } from "../redux/user.slice";
 
-
-
-
 const Header: React.FC = () => {
     const quantity = useAppSelector((state: any) => state.cart.quantity);
     const user = useAppSelector((state: any) => state.user.currentUser);
@@ -29,7 +26,10 @@ const Header: React.FC = () => {
                         <Language>EN</Language>
                         <SearchContainer>
                             <Input placeholder="Search" />
-                            <FontAwesomeIcon icon={faMagnifyingGlass} style={{ color: "gray" }} />
+                            <FontAwesomeIcon
+                                icon={faMagnifyingGlass}
+                                style={{ color: "gray" }}
+                            />
                         </SearchContainer>
                     </Left>
                     <Center>
@@ -38,26 +38,37 @@ const Header: React.FC = () => {
                         </Logo>
                     </Center>
                     <Right>
-                        {user.isAdmin && <MenuItem>
-                            <StyledLink to="https://mern-shop-admin.vercel.app/login">Admin dashboard</StyledLink>
-                        </MenuItem>}
+                        {user?.isAdmin ? (
+                            <MenuItem>
+                                <StyledLink to="https://mern-shop-admin.vercel.app/login">
+                                    Admin dashboard
+                                </StyledLink>
+                            </MenuItem>
+                        ) : null}
                         {user ? (
                             <>
                                 <MenuItem>
-                                    <Badge badgeContent={quantity} color="primary">
+                                    <Badge
+                                        badgeContent={quantity}
+                                        color="primary"
+                                    >
                                         <StyledLink to="/cart">
                                             <ShoppingCartOutlined />
                                         </StyledLink>
                                     </Badge>
                                 </MenuItem>
                                 <MenuItem>
-                                    <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+                                    <LogoutButton onClick={handleLogout}>
+                                        Logout
+                                    </LogoutButton>
                                 </MenuItem>
                             </>
                         ) : (
                             <>
                                 <MenuItem>
-                                    <StyledLink to="/register">Register</StyledLink>
+                                    <StyledLink to="/register">
+                                        Register
+                                    </StyledLink>
                                 </MenuItem>
                                 <MenuItem>
                                     <StyledLink to="/login">Sign In</StyledLink>
@@ -70,7 +81,6 @@ const Header: React.FC = () => {
         </div>
     );
 };
-
 
 export const StyledLink = styled(Link)`
     text-decoration: none;
@@ -91,17 +101,17 @@ const Wrapper = styled.div`
 `;
 
 const LogoutButton = styled.button`
-  padding: 10px 20px;
-  background-color: #ff5a5f;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    padding: 10px 20px;
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 
-  &:hover {
-    background-color: #e54246;
-  }
+    &:hover {
+        background-color: #e54246;
+    }
 `;
 
 const Left = styled.div`

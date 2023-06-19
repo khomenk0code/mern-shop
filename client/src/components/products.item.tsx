@@ -93,7 +93,7 @@ const Icon = styled.div`
 const Image = styled.img`
     height: 75%;
     z-index: 2;
-  max-width: 270px;
+    max-width: 270px;
 `;
 
 export default ProductsItem;

@@ -14,7 +14,7 @@ import Register from "./pages/register.page";
 import { useAppSelector } from "./hooks/hooks";
 
 const App = () => {
-    const user = useAppSelector(state => state.user.currentUser);
+    const user = useAppSelector((state) => state.user.currentUser);
     return (
         <Router>
             <Routes>

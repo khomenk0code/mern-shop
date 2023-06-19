@@ -1,13 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
 const userSlice = createSlice({
     name: "user",
     initialState: {
         currentUser: null,
         isFetching: false,
         error: false,
-
     },
     reducers: {
         loginStart: (state) => {
@@ -29,5 +27,6 @@ const userSlice = createSlice({
     },
 });
 
-export const { loginStart, loginSuccess, loginFailure, loginOut } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, loginOut } =
+    userSlice.actions;
 export default userSlice.reducer;
