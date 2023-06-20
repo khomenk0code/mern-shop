@@ -62,13 +62,16 @@ const Product: React.FC = () => {
 
         setShowNotification(false);
 
+
+
         if (product) {
             const existingProduct = products.find(
                 (p) =>
                     p._id === product._id &&
                     p.color.includes(color) &&
-                    p.size.includes(size)
+                    p.size.toString() === size
             );
+
 
             if (existingProduct) {
                 setShowNotification(true);
