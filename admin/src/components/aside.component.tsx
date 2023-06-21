@@ -45,22 +45,18 @@ const Sidebar: React.FC = () => {
                                 {!hideTitles && "Home"}
                             </SidebarListItem>
                         </Link>
-                        {!hideTitles && (
                             <SidebarListItem>
                                 <SidebarIcon>
                                     <Timeline />
                                 </SidebarIcon>
                                 Analytics
                             </SidebarListItem>
-                        )}
-                        {!hideTitles && (
                             <SidebarListItem>
                                 <SidebarIcon>
                                     <TrendingUp />
                                 </SidebarIcon>
                                 Sales
                             </SidebarListItem>
-                        )}
                     </SidebarList>
                 </SidebarMenu>
                 <SeparatorLine />

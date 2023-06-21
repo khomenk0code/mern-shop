@@ -12,6 +12,10 @@ import Cart from "./pages/cart.page";
 import Login from "./pages/login.page";
 import Register from "./pages/register.page";
 import { useAppSelector } from "./hooks/hooks";
+import styled from "styled-components";
+import Aside from "./components/aside.component";
+import Header from "./components/header.component";
+import Wishlist from "./pages/wishlist";
 
 const App = () => {
     const user = useAppSelector((state) => state.user.currentUser);
@@ -30,9 +34,32 @@ const App = () => {
                     path="/register"
                     element={user ? <Navigate to="/" /> : <Register />}
                 />
+                <Route path="/cabinet/*" element={<CabinetRoutes />}/>
             </Routes>
         </Router>
     );
 };
+
+
+const CabinetRoutes = () => (
+    <Container>
+           <Header/>
+            <Wrapper>
+                <Aside/>
+                <Routes>
+                    <Route path="/wishlist" element={<Wishlist />} />
+                </Routes>
+            </Wrapper>
+        </Container>
+);
+
+const Container = styled.div`
+display: flex;
+  flex-direction: column;
+`;
+
+const Wrapper = styled.div`
+display: flex;
+`;
 
 export default App;

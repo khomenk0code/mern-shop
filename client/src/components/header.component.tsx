@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Badge } from "@mui/material";
-import { ShoppingCartOutlined } from "@mui/icons-material";
+import { FavoriteBorder, MonitorHeart, ShoppingCartOutlined } from "@mui/icons-material";
 import { mobile } from "../utils/responsive";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
@@ -55,6 +55,10 @@ const Header: React.FC = () => {
                                         <StyledLink to="/cart">
                                             <ShoppingCartOutlined />
                                         </StyledLink>
+                                          <StyledLink to="/cabinet/wishlist">
+                                            <FavoriteBorder />
+                                        </StyledLink>
+
                                     </Badge>
                                 </MenuItem>
                                 <MenuItem>
@@ -85,6 +89,7 @@ const Header: React.FC = () => {
 export const StyledLink = styled(Link)`
     text-decoration: none;
     color: #000000;
+  margin: 0 10px;
 `;
 
 const Container = styled.header`
