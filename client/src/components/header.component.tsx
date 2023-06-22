@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Badge } from "@mui/material";
-import { FavoriteBorder, MonitorHeart, ShoppingCartOutlined } from "@mui/icons-material";
+import { FavoriteBorder, ShoppingCartOutlined } from "@mui/icons-material";
 import { mobile } from "../utils/responsive";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
@@ -12,7 +12,10 @@ import { loginOut } from "../redux/user.slice";
 const Header: React.FC = () => {
     const quantity = useAppSelector((state: any) => state.cart.quantity);
     const user = useAppSelector((state: any) => state.user.currentUser);
+    const wishlist = useAppSelector((state: any) => state.wishlist.products);
     const dispatch = useAppDispatch();
+
+
 
     const handleLogout = () => {
         dispatch(loginOut());
@@ -49,23 +52,31 @@ const Header: React.FC = () => {
                             <>
                                 <MenuItem>
                                     <Badge
+                                        badgeContent={wishlist.length}
+                                        color="primary"
+                                    >
+                                          <StyledLink to="/cabinet/wishlist">
+                                            <FavoriteBorder />
+                                        </StyledLink>
+                                    </Badge>
+                                </MenuItem>
+                                <MenuItem>
+                                    <Badge
                                         badgeContent={quantity}
                                         color="primary"
                                     >
                                         <StyledLink to="/cart">
                                             <ShoppingCartOutlined />
                                         </StyledLink>
-                                          <StyledLink to="/cabinet/wishlist">
-                                            <FavoriteBorder />
-                                        </StyledLink>
-
                                     </Badge>
                                 </MenuItem>
                                 <MenuItem>
+
                                     <LogoutButton onClick={handleLogout}>
                                         Logout
                                     </LogoutButton>
-                                </MenuItem>
+                            </MenuItem>
+
                             </>
                         ) : (
                             <>
@@ -165,7 +176,7 @@ const Right = styled.div`
 const MenuItem = styled.div`
     font-size: 14px;
     cursor: pointer;
-    margin-left: 25px;
+    margin-left: 15px;
     ${mobile({ fontSize: "12px", marginLeft: "10px" })}
 `;
 

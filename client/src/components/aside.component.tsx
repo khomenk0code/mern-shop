@@ -6,7 +6,7 @@ import {
     ChevronRight, CurrencyExchange,
     FavoriteBorder,
     LineStyle,
-    ListAlt, Message, MessageOutlined, Percent, SettingsAccessibilityOutlined, SettingsApplications, ThreePSharp,
+    ListAlt, MessageOutlined, Percent, SettingsAccessibilityOutlined, SettingsApplications, ThreePSharp,
 } from "@mui/icons-material";
 
 const Aside: React.FC = () => {
@@ -125,9 +125,6 @@ const SidebarContainer = styled.aside`
 const SidebarWrapper = styled.div<{ hideMenu: boolean }>`
   padding: 20px;
   color: #555;
-  transition: transform 0.3s ease-in-out;
-  transform: ${({ hideMenu }) =>
-          hideMenu ? "translateX(-25%)" : "translateX(0)"};
 `;
 
 const SidebarMenu = styled.div`

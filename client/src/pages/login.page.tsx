@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { mobile } from "../utils/responsive";
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import login from "../redux/auth.api";
+import login from "../redux/api.calls";
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");

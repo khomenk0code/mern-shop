@@ -1,26 +1,11 @@
 import React, { useState } from 'react';
 import styled from "styled-components";
-import { Typography, Grid, Card, CardContent, CardMedia, Button, IconButton, Checkbox } from "@mui/material";
+import { Typography, Grid, Card, CardContent, CardMedia, Button, IconButton, Checkbox, Badge } from "@mui/material";
 import { DeleteOutline, AddShoppingCart } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { clearWishlist, removeProductWishlist } from "../redux/wishlist.slice";
 
-// Пример данных для отображения товаров
-const products = [
-    {
-        id: 1,
-        title: "Product 1",
-        desc: "Description of Product 1",
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjf8KEchalHXDschnJIH0wZGSC9iM5BuSLZQ&usqp=CAU",
-        price: 10.99,
-    },
-    {
-        id: 2,
-        title: "Product 2",
-        desc: "Description of Product 2",
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxzDjA6T24POBsgn2r9-iKloRh4-YywtGhDQ&usqp=CAU",
-        price: 19.99,
-    },
-    // Дополнительные продукты...
-];
+
 
 
 
@@ -28,34 +13,31 @@ const Wishlist: React.FC = () => {
     const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
     const [selectedTotalPrice, setSelectedTotalPrice] = useState<number>(0);
     const [isAllSelected, setIsAllSelected] = useState<boolean>(false);
+    const wishlist = useAppSelector((state: any) => state.wishlist.products);
+    const dispatch = useAppDispatch();
+
 
 
 
     const handleRemoveFromWishlist = (id: number) => {
-        console.log("Remove from wishlist:", id);
+        console.log(id);
+        dispatch(removeProductWishlist(id));
     };
 
-    const handleAddAllToCart = () => {
-        console.log("Add all to cart:", selectedProducts);
-        setSelectedProducts([]); // Очистить выбранные продукты после добавления в корзину
-        setSelectedTotalPrice(0); // Сбросить общую сумму выбранных товаров
-    };
 
     const handleRemoveAll = () => {
-        console.log("Remove all from wishlist");
-        setSelectedProducts([]); // Очистить выбранные продукты после удаления из избранного
-        setSelectedTotalPrice(0); // Сбросить общую сумму выбранных товаров
+        dispatch(clearWishlist());
+        setSelectedProducts([]);
+        setSelectedTotalPrice(0);
     };
 
     const handleToggleAll = () => {
-        if (selectedProducts.length === products.length) {
-            // Если все товары уже выбраны, снять выделение со всех
+        if (selectedProducts.length === wishlist.length) {
             setSelectedProducts([]);
             setSelectedTotalPrice(0);
             setIsAllSelected(false)
         } else {
-            // Выделить все товары
-            const allProductIds = products.map((product) => product.id);
+            const allProductIds = wishlist.map((product: any) => product._id);
             setSelectedProducts(allProductIds);
             calculateSelectedTotalPrice(allProductIds);
             setIsAllSelected(true)
@@ -79,7 +61,7 @@ const Wishlist: React.FC = () => {
 
     const calculateSelectedTotalPrice = (selectedProductIds: number[]) => {
         const totalPrice = selectedProductIds.reduce((total, productId) => {
-            const product = products.find((product) => product.id === productId);
+            const product = wishlist.find((product: any) => product._id === productId);
             return total + (product ? product.price : 0);
         }, 0);
         setSelectedTotalPrice(totalPrice);
@@ -91,24 +73,25 @@ const Wishlist: React.FC = () => {
                 Wishlist
             </Typography>
             <Grid container spacing={2}>
-                {products.map((product) => (
-                    <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+                {wishlist.map((products: any) => (
+                    <Grid item key={products._id} xs={12} sm={6} md={4} lg={3}>
                         <ProductCard>
-                            <DeleteButton onClick={() => handleRemoveFromWishlist(product.id)}>
-                                <DeleteOutline />
+                            <DeleteButton sx={{position: "absolute"}}  >
+                                <DeleteOutline onClick={() => handleRemoveFromWishlist(products._id)} />
                             </DeleteButton>
-                            <ProductImage image={product.img} />
+                            <ProductImage image={products.img} />
                             <CardContent>
-                                <ProductTitle variant="h6">{product.title}</ProductTitle>
-                                <ProductDescription>{product.desc}</ProductDescription>
-                                <ProductPrice variant="subtitle1">${product.price}</ProductPrice>
-                                <Button variant="contained" color="primary">
+                                <ProductTitle variant="h6">{products.title}</ProductTitle>
+                                <ProductDescription>{products.desc}</ProductDescription>
+                                <ProductPrice variant="subtitle1">${products.price}</ProductPrice>
+
+                                <Button variant="contained" color="primary" href={`/product/${products._id}`}>
                                     <AddShoppingCart /> Buy
                                 </Button>
 
                                 <Checkbox
-                                    checked={selectedProducts.includes(product.id)}
-                                    onChange={() => handleToggleProduct(product.id)}
+                                    checked={selectedProducts.includes(products._id)}
+                                    onChange={() => handleToggleProduct(products._id)}
                                 />
                             </CardContent>
                         </ProductCard>
@@ -116,16 +99,17 @@ const Wishlist: React.FC = () => {
                 ))}
             </Grid>
             <Button variant="contained" onClick={handleToggleAll}>
-                {selectedProducts.length === products.length ? "Deselect All" : "Select All"}
+                {selectedProducts.length === wishlist.length ? "Deselect All" : "Select All"}
             </Button>
 
-            {isAllSelected && (<Button variant="contained" color="primary" onClick={handleAddAllToCart}>
-                Add All to Cart
-            </Button>)}
 
-            {isAllSelected && <Button variant="contained" color="secondary" onClick={handleRemoveAll}>
-                Remove All
-            </Button>}
+            {selectedProducts.length > 0 && (
+                <Badge badgeContent={selectedProducts.length} color="warning">
+                    <Button variant="contained" color="secondary" onClick={handleRemoveAll}>
+                        Remove All
+                    </Button>
+                </Badge>
+            )}
 
             {selectedProducts.length > 0 && (
                 <Typography variant="subtitle1" gutterBottom>
@@ -152,7 +136,7 @@ const ProductCard = styled(Card)`
 
 const ProductImage = styled(CardMedia)`
   height: 200px;
-  
+  position: relative;
 `;
 
 const ProductTitle = styled(Typography)`
@@ -170,7 +154,6 @@ const ProductPrice = styled(Typography)`
 
 const DeleteButton = styled(IconButton)`
   align-self: flex-end;
-  position: absolute;
 `;
 
 export default Wishlist;
