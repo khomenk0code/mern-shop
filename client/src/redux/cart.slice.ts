@@ -1,50 +1,69 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IProduct } from "../components/products.component";
 
+interface CartState {
+    products: IProduct[];
+    quantity: number;
+    total: number;
+}
+
 interface UpdateProductQuantityPayload {
     productId: string;
     quantity: number;
     color: string;
     size: string;
 }
-interface removeProductPayload {
+
+interface RemoveProductPayload {
     productId: string;
     color?: string;
     size?: string;
 }
 
+const initialState: CartState = {
+    products: [],
+    quantity: 0,
+    total: 0,
+};
+
+const isMatchingProduct = (
+    product: IProduct,
+    productId: string,
+    color?: string,
+    size?: string
+): boolean => {
+    return (
+        product._id === productId &&
+        (color === undefined || product.color[0] === color) &&
+        (size === undefined || product.size[0] === size)
+    );
+};
+
+
 const cartSlice = createSlice({
     name: "cart",
-    initialState: {
-        products: [] as IProduct[],
-        quantity: 0,
-        total: 0,
-    },
+    initialState,
     reducers: {
-        addProduct: (state, action: PayloadAction<any>) => {
-            const { price, quantity } = action.payload;
-            state.quantity += quantity;
-            state.products.push(action.payload);
-            state.total += price * quantity;
+        addProduct: (state, action: PayloadAction<IProduct>) => {
+            const product = action.payload;
+            const existingProduct = state.products.find((p) =>
+                isMatchingProduct(p, product._id, product.color[0], product.size[0])
+            );
+
+            if (existingProduct) {
+                existingProduct.quantity += product.quantity;
+            } else {
+                state.products.push(product);
+            }
+
+            state.quantity += product.quantity;
+            state.total += product.price * product.quantity;
         },
-        removeProduct: (
-            state,
-            action: PayloadAction<removeProductPayload>
-        ) => {
+        removeProduct: (state, action: PayloadAction<RemoveProductPayload>) => {
             const { productId, color, size } = action.payload;
-            const productIndex = state.products.findIndex((product) => {
-                if (product._id === productId) {
-                    if (color === undefined && size === undefined) {
-                        return true;
-                    } else {
-                        return (
-                            product.color.includes(color || "") &&
-                            product.size.includes(size || "")
-                        );
-                    }
-                }
-                return false;
-            });
+            const productIndex = state.products.findIndex((product) =>
+                isMatchingProduct(product, productId, color, size)
+            );
 
             if (productIndex !== -1) {
                 const removedProduct = state.products[productIndex];
@@ -52,6 +71,8 @@ const cartSlice = createSlice({
 
                 if (removedQuantity === 1) {
                     state.quantity -= 1;
+                } else {
+                    state.quantity -= removedQuantity;
                 }
 
                 state.total -= removedProduct.price * removedQuantity;
@@ -64,39 +85,21 @@ const cartSlice = createSlice({
             action: PayloadAction<UpdateProductQuantityPayload>
         ) => {
             const { productId, color, size, quantity } = action.payload;
-            state.products = state.products.map((product) => {
-                if (product._id === productId) {
-                    const hasMatchingColor = color
-                        ? product.color.includes(color)
-                        : true;
-                    const hasMatchingSize = size
-                        ? product.size.includes(size)
-                        : true;
+            const product = state.products.find((p) =>
+                isMatchingProduct(p, productId, color, size)
+            );
 
-                    if (hasMatchingColor && hasMatchingSize) {
-                        const oldQuantity = product.quantity;
-                        const pricePerUnit = product.price;
+            if (product) {
+                const oldQuantity = product.quantity;
+                const pricePerUnit = product.price;
 
-                        if (oldQuantity === 1 && quantity < 1) {
-                            if (state.quantity > 0) {
-                                state.quantity -= 1;
-                            }
-                        } else {
-                            const priceDiff = (quantity - oldQuantity) * pricePerUnit;
-                            state.quantity += quantity - oldQuantity;
-                            state.total += priceDiff;
-                        }
+                const priceDiff = (quantity - oldQuantity) * pricePerUnit;
+                state.quantity += quantity - oldQuantity;
+                state.total += priceDiff;
 
-                        return {
-                            ...product,
-                            quantity: Math.max(1, quantity),
-                        };
-                    }
-                }
-                return product;
-            });
+                product.quantity = Math.max(1, quantity);
+            }
         },
-
         clearCart: (state) => {
             state.products = [];
             state.quantity = 0;
@@ -105,6 +108,11 @@ const cartSlice = createSlice({
     },
 });
 
-export const { addProduct, removeProduct, updateQuantity, clearCart } =
-    cartSlice.actions;
+export const {
+    addProduct,
+    removeProduct,
+    updateQuantity,
+    clearCart,
+} = cartSlice.actions;
+
 export default cartSlice.reducer;

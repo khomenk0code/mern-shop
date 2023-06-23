@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { IPopularProducts } from "../data";
 import {
     SearchOutlined,
     ShoppingCartOutlined,
@@ -11,13 +10,24 @@ import { addProductWishlist, removeProductWishlist } from "../redux/wishlist.sli
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
+export interface IPopularProducts {
+    _id: number;
+    img: string;
+}
+
 type CategoriesItemProps = {
     item: IPopularProducts;
 };
 
 const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
     const [liked, setLiked] = useState(false);
+    const wishlistProducts = useAppSelector(state => state.wishlist.products)
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        const isProductInWishlist = wishlistProducts.some((product) => product._id === item._id.toString());
+        setLiked(isProductInWishlist);
+    }, [wishlistProducts, item._id]);
 
     const handleLike = () => {
         if (liked) {

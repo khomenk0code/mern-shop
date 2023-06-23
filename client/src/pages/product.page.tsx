@@ -9,7 +9,7 @@ import { mobile } from "../utils/responsive";
 import { useLocation } from "react-router-dom";
 import { IProduct } from "../components/products.component";
 import { publicRequest } from "../utils/requestMethods";
-import { addProduct } from "../redux/cart.slice";
+import { addProduct, updateQuantity } from "../redux/cart.slice";
 import { useDispatch } from "react-redux";
 import cssColorNames from "css-color-names";
 import { useAppSelector } from "../hooks/hooks";
@@ -62,8 +62,6 @@ const Product: React.FC = () => {
 
         setShowNotification(false);
 
-
-
         if (product) {
             const existingProduct = products.find(
                 (p) =>
@@ -72,15 +70,29 @@ const Product: React.FC = () => {
                     p.size.toString() === size
             );
 
-
             if (existingProduct) {
-                setShowNotification(true);
+                dispatch(
+                    updateQuantity({
+                        productId: existingProduct._id,
+                        color,
+                        size,
+                        quantity: existingProduct.quantity + 1,
+                    })
+                );
                 return;
             }
 
-            dispatch(addProduct({ ...product, quantity, color, size }));
+            dispatch(
+                addProduct({
+                    ...product,
+                    quantity,
+                    color: [color],
+                    size: [size],
+                })
+            );
         }
     };
+
 
 
     useEffect(() => {
@@ -97,6 +109,7 @@ const Product: React.FC = () => {
 
     useEffect(() => {
         if (product?.size && product.size.length > 0) {
+            setColor(product.color[0])
             setSize(product.size[0]);
         }
     }, [product]);

@@ -20,6 +20,7 @@ const Cart = () => {
     const cart = useAppSelector((state) => state.cart);
     const dispatch = useAppDispatch();
 
+
     const axiosClient = axios.create({
         baseURL: "https://mern-shop-api.vercel.app/api",
     });
@@ -109,7 +110,8 @@ const Cart = () => {
                 </Top>
                 <Bottom>
                     <Info>
-                        {cart.products.map((product: IProduct, index) => (
+                        {cart.products.length > 0 ? (
+                        cart.products.map((product: IProduct, index) => (
                             <>
                                 <Product key={index}>
                                     <ProductDetail>
@@ -122,13 +124,10 @@ const Cart = () => {
                                                 <b>ID:</b> {product._id}
                                             </ProductId>
                                             <b>Color:</b>
-                                            {product.color &&
-                                                typeof product.color ===
-                                                    "string" && (
-                                                    <ProductColor
-                                                        color={product.color}
-                                                    />
-                                                )}
+                                            {product.color && (
+                                                <ProductColor color={product.color && product.color[0]} />
+                                            )}
+
                                             <ProductSize>
                                                 <b>Size:</b> {product.size}
                                             </ProductSize>
@@ -181,7 +180,9 @@ const Cart = () => {
                                 </Product>
                                 <Hr />
                             </>
-                        ))}
+                        ))  ) : (
+                            <p>Your cart is empty.</p>
+                        )}
                     </Info>
                     <Summary>
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>
@@ -295,11 +296,14 @@ const ProductName = styled.span``;
 const ProductId = styled.span``;
 
 const ProductColor = styled.span<StyledTypesProps>`
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: ${(props) => props.color};
+  border-radius: 50%;
+  background-color: ${props => props.color};
+  width: ${(props) => (props.color?.toLowerCase() === "white" ? "19px" : "20px")};
+  height: ${(props) => (props.color?.toLowerCase() === "white" ? "19px" : "20px")};
+  border: ${(props) =>
+          props.color?.toLowerCase() === "white" ? "1px solid black" : "none"};
 `;
+
 
 const ProductSize = styled.span``;
 
@@ -336,7 +340,7 @@ const ProductPrice = styled.span`
     font-weight: 500;
 `;
 
-const Hr = styled.hr`
+export const Hr = styled.hr`
     background-color: #eee;
     border: none;
     height: 1px;
