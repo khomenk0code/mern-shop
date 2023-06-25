@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 export interface IPopularProducts {
+    altImg: any;
     _id: number;
     img: string;
 }

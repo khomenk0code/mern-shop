@@ -1,43 +1,117 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { initializeApp } from "firebase/app";
+import { getFirestore, collection, doc, updateDoc } from "firebase/firestore";
 import React from "react";
-import { FirebaseConfig} from "../hooks/useFirebase.hooks";
+import ImageCompressor from "image-compressor.js";
+import { FirebaseConfig } from "../hooks/useFirebase.hooks";
 
-const handleImageChange = (
+interface ImageUrls {
+    fullSizeImageURL: string;
+    lightweightImageURL: string;
+}
+
+const handleImageChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     setImage: React.Dispatch<React.SetStateAction<File | null>>,
     setProgress: React.Dispatch<React.SetStateAction<number>>,
-    setImgUrl: React.Dispatch<React.SetStateAction<string>>,
+    setFullSizeImgUrl: React.Dispatch<React.SetStateAction<string>>,
+    setLightweightImgUrl: React.Dispatch<React.SetStateAction<string>>,
     firebaseConfig: FirebaseConfig
-) => {
-    e.preventDefault();
-    const image = e.target.files?.[0] || null;
-    setImage(image);
+): Promise<ImageUrls> => {
+    return new Promise((resolve, reject) => {
+        e.preventDefault();
+        const image = e.target.files?.[0] || null;
+        setImage(image);
 
-    if (image) {
+        if (!image) {
+            reject(new Error("No image selected."));
+            return;
+        }
+
         const fileName = new Date().getTime() + image.name;
-        const app = initializeApp(firebaseConfig); // Инициализация Firebase с помощью переданной конфигурации
+        const lightweightFileName =
+            fileName.replace(/\.[^/.]+$/, "") +
+            "_lightweight" +
+            image.name.substring(image.name.lastIndexOf("."));
+
+        const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
         const storageRef = ref(storage, fileName);
+        const lightweightStorageRef = ref(storage, lightweightFileName);
 
-        const uploadTask = uploadBytesResumable(storageRef, image);
+        const compressor = new ImageCompressor();
 
-        uploadTask.on(
-            "state_changed",
-            (snapshot: any) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                setProgress(progress);
-            },
-            (error: any) => {
-                console.log(error);
-            },
-            () => {
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL: any) => {
-                    setImgUrl(downloadURL);
-                });
-            }
-        );
-    }
+        Promise.all([
+            compressor.compress(image, { quality: 1 }), // Full-size image compression
+            compressor.compress(image, { maxWidth: 300, quality: 0.3 }), // Lightweight image compression
+        ])
+            .then(([fullSizeImage, lightweightImage]) => {
+                const uploadTask = uploadBytesResumable(storageRef, fullSizeImage);
+                const lightweightUploadTask = uploadBytesResumable(
+                    lightweightStorageRef,
+                    lightweightImage
+                );
+
+                uploadTask.on(
+                    "state_changed",
+                    (snapshot: any) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setProgress(progress);
+                    },
+                    (error: any) => {
+                        reject(error);
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref)
+                            .then((fullSizeImageURL: string) => {
+                                const firestore = getFirestore(app);
+                                const imagesCollection = collection(firestore, "images");
+                                const imageDocRef = doc(imagesCollection);
+
+                                updateDoc(imageDocRef, {
+                                    fullSizeImageURL: fullSizeImageURL,
+                                });
+
+                                setFullSizeImgUrl(fullSizeImageURL);
+
+                                lightweightUploadTask.on(
+                                    "state_changed",
+                                    () => {},
+                                    (error: Error) => {
+                                        reject(error);
+                                    },
+                                    () => {
+                                        getDownloadURL(lightweightUploadTask.snapshot.ref)
+                                            .then((lightweightImageURL: string) => {
+                                                updateDoc(imageDocRef, {
+                                                    lightweightImageURL: lightweightImageURL,
+                                                });
+
+                                                setLightweightImgUrl(lightweightImageURL);
+
+                                                const imageUrls: ImageUrls = {
+                                                    fullSizeImageURL: fullSizeImageURL,
+                                                    lightweightImageURL: lightweightImageURL,
+                                                };
+
+                                                resolve(imageUrls);
+                                            })
+                                            .catch((error: Error) => {
+                                                reject(error);
+                                            });
+                                    }
+                                );
+                            })
+                            .catch((error: Error) => {
+                                reject(error);
+                            });
+                    }
+                );
+            })
+            .catch((error: Error) => {
+                reject(error);
+            });
+    });
 };
 
 export default handleImageChange;

@@ -21,6 +21,7 @@ export interface IProduct {
     title: string;
     desc: string;
     img: string;
+    altImg: string;
     categories?: string[];
     size: string[];
     color: string[];
@@ -89,17 +90,21 @@ const Products: React.FC<ProductsProps> = ({ category, filters, sort }) => {
     };
 
     return (
-        <Container>
-            {(category ? filteredProducts : products)
-                .slice(0, visibleProductCount)
-                .map((item: any) => (
-                    <ProductsItem item={item} key={item._id} />
-                ))}
-            {isLoading && <Loader>Loading...</Loader>}
-            {visibleProductCount < (category ? filteredProducts.length : products.length) && !isLoading && (
-                <ShowMoreButton onClick={handleShowMore}>Show more</ShowMoreButton>
-            )}
-        </Container>
+ <>
+     <Container>
+         {(category ? filteredProducts : products)
+             .slice(0, visibleProductCount)
+             .map((item: any) => (
+                 <ProductsItem item={item} key={item._id} />
+             ))}
+         {isLoading && <Loader>Loading...</Loader>}
+     </Container>
+     <ButtonWrapper>
+         {visibleProductCount < (category ? filteredProducts.length : products.length) && !isLoading && (
+             <ShowMoreButton onClick={handleShowMore}>Show more</ShowMoreButton>
+         )}
+     </ButtonWrapper>
+ </>
     );
 };
 
@@ -118,6 +123,13 @@ const Loader = styled.div`
   margin-top: 1rem;
   font-weight: bold;
 `;
+const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+
 
 const ShowMoreButton = styled.button`
   margin-top: 1rem;

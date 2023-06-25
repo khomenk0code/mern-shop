@@ -16,7 +16,8 @@ const NewProduct = () => {
     const [image, setImage] = useState<File | null>(null);
     const [progress, setProgress] = useState(0);
     const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-    const [imgUrl, setImgUrl] = useState<string>("");
+    const [fullSizeImgUrl, setFullSizeImgUrl] = useState<string>("");
+    const [lightweightImgUrl, setLightweightImgUrl] = useState<string>("");
     const [isProductSaved, setIsProductSaved] = useState(false);
     const [isError, setIsError] = useState(false);
     const dispatch = useAppDispatch();
@@ -47,15 +48,36 @@ const NewProduct = () => {
         }));
     };
 
-    const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleImageChange(e, setImage, setProgress, setImgUrl, firebaseConfig);
+
+    // ...
+
+    const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            await handleImageChange(
+                e,
+                setImage,
+                setProgress,
+                setFullSizeImgUrl,
+                setLightweightImgUrl,
+                firebaseConfig
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
+
+
 
     const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        const product = { ...inputs, img: imgUrl, size: selectedSizes };
-
+        const product = {
+            ...inputs,
+            img: fullSizeImgUrl,
+            size: selectedSizes,
+            altImg: lightweightImgUrl,
+        };
+        console.log("Product:", product); // Check the console output
         try {
             const savedProduct = await addProduct(product, dispatch);
             console.log("Product saved", savedProduct);
@@ -68,6 +90,9 @@ const NewProduct = () => {
             setIsError(true);
         }
     };
+
+
+// ...
 
     return (
         <Wrapper>
@@ -207,9 +232,15 @@ const NewProduct = () => {
                             />
                         </LinearProgressWrapper>
                     )}
-                    {imgUrl && (
+                    {fullSizeImgUrl && (
                         <img
-                            src={imgUrl}
+                            src={fullSizeImgUrl}
+                            alt="Product"
+                            className="uploaded-image"
+                        />
+                    )}  {lightweightImgUrl && (
+                        <img
+                            src={lightweightImgUrl}
                             alt="Product"
                             className="uploaded-image"
                         />

@@ -22,7 +22,8 @@ const App = () => {
     const user = useAppSelector((state) => state.user.currentUser);
     return (
         <Router>
-                <ScrollToTop/>
+               ,
+            
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/products/:category" element={<ProductList />} />

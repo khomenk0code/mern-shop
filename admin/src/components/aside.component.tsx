@@ -49,13 +49,13 @@ const Sidebar: React.FC = () => {
                                 <SidebarIcon>
                                     <Timeline />
                                 </SidebarIcon>
-                                Analytics
+                                {!hideTitles && "Analytics"}
                             </SidebarListItem>
                             <SidebarListItem>
                                 <SidebarIcon>
                                     <TrendingUp />
                                 </SidebarIcon>
-                                Sales
+                                {!hideTitles && "Sales"}
                             </SidebarListItem>
                     </SidebarList>
                 </SidebarMenu>

@@ -9,7 +9,7 @@ import FooterComponent from "../components/footer.component";
 
 const Home: React.FC = () => {
     return (
-        <>
+      <>
             <Announcement />
             <Navbar />
             <Slider />
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
             <Products />
             <Newsletter />
             <FooterComponent />
-        </>
+      </>
     );
 };
 

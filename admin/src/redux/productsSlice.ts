@@ -7,6 +7,7 @@ export interface Product {
     title: string;
     desc: string;
     img: string;
+    altImg: string;
     categories?: string[];
     size: string[];
     color: string[];

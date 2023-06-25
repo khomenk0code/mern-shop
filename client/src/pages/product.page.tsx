@@ -114,13 +114,17 @@ const Product: React.FC = () => {
         }
     }, [product]);
 
+
+    console.log(product);
+
     return (
         <Container>
             <Navbar />
             <Announcement />
             <Wrapper>
                 <ImgContainer>
-                    <Image src={product?.img} />
+                    {/*<Image src={product?.img} />*/}
+                    <Image src={product?.altImg} />
                 </ImgContainer>
                 <InfoContainer>
                     <Title>{product?.title}</Title>

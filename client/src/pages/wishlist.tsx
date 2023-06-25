@@ -62,6 +62,7 @@ const Wishlist: React.FC = () => {
     };
 
 
+    console.log(wishlist);
 
     return (
         <Container>
@@ -118,7 +119,7 @@ const Wishlist: React.FC = () => {
             {/*)}*/}
             <TotalPrice>
                 <Typography variant="subtitle1">
-                    <strong>${wishlist.length}</strong>products in total, with a total sum of
+                    <strong>{wishlist.length}</strong> products in total, with a total sum of
                 </Typography>
                 <Typography variant="h5" >
                     ${calculateTotalPrice()}

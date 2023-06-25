@@ -6,11 +6,8 @@ const wishlistSlice = createSlice({
     name: "wishlist",
     initialState: {
         products: [] as IProduct[],
-        isFetching: false,
-        error: false,
     },
     reducers: {
-
          addProductWishlist: (state, action: PayloadAction<any>) => {
             state.products.push(action.payload);
         },
