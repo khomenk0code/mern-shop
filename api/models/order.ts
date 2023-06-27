@@ -1,7 +1,13 @@
 import mongoose from "mongoose";
+import { Cart } from "./cart";
 
+interface Order extends Cart {
+    amount: number;
+    address: {},
+    status: string;
+}
 
-const OrderSchema = new mongoose.Schema({
+const OrderSchema = new mongoose.Schema<Order>({
     userId: {type: String, required: true},
     products: [
         {
