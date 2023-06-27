@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import { Cart } from "./cart";
 
-interface Order extends Cart {
+export interface IOrder extends Cart {
     amount: number;
     address: {},
     status: string;
 }
 
-const OrderSchema = new mongoose.Schema<Order>({
+const OrderSchema = new mongoose.Schema<IOrder>({
     userId: {type: String, required: true},
     products: [
         {
@@ -26,4 +26,4 @@ const OrderSchema = new mongoose.Schema<Order>({
 
 },{timestamps: true});
 
-module.exports = mongoose.model("Order", OrderSchema)
+module.exports = mongoose.model<IOrder>("Order", OrderSchema)

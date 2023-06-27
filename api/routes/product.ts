@@ -5,9 +5,9 @@ const Product = require("../models/product");
 
 
 router.post("/", verifyTokenAndAdmin, async (req: Request, res: Response) => {
-    const newProduct: any  = new Product(req.body)
+    const newProduct = new Product(req.body)
     try {
-        const savedProduct: any = await newProduct.save()
+        const savedProduct = await newProduct.save()
         res.status(200).json(savedProduct)
     } catch (e) {
         res.status(500).json(e)

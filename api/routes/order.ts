@@ -6,9 +6,9 @@ const Order = require("../models/order");
 
 
 router.post("/", verifyToken, async (req: Request, res: Response) => {
-    const newOrder: any = new Order(req.body);
+    const newOrder = new Order(req.body);
     try {
-        const savedOrder: any = await newOrder.save();
+        const savedOrder = await newOrder.save();
         res.status(200).json(savedOrder);
     } catch (e) {
         res.status(500).json(e);
