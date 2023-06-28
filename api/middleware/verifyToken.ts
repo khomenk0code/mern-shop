@@ -1,9 +1,10 @@
 import {Response, NextFunction, Request} from "express";
+import { IUser } from "../models/user";
 const jwt = require("jsonwebtoken")
 
 
 interface customRequest extends Request {
-    user: any
+    user: IUser
 }
 
 
@@ -16,7 +17,7 @@ const verifyToken = (req: customRequest, res: Response, next: NextFunction) => {
         jwt.verify(token, process.env.JWT_SECRET, (err: any, user: object) => {
             if (err) res.status(403).json("Token is not valid!");
 
-                req.user = user;
+                req.user= user as IUser;
                 next()
         });
     } else {

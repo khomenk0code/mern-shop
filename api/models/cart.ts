@@ -1,6 +1,16 @@
 import mongoose from "mongoose";
 
-const CartSchema = new mongoose.Schema({
+export interface Cart extends Document{
+    userId: string;
+    products: [
+        {
+            productId: string;
+            quantity: number;
+        }
+    ]
+}
+
+const CartSchema = new mongoose.Schema<Cart>({
     userId: {type: String, required: true},
     products: [
         {
@@ -16,4 +26,4 @@ const CartSchema = new mongoose.Schema({
 
 },{timestamps: true});
 
-module.exports = mongoose.model("Cart", CartSchema)
+module.exports = mongoose.model<Cart>("Cart", CartSchema)
