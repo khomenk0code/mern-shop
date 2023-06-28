@@ -14,7 +14,7 @@ export interface IProduct extends Document {
     inStock: boolean;
 }
 
-const ProductsSchema = new mongoose.Schema<IProduct>({
+const ProductsSchema = new mongoose.Schema({
     title: { type: String, required: true, unique: true },
     desc: { type: String, required: true },
     img: { type: String, required: true },
@@ -26,4 +26,4 @@ const ProductsSchema = new mongoose.Schema<IProduct>({
     inStock: { type: Boolean, default: true }
 }, { timestamps: true });
 
-export default mongoose.model<IProduct>("Product", ProductsSchema);
+export default mongoose.model("Product", ProductsSchema);
