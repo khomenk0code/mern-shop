@@ -32,7 +32,8 @@ const Product = () => {
     const [inputs, setInputs] = useState({});
     const [image, setImage] = useState<File | null>(null);
     const [progress, setProgress] = useState(0);
-    const [imgUrl, setImgUrl] = useState<string>("");
+    const [lightweightImgUrl, setLightweightImgUrl] = useState<string>("");
+    const [fullSizeImgUrl, setFullSizeImgUrl] = useState<string>("");
     const [isProductUpdated, setIsProductSaved] = useState(false);
     const [isError, setIsError] = useState(false);
 
@@ -118,8 +119,19 @@ const Product = () => {
         }));
     };
 
-    const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleImageChange(e, setImage, setProgress, setImgUrl, firebaseConfig);
+    const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            await handleImageChange(
+                e,
+                setImage,
+                setProgress,
+                setFullSizeImgUrl,
+                setLightweightImgUrl,
+                firebaseConfig
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -127,8 +139,9 @@ const Product = () => {
 
         try {
             let updatedProduct = { ...product };
-            if (imgUrl) {
-                updatedProduct.img = imgUrl;
+            if (fullSizeImgUrl) {
+                updatedProduct.img = fullSizeImgUrl;
+                updatedProduct.altImg = lightweightImgUrl;
             }
 
             updatedProduct = {
@@ -314,9 +327,21 @@ const Product = () => {
                     </ProductFormLeft>
                     <ProductUpdateRight>
                         <ProductUpload>
-                            {imgUrl ? (
-                                <ProductUploadImg src={imgUrl} alt="User" className="uploaded-image" />
-                            ) : (
+                            {fullSizeImgUrl ?
+                               ( <>
+                                       <img
+                                           src={fullSizeImgUrl}
+                                           alt="Product"
+                                           className="uploaded-image"
+                                       />
+                                       <img
+                                           src={lightweightImgUrl}
+                                           alt="Product"
+                                           className="uploaded-image"
+                                       />
+                                   </>
+
+                               ) : (
                                 <ProductUploadImg src={product?.img} alt="User image" />
                             )}
                             <UploadButton htmlFor="file">

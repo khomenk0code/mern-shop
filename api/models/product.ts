@@ -8,7 +8,7 @@ export interface IProduct extends Document {
     size: string[];
     color: string[];
     price: number;
-    altImg?: string;
+    altImg: string;
     createdAt?: Date;
     updatedAt?: Date;
     inStock: boolean;
@@ -18,10 +18,10 @@ const ProductsSchema = new mongoose.Schema({
     title: { type: String, required: true, unique: true },
     desc: { type: String, required: true },
     img: { type: String, required: true },
-    altImg: { type: String },
-    categories: { type: [] },
-    size: { type: [], required: true },
-    color: { type: [], required: true },
+    altImg: { type: String, required: true },
+    categories: { type: Array },
+    size: { type: Array, required: true },
+    color: { type: Array, required: true },
     price: { type: Number, required: true },
     inStock: { type: Boolean, default: true }
 }, { timestamps: true });

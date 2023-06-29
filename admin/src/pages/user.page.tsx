@@ -19,8 +19,9 @@ import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
 
 const User: React.FC = () => {
     const [image, setImage] = useState<File | null>(null);
-    const [imgUrl, setImgUrl] = useState<string>("");
     const [progress, setProgress] = useState(0);
+    const [fullSizeImgUrl, setFullSizeImgUrl] = useState<string>("");
+    const [lightweightImgUrl, setLightweightImgUrl] = useState<string>("");
     const [inputs, setInputs] = useState({});
     const [isUserSaved, setIsUserSaved] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -34,8 +35,19 @@ const User: React.FC = () => {
         state.user.users.find((user) => user._id === userId)
     );
 
-    const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleImageChange(e, setImage, setProgress, setImgUrl, firebaseConfig);
+    const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            await handleImageChange(
+                e,
+                setImage,
+                setProgress,
+                setFullSizeImgUrl,
+                setLightweightImgUrl,
+                firebaseConfig
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,8 +65,9 @@ const User: React.FC = () => {
 
         try {
             let updatedUser: any = { ...user };
-            if (imgUrl) {
-                updatedUser.image = imgUrl;
+            if (fullSizeImgUrl) {
+                updatedUser.img = fullSizeImgUrl;
+                updatedUser.altImg = lightweightImgUrl;
             }
 
             updatedUser = {
@@ -180,9 +193,21 @@ const User: React.FC = () => {
 
                         <UserUpdateRight>
                             <UserUpload>
-                                {imgUrl ? (
-                                    <UserUploadImg src={imgUrl} alt="User" className="uploaded-image" />
-                                ) : (
+                                {fullSizeImgUrl ?
+                                    ( <>
+                                            <img
+                                                src={fullSizeImgUrl}
+                                                alt="User"
+                                                className="uploaded-image"
+                                            />
+                                            <img
+                                                src={lightweightImgUrl}
+                                                alt="User"
+                                                className="uploaded-image"
+                                            />
+                                        </>
+
+                                    ) : (
                                     <UserUploadImg src={user?.image} alt="User image" />
                                 )}
                                 <UploadButton htmlFor="file">
