@@ -114,8 +114,7 @@ const Product: React.FC = () => {
         }
     }, [product]);
 
-
-    console.log(product);
+    
 
     return (
         <Container>

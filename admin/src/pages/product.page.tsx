@@ -327,23 +327,13 @@ const Product = () => {
                     </ProductFormLeft>
                     <ProductUpdateRight>
                         <ProductUpload>
-                            {fullSizeImgUrl ?
-                               ( <>
-                                       <img
-                                           src={fullSizeImgUrl}
-                                           alt="Product"
-                                           className="uploaded-image"
-                                       />
-                                       <img
-                                           src={lightweightImgUrl}
-                                           alt="Product"
-                                           className="uploaded-image"
-                                       />
-                                   </>
-
-                               ) : (
-                                <ProductUploadImg src={product?.img} alt="User image" />
+                            <ProductUploadImgHidden src={lightweightImgUrl} />
+                            {fullSizeImgUrl ? (
+                                <ProductUploadImg src={fullSizeImgUrl} alt="Product" className="uploaded-image" />
+                            ) : (
+                                product && <ProductUploadImg src={product.img} alt="Product" className="uploaded-image" />
                             )}
+
                             <UploadButton htmlFor="file">
                                 <UploadIcon />
                             </UploadButton>
@@ -396,6 +386,9 @@ const ProductUploadImg = styled.img`
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+`;
+const ProductUploadImgHidden = styled.img`
+display: none;
 `;
 
 const UploadButton = styled.label`

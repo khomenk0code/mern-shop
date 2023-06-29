@@ -22,6 +22,7 @@ type CategoriesItemProps = {
 
 const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
     const [liked, setLiked] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
     const wishlistProducts = useAppSelector(state => state.wishlist.products)
     const dispatch = useAppDispatch();
 
@@ -39,10 +40,19 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
         setLiked(!liked);
     };
 
+    const handleImageLoad = () => {
+        setImageLoaded(true);
+    };
+
     return (
         <Container>
             <Circle />
-            <Image src={item.img} />
+            {!imageLoaded && <img src={item.altImg} />}
+            <Image
+                src={item.img}
+                onLoad={handleImageLoad}
+                style={{ display: imageLoaded ? "block" : "none" }}
+            />
             <Info>
                 <Icon>
                     <StyledLink to={`/product/${item._id}`}>

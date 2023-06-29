@@ -239,7 +239,7 @@ const NewProduct = () => {
                             className="uploaded-image"
                         />
                     )}  {lightweightImgUrl && (
-                        <img
+                        <LightWeightImg
                             src={lightweightImgUrl}
                             alt="Product"
                             className="uploaded-image"
@@ -354,6 +354,11 @@ const LinearProgressWrapper = styled.div`
     align-items: center;
     margin-top: 10px;
 `;
+const LightWeightImg = styled.img`
+    display: none;
+`;
+
+
 
 const AddProductItem = styled.div`
     width: 250px;
