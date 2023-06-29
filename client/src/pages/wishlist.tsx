@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Badge, Button, Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
+import {
+    Badge,
+    Button,
+    Card,
+    CardContent,
+    CardMedia,
+    Grid,
+    Typography,
+} from "@mui/material";
 import { AddShoppingCart, DeleteOutline } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { clearWishlist, removeProductWishlist } from "../redux/wishlist.slice";
 import { Hr } from "./cart.page";
-
 
 const Wishlist: React.FC = () => {
     const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
@@ -13,14 +20,10 @@ const Wishlist: React.FC = () => {
     const wishlist = useAppSelector((state: any) => state.wishlist.products);
     const dispatch = useAppDispatch();
 
-
-
-
     const handleRemoveFromWishlist = (id: number) => {
         console.log(id);
         dispatch(removeProductWishlist(id));
     };
-
 
     const handleRemoveAll = () => {
         dispatch(clearWishlist());
@@ -61,53 +64,69 @@ const Wishlist: React.FC = () => {
         }, 0);
     };
 
-
     console.log(wishlist);
 
     return (
         <Container>
-         <Title>
-             <Typography variant="h4" gutterBottom>
-                 Wishlist
-             </Typography>
-             {wishlist.length > 0 &&  (
-                 <Badge badgeContent={wishlist.length} color="warning">
-                     <Button variant="contained" color="secondary" onClick={handleRemoveAll}>
-                         Remove All
-                     </Button>
-                 </Badge>
-             )}
-         </Title>
+            <Title>
+                <Typography variant="h4" gutterBottom>
+                    Wishlist
+                </Typography>
+                {wishlist.length > 0 && (
+                    <Badge badgeContent={wishlist.length} color="warning">
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleRemoveAll}
+                        >
+                            Remove All
+                        </Button>
+                    </Badge>
+                )}
+            </Title>
             <Grid container spacing={2}>
                 {wishlist.map((products: any) => (
                     <Grid item key={products._id} xs={12} sm={6} md={4} lg={3}>
                         <ProductCard>
                             <ProductImage image={products.img} />
                             <DeleteButton
-                                onClick={() => handleRemoveFromWishlist(products._id)}>
+                                onClick={() =>
+                                    handleRemoveFromWishlist(products._id)
+                                }
+                            >
                                 <DeleteOutline />
                             </DeleteButton>
                             <ProductCardContent>
-                                <ProductTitle variant="h5">{products.title}</ProductTitle>
-                                <ProductDescription>{products.desc}</ProductDescription>
-                                <ProductPrice variant="h5">${products.price}</ProductPrice>
+                                <ProductTitle variant="h5">
+                                    {products.title}
+                                </ProductTitle>
+                                <ProductDescription>
+                                    {products.desc}
+                                </ProductDescription>
+                                <ProductPrice variant="h5">
+                                    ${products.price}
+                                </ProductPrice>
 
-                              <CardBottom>
-                                  <Button variant="contained" color="primary" href={`/product/${products._id}`}>
-                                      <AddShoppingCart /> Buy
-                                  </Button>
-                                  {/*<Checkbox*/}
-                                  {/*    checked=*/}
-                                  {/*    onChange={() => handleToggleProduct(products._id)}*/}
-                                  {/*/>*/}
-                              </CardBottom>
+                                <CardBottom>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        href={`/product/${products._id}`}
+                                    >
+                                        <AddShoppingCart /> Buy
+                                    </Button>
+                                    {/*<Checkbox*/}
+                                    {/*    checked=*/}
+                                    {/*    onChange={() => handleToggleProduct(products._id)}*/}
+                                    {/*/>*/}
+                                </CardBottom>
                             </ProductCardContent>
-            {selectedProducts.includes(products._id)}
+                            {selectedProducts.includes(products._id)}
                         </ProductCard>
                     </Grid>
                 ))}
             </Grid>
-                <HrLine/>
+            <HrLine />
             {/*<Button variant="contained" onClick={handleToggleAll}>*/}
             {/*    {selectedProducts.length === wishlist.length ? "Deselect All" : "Select All"}*/}
             {/*</Button>*/}
@@ -119,98 +138,93 @@ const Wishlist: React.FC = () => {
             {/*)}*/}
             <TotalPrice>
                 <Typography variant="subtitle1">
-                    <strong>{wishlist.length}</strong> products in total, with a total sum of
+                    <strong>{wishlist.length}</strong> products in total, with a
+                    total sum of
                 </Typography>
-                <Typography variant="h5" >
-                    ${calculateTotalPrice()}
-                </Typography>
+                <Typography variant="h5">${calculateTotalPrice()}</Typography>
             </TotalPrice>
         </Container>
     );
 };
-
 
 const HrLine = styled(Hr)`
     margin-top: 1rem;
 `;
 
 const Container = styled.div`
-  padding: 20px;
-  width: 100%;
+    padding: 20px;
+    width: 100%;
 `;
 const TotalPrice = styled.div`
-  display: flex;  
-  flex-direction: column;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    align-items: flex-end;
 `;
 const Title = styled.div`
-  display: flex;  
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-  text-align: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    text-align: center;
 `;
 
 const ProductCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: space-between;
-
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
 `;
 
 const ProductImage = styled(CardMedia)`
-  height: 200px;
-  position: relative;
+    height: 200px;
+    position: relative;
 `;
 
 const ProductTitle = styled(Typography)`
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  flex: 1;
-  min-height: 30px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-height: 30px;
 `;
 
 const ProductDescription = styled(Typography)`
-  margin-bottom: 10px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  flex: 3;
-  
+    margin-bottom: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 3;
 `;
 
 const ProductPrice = styled(Typography)`
-
-  flex: 1;
-  display: flex;
-  align-items: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
 `;
 
 const DeleteButton = styled.button`
-  align-self: flex-end;
-  background-color: #eef3f3;
-  position: absolute;
-  cursor: pointer;
-  border-radius: 50%;
-  border: none;
-  margin: 5px;
+    align-self: flex-end;
+    background-color: #eef3f3;
+    position: absolute;
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+    margin: 5px;
 
-  &:hover {
-    background-color: #d1dada;
-  }
+    &:hover {
+        background-color: #d1dada;
+    }
 `;
 const CardBottom = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 const ProductCardContent = styled(CardContent)`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
 `;
 
 export default Wishlist;

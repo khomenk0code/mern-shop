@@ -11,7 +11,8 @@ import {
     Checkbox,
     FormControlLabel,
     FormGroup,
-    LinearProgress, Typography,
+    LinearProgress,
+    Typography,
 } from "@mui/material";
 import handleImageChange from "../utils/uploadImg.helper";
 import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
@@ -329,9 +330,19 @@ const Product = () => {
                         <ProductUpload>
                             <ProductUploadImgHidden src={lightweightImgUrl} />
                             {fullSizeImgUrl ? (
-                                <ProductUploadImg src={fullSizeImgUrl} alt="Product" className="uploaded-image" />
+                                <ProductUploadImg
+                                    src={fullSizeImgUrl}
+                                    alt="Product"
+                                    className="uploaded-image"
+                                />
                             ) : (
-                                product && <ProductUploadImg src={product.img} alt="Product" className="uploaded-image" />
+                                product && (
+                                    <ProductUploadImg
+                                        src={product.img}
+                                        alt="Product"
+                                        className="uploaded-image"
+                                    />
+                                )
                             )}
 
                             <UploadButton htmlFor="file">
@@ -360,7 +371,9 @@ const Product = () => {
                                 </FeedbackMessage>
                             )
                         )}
-                        <UpdateButton onClick={handleClick}>Update</UpdateButton>
+                        <UpdateButton onClick={handleClick}>
+                            Update
+                        </UpdateButton>
                     </ProductUpdateRight>
                 </ProductForm>
             </ProductBottom>
@@ -369,86 +382,83 @@ const Product = () => {
 };
 
 const ProductUpdateRight = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const ProductUpload = styled.div`
-  position: relative;
-  width: 150px;
-  height: 150px;
-  margin-bottom: 20px;
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 20px;
 `;
 
 const ProductUploadImg = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 `;
 const ProductUploadImgHidden = styled.img`
-display: none;
+    display: none;
 `;
 
 const UploadButton = styled.label`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
 
-  &:hover {
-    background-color: #f1f1f1;
-  }
+    &:hover {
+        background-color: #f1f1f1;
+    }
 `;
 
 const UploadIcon = styled(CloudUpload)`
-  color: #555;
+    color: #555;
 `;
 
 const ProgressBar = styled(LinearProgress)`
-  width: 100%;
-  margin-bottom: 20px;
+    width: 100%;
+    margin-bottom: 20px;
 `;
 
 const FeedbackMessage = styled(Typography)`
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
 `;
 
 const SuccessIcon = styled(CheckCircle)`
-  margin-right: 5px;
-  color: green;
+    margin-right: 5px;
+    color: green;
 `;
 
 const ErrorIcon = styled(Error)`
-  margin-right: 5px;
-  color: red;
+    margin-right: 5px;
+    color: red;
 `;
 
 const UpdateButton = styled(Button)`
-  && {
-    background-color: darkblue;
-    color: white;
-    font-weight: 600;
+    && {
+        background-color: darkblue;
+        color: white;
+        font-weight: 600;
 
-    &:hover {
-      background-color: #0f4dff;
+        &:hover {
+            background-color: #0f4dff;
+        }
     }
-  }
 `;
-
-
-
 
 const ProductContainer = styled.div`
     flex: 4;
@@ -460,7 +470,6 @@ const ProductTitleContainer = styled.div`
     align-items: center;
     justify-content: space-between;
 `;
-
 
 const ProductAddButton = styled.button`
     width: 80px;
@@ -554,6 +563,5 @@ const FormLeftSelect = styled.select`
     border-radius: 5px;
     margin-bottom: 10px;
 `;
-
 
 export default Product;

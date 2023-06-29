@@ -8,6 +8,8 @@ import axios from "axios";
 import { IProduct } from "../components/products.component";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 import { clearCart, removeProduct, updateQuantity } from "../redux/cart.slice";
+import { Link } from "react-router-dom";
+import cssColorNames from "css-color-names";
 
 type StyledTypesProps = {
     types?: "filled" | "total";
@@ -16,10 +18,26 @@ type StyledTypesProps = {
 const Cart = () => {
     const [dataValue, setDataValue] = useState("");
     const [signatureValue, setSignatureValue] = useState("");
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     const cart = useAppSelector((state) => state.cart);
+    const wishlist = useAppSelector((state) => state.wishlist.products);
     const dispatch = useAppDispatch();
 
+    const validColors = Object.keys(cssColorNames);
+    const hasValidColors: any = [];
+
+    cart.products.forEach((product, index) => {
+        const validColorCount = product.color.filter((c) =>
+            validColors.includes(c.toLowerCase())
+        ).length;
+
+        hasValidColors[index] = validColorCount !== 0;
+    });
+
+    cart.products.forEach((p) => {
+        console.log(p.size);
+    });
 
     const axiosClient = axios.create({
         baseURL: "https://mern-shop-api.vercel.app/api",
@@ -97,6 +115,10 @@ const Cart = () => {
         dispatch(clearCart());
     };
 
+    const handleImageLoad = () => {
+        setImageLoaded(true);
+    };
+
     return (
         <Container>
             <Navbar />
@@ -104,83 +126,113 @@ const Cart = () => {
             <Wrapper>
                 <Title>Cart</Title>
                 <Top>
-                    <TopButton>CONTINUE SHOPPING</TopButton>
+                    <TopButton to="/">CONTINUE SHOPPING</TopButton>
                     <button onClick={handleClearCart}>Очистить корзину</button>
-                    <TopButton types="filled">Your Wishlist (0)</TopButton>
+                    <TopButton to="/cabinet/wishlist" types="filled">
+                        Your Wishlist ({wishlist.length || 0})
+                    </TopButton>
                 </Top>
                 <Bottom>
                     <Info>
                         {cart.products.length > 0 ? (
-                        cart.products.map((product: IProduct, index) => (
-                            <>
-                                <Product key={index}>
-                                    <ProductDetail>
-                                        <Image src={product.img} />
-                                        <Details>
-                                            <ProductName>
-                                                <b>Product:</b> {product.title}
-                                            </ProductName>
-                                            <ProductId>
-                                                <b>ID:</b> {product._id}
-                                            </ProductId>
-                                            <b>Color:</b>
-                                            {product.color && (
-                                                <ProductColor color={product.color && product.color[0]} />
+                            cart.products.map((product: IProduct, index) => (
+                                <>
+                                    <Product key={index}>
+                                        <ProductDetail>
+                                            {!imageLoaded && (
+                                                <Image src={product?.altImg} />
                                             )}
-
-                                            <ProductSize>
-                                                <b>Size:</b> {product.size}
-                                            </ProductSize>
-                                        </Details>
-                                    </ProductDetail>
-                                    <PriceDetail>
-                                        <ButtonWrapper>
-                                            <DeleteButton
-                                                onClick={() =>
-                                                    handleRemoveFromCart(
-                                                        product._id,
-                                                        product.color[0],
-                                                        product.size[0]
-                                                    )
-                                                }
-                                            >
-                                                <DeleteOutline />
-                                            </DeleteButton>
-                                        </ButtonWrapper>
-
-                                        <ProductAmountContainer>
-                                            <Add
-                                                onClick={() =>
-                                                    updateProductQuantity(
-                                                        product._id,
-                                                        product.color[0],
-                                                        product.size[0],
-                                                        product.quantity + 1
-                                                    )
-                                                }
+                                            <Image
+                                                src={product?.img}
+                                                onLoad={handleImageLoad}
+                                                style={{
+                                                    display: imageLoaded
+                                                        ? "block"
+                                                        : "none",
+                                                }}
                                             />
-                                            <ProductAmount>
-                                                {product.quantity}
-                                            </ProductAmount>
-                                            <Remove
-                                                onClick={() =>
-                                                    handleRemove(
-                                                        product._id,
-                                                        product.color[0],
-                                                        product.size[0],
-                                                        product.quantity - 1
-                                                    )
-                                                }
-                                            />
-                                        </ProductAmountContainer>
-                                        <ProductPrice>
-                                            $ {product.price * product.quantity}
-                                        </ProductPrice>
-                                    </PriceDetail>
-                                </Product>
-                                <Hr />
-                            </>
-                        ))  ) : (
+                                            <Details>
+                                                <ProductName>
+                                                    <b>Product:</b>{" "}
+                                                    {product.title}
+                                                </ProductName>
+                                                <ProductId>
+                                                    <b>ID:</b> {product._id}
+                                                </ProductId>
+                                                {hasValidColors[index] ? (
+                                                    <div>
+                                                        <b>Color: </b>
+
+                                                        <ProductColor
+                                                            color={
+                                                                product.color &&
+                                                                product.color[0]
+                                                            }
+                                                        />
+                                                    </div>
+                                                ) : null}
+
+                                                {product.size[0] !== "" ? (
+                                                    <div>
+                                                        <b>Size: </b>
+                                                        <ProductSize>
+                                                            {product.size}
+                                                        </ProductSize>
+                                                    </div>
+                                                ) : null}
+                                            </Details>
+                                        </ProductDetail>
+                                        <PriceDetail>
+                                            <ButtonWrapper>
+                                                <DeleteButton
+                                                    onClick={() =>
+                                                        handleRemoveFromCart(
+                                                            product._id,
+                                                            product.color[0],
+                                                            product.size[0]
+                                                        )
+                                                    }
+                                                >
+                                                    <DeleteOutline />
+                                                </DeleteButton>
+                                            </ButtonWrapper>
+
+                                            <ProductAmountContainer>
+                                                <Add
+                                                    onClick={() =>
+                                                        updateProductQuantity(
+                                                            product._id,
+                                                            product.color[0],
+                                                            product.size[0],
+                                                            product.quantity + 1
+                                                        )
+                                                    }
+                                                />
+                                                <ProductAmount>
+                                                    {product.quantity}
+                                                </ProductAmount>
+                                                <Remove
+                                                    onClick={() =>
+                                                        handleRemove(
+                                                            product._id,
+                                                            product.color[0],
+                                                            product.size[0],
+                                                            product.quantity - 1
+                                                        )
+                                                    }
+                                                />
+                                            </ProductAmountContainer>
+                                            <ProductPrice>
+                                                ${" "}
+                                                {product.price *
+                                                    product.quantity}
+                                            </ProductPrice>
+                                        </PriceDetail>
+                                    </Product>
+                                    <Hr />
+                                </>
+                            ))
+                        ) : (
                             <p>Your cart is empty.</p>
                         )}
                     </Info>
@@ -249,7 +301,7 @@ const Top = styled.div`
     padding: 20px;
 `;
 
-const TopButton = styled.button<StyledTypesProps>`
+const TopButton = styled(Link)<StyledTypesProps>`
     padding: 10px;
     font-weight: 600;
     cursor: pointer;
@@ -257,6 +309,7 @@ const TopButton = styled.button<StyledTypesProps>`
     background-color: ${(props) =>
         props.types === "filled" ? "black" : "transparent"};
     color: ${(props) => props.types === "filled" && "white"};
+    text-decoration: none;
 `;
 
 const Bottom = styled.div`
@@ -296,16 +349,20 @@ const ProductName = styled.span``;
 const ProductId = styled.span``;
 
 const ProductColor = styled.span<StyledTypesProps>`
-  border-radius: 50%;
-  background-color: ${props => props.color};
-  width: ${(props) => (props.color?.toLowerCase() === "white" ? "19px" : "20px")};
-  height: ${(props) => (props.color?.toLowerCase() === "white" ? "19px" : "20px")};
-  border: ${(props) =>
-          props.color?.toLowerCase() === "white" ? "1px solid black" : "none"};
+    border-radius: 50%;
+    background-color: ${(props) => props.color};
+    width: ${(props) =>
+        props.color?.toLowerCase() === "white" ? "19px" : "20px"};
+    height: ${(props) =>
+        props.color?.toLowerCase() === "white" ? "19px" : "20px"};
+    border: ${(props) =>
+        props.color?.toLowerCase() === "white" ? "1px solid black" : "none"};
+    display: inline-block;
 `;
 
-
-const ProductSize = styled.span``;
+const ProductSize = styled.span`
+    display: inline-block;
+`;
 
 const PriceDetail = styled.div`
     flex: 1;

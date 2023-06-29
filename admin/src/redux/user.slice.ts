@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
 export interface User {
     _id: string;
     username: string;
@@ -47,7 +46,6 @@ const userSlice = createSlice({
             state.isFetching = false;
             state.error = false;
             state.currentUser = {};
-
         },
         //Get all users
         getUserStart: (state) => {
@@ -72,7 +70,7 @@ const userSlice = createSlice({
             state.isFetching = false;
             state.users.splice(
                 state.users.findIndex((item) => item._id === action.payload),
-                1,
+                1
             );
         },
         deleteUserFailure: (state) => {
@@ -86,11 +84,11 @@ const userSlice = createSlice({
         },
         updateUserSuccess: (
             state,
-            action: PayloadAction<{ id: string; user: User }>,
+            action: PayloadAction<{ id: string; user: User }>
         ) => {
             state.isFetching = false;
             const index = state.users.findIndex(
-                (item) => item._id === action.payload.id,
+                (item) => item._id === action.payload.id
             );
             if (index !== -1) {
                 state.users[index] = action.payload.user;
@@ -133,6 +131,5 @@ export const {
     addUserFailure,
     addUserSuccess,
     addUserStart,
-
 } = userSlice.actions;
 export default userSlice.reducer;

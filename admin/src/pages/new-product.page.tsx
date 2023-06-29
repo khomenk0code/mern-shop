@@ -48,7 +48,6 @@ const NewProduct = () => {
         }));
     };
 
-
     // ...
 
     const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,8 +64,6 @@ const NewProduct = () => {
             console.log(error);
         }
     };
-
-
 
     const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -91,8 +88,7 @@ const NewProduct = () => {
         }
     };
 
-
-// ...
+    // ...
 
     return (
         <Wrapper>
@@ -238,7 +234,8 @@ const NewProduct = () => {
                             alt="Product"
                             className="uploaded-image"
                         />
-                    )}  {lightweightImgUrl && (
+                    )}{" "}
+                    {lightweightImgUrl && (
                         <LightWeightImg
                             src={lightweightImgUrl}
                             alt="Product"
@@ -357,8 +354,6 @@ const LinearProgressWrapper = styled.div`
 const LightWeightImg = styled.img`
     display: none;
 `;
-
-
 
 const AddProductItem = styled.div`
     width: 250px;

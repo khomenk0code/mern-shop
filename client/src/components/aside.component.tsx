@@ -3,10 +3,16 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import {
     ChevronLeft,
-    ChevronRight, CurrencyExchange,
+    ChevronRight,
+    CurrencyExchange,
     FavoriteBorder,
     LineStyle,
-    ListAlt, MessageOutlined, Percent, SettingsAccessibilityOutlined, SettingsApplications, ThreePSharp,
+    ListAlt,
+    MessageOutlined,
+    Percent,
+    SettingsAccessibilityOutlined,
+    SettingsApplications,
+    ThreePSharp,
 } from "@mui/icons-material";
 
 const Aside: React.FC = () => {
@@ -20,7 +26,9 @@ const Aside: React.FC = () => {
         <SidebarContainer>
             <SidebarWrapper hideMenu={hideMenu}>
                 <SidebarMenu>
-                    <SidebarTitleContainer justify={hideMenu ? "center" : "flex-end"}>
+                    <SidebarTitleContainer
+                        justify={hideMenu ? "center" : "flex-end"}
+                    >
                         {!hideMenu && <SidebarTitle>Dashboard</SidebarTitle>}
                         <ToggleMenuButton
                             onClick={handleToggleMenu}
@@ -55,12 +63,12 @@ const Aside: React.FC = () => {
                             </SidebarListItem>
                         </Link>
                     </SidebarList>
-                <SeparatorLine />
+                    <SeparatorLine />
                     <SidebarList>
                         <Link to="/">
                             <SidebarListItem>
                                 <SidebarIcon>
-                                    <CurrencyExchange/>
+                                    <CurrencyExchange />
                                 </SidebarIcon>
                                 {!hideMenu && "Purchase History"}
                             </SidebarListItem>
@@ -117,79 +125,79 @@ const Aside: React.FC = () => {
 };
 
 const SidebarContainer = styled.aside`
-  background-color: rgb(251, 251, 255);
-  position: sticky;
-  top: 50px;
+    background-color: rgb(251, 251, 255);
+    position: sticky;
+    top: 50px;
 `;
 
 const SidebarWrapper = styled.div<{ hideMenu: boolean }>`
-  padding: 20px;
-  color: #555;
+    padding: 20px;
+    color: #555;
 `;
 
 const SidebarMenu = styled.div`
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 `;
 
 const SidebarTitleContainer = styled.div<{ justify: string }>`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: ${props => props.justify};
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: ${(props) => props.justify};
 `;
 
 const SidebarTitle = styled.h3`
-  display: flex;
-  justify-content: center;
-  font-size: 13px;
-  color: rgb(187, 186, 186);
+    display: flex;
+    justify-content: center;
+    font-size: 13px;
+    color: rgb(187, 186, 186);
 `;
 
 const SidebarList = styled.ul`
-  list-style: none;
-  padding: 5px;
+    list-style: none;
+    padding: 5px;
 `;
 
 const SidebarListItem = styled.li`
-  padding: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  border-radius: 10px;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
 `;
 
 const ArrowLeft = styled(ChevronLeft)`
-  &:hover {
-    background-color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+    &:hover {
+        background-color: #eee;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 `;
 
 const ArrowRight = styled(ChevronRight)`
-  &:hover {
-    background-color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+    &:hover {
+        background-color: #eee;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 `;
 
 const SidebarIcon = styled.span`
-  margin-right: 5px;
-  font-size: 20px !important;
+    margin-right: 5px;
+    font-size: 20px !important;
 `;
 
 const ToggleMenuButton = styled.button`
-  padding: 5px;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
+    padding: 5px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
 `;
 
 const SeparatorLine = styled.div`
-  height: 1px;
-  background-color: #ccc;
-  margin: 10px 0;
+    height: 1px;
+    background-color: #ccc;
+    margin: 10px 0;
 `;
 
 export default Aside;

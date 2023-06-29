@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const HeaderComponent: React.FC = () => {
     const dispatch = useAppDispatch();
-    const user = useAppSelector(state => state.user.currentUser)
+    const user = useAppSelector((state) => state.user.currentUser);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -19,9 +19,12 @@ const HeaderComponent: React.FC = () => {
         <HeaderContainer>
             <HeaderWrapper>
                 <TopLeft>
-
-                    <Link to="/"><Logo>MERN. admin</Logo></Link>
-                    <Link to="https://mern-shop-client.vercel.app/">Back to main site</Link>
+                    <Link to="/">
+                        <Logo>MERN. admin</Logo>
+                    </Link>
+                    <Link to="https://mern-shop-client.vercel.app/">
+                        Back to main site
+                    </Link>
                 </TopLeft>
                 <TopRight>
                     <TopbarIconContainer>
@@ -36,12 +39,11 @@ const HeaderComponent: React.FC = () => {
                         <Settings />
                     </TopbarIconContainer>
                     Loged as {user.username}
-                    <TopAvatar
-                        src={user.image}
-                        alt="Admin avatar"
-                    />
+                    <TopAvatar src={user.image} alt="Admin avatar" />
                     <TopbarIconContainer>
-                        <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+                        <LogoutButton onClick={handleLogout}>
+                            Logout
+                        </LogoutButton>
                     </TopbarIconContainer>
                 </TopRight>
             </HeaderWrapper>
@@ -58,19 +60,18 @@ const HeaderContainer = styled.header`
     z-index: 999;
 `;
 const LogoutButton = styled.button`
-  padding: 10px 20px;
-  background-color: #ff5a5f;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    padding: 10px 20px;
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 
-  &:hover {
-    background-color: #e54246;
-  }
+    &:hover {
+        background-color: #e54246;
+    }
 `;
-
 
 const HeaderWrapper = styled.div`
     height: 100%;
@@ -82,8 +83,8 @@ const HeaderWrapper = styled.div`
 
 const TopLeft = styled.div`
     display: flex;
-  align-items: center;
-  gap: 20px;
+    align-items: center;
+    gap: 20px;
 `;
 
 const Logo = styled.div`

@@ -17,7 +17,6 @@ const ProductList = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [productIdToDelete, setProductIdToDelete] = useState("");
 
-
     const dispatch = useAppDispatch();
     const products = useAppSelector((state) => state.product.products);
 
@@ -38,7 +37,10 @@ const ProductList = () => {
                 setShowConfirmation(false);
             })
             .catch((error) => {
-                console.log(`Error deleting product with id:${productIdToDelete}`, error);
+                console.log(
+                    `Error deleting product with id:${productIdToDelete}`,
+                    error
+                );
                 setShowConfirmation(false);
             });
     };
@@ -96,13 +98,14 @@ const ProductList = () => {
                         <Link to={`/product/${params.row._id}`}>
                             <ProductListEdit>Edit</ProductListEdit>
                         </Link>
-                        <ProductListDelete onClick={() => handleDelete(params.row._id)} />
+                        <ProductListDelete
+                            onClick={() => handleDelete(params.row._id)}
+                        />
                     </>
                 );
             },
         },
     ];
-
 
     return (
         <ProductListContainer>
@@ -115,11 +118,11 @@ const ProductList = () => {
                 checkboxSelection
                 autoHeight
                 localeText={{
-                    toolbarDensity: 'Size',
-                    toolbarDensityLabel: 'Size',
-                    toolbarDensityCompact: 'Small',
-                    toolbarDensityStandard: 'Medium',
-                    toolbarDensityComfortable: 'Large',
+                    toolbarDensity: "Size",
+                    toolbarDensityLabel: "Size",
+                    toolbarDensityCompact: "Small",
+                    toolbarDensityStandard: "Medium",
+                    toolbarDensityComfortable: "Large",
                 }}
                 slots={{
                     toolbar: GridToolbar,
@@ -127,10 +130,16 @@ const ProductList = () => {
             />
             {showConfirmation && (
                 <ConfirmationPopup>
-                    <ConfirmationText>Are you sure you want to delete this product?</ConfirmationText>
+                    <ConfirmationText>
+                        Are you sure you want to delete this product?
+                    </ConfirmationText>
                     <ConfirmationButtons>
-                        <ConfirmationButton onClick={confirmDelete}>Yes</ConfirmationButton>
-                        <ConfirmationButton onClick={cancelDelete}>No</ConfirmationButton>
+                        <ConfirmationButton onClick={confirmDelete}>
+                            Yes
+                        </ConfirmationButton>
+                        <ConfirmationButton onClick={cancelDelete}>
+                            No
+                        </ConfirmationButton>
                     </ConfirmationButtons>
                 </ConfirmationPopup>
             )}
@@ -138,81 +147,79 @@ const ProductList = () => {
     );
 };
 
-
-
 export const ConfirmationPopup = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 60px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 9999;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 60px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
 `;
 
 export const ConfirmationText = styled.div`
-  margin-bottom: 10px;
-  font-size: 22px;
+    margin-bottom: 10px;
+    font-size: 22px;
 `;
 
 export const ConfirmationButtons = styled.div`
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 `;
 
 export const ConfirmationButton = styled.button`
-  margin: 20px 15px;
-  padding: 15px 40px;
-  background-color: #3bb077;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+    margin: 20px 15px;
+    padding: 15px 40px;
+    background-color: #3bb077;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 
-  &:hover {
-    background-color: #2d8a5f;
-  }
+    &:hover {
+        background-color: #2d8a5f;
+    }
 `;
 
 export const ProductListContainer = styled.div`
-  width: 100%;
+    width: 100%;
 `;
 export const ProductListItem = styled.div`
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 `;
 
 export const ProductListImg = styled.img`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
 `;
 
 export const ProductListEdit = styled.button`
-  border: none;
-  border-radius: 10px;
-  padding: 5px 10px;
-  background-color: #3bb077;
-  color: white;
-  cursor: pointer;
-  margin-right: 20px;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px;
+    background-color: #3bb077;
+    color: white;
+    cursor: pointer;
+    margin-right: 20px;
 
-  &:hover {
-    background-color: #2d8a5f;
-  }
+    &:hover {
+        background-color: #2d8a5f;
+    }
 `;
 
 export const ProductListDelete = styled(DeleteOutline)`
-  color: red;
-  cursor: pointer;
+    color: red;
+    cursor: pointer;
 
-  &:hover {
-    color: darkred;
-  }
+    &:hover {
+        color: darkred;
+    }
 `;
 
 export default ProductList;

@@ -11,6 +11,4 @@ const login = async (dispatch: any, user: any) => {
     }
 };
 
-
-
 export default login;

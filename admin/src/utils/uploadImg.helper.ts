@@ -1,4 +1,9 @@
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import {
+    getDownloadURL,
+    getStorage,
+    ref,
+    uploadBytesResumable,
+} from "firebase/storage";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, doc, updateDoc } from "firebase/firestore";
 import React from "react";
@@ -46,7 +51,10 @@ const handleImageChange = async (
             compressor.compress(image, { maxWidth: 300, quality: 0.3 }), // Lightweight image compression
         ])
             .then(([fullSizeImage, lightweightImage]) => {
-                const uploadTask = uploadBytesResumable(storageRef, fullSizeImage);
+                const uploadTask = uploadBytesResumable(
+                    storageRef,
+                    fullSizeImage
+                );
                 const lightweightUploadTask = uploadBytesResumable(
                     lightweightStorageRef,
                     lightweightImage
@@ -55,7 +63,9 @@ const handleImageChange = async (
                 uploadTask.on(
                     "state_changed",
                     (snapshot: any) => {
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        const progress =
+                            (snapshot.bytesTransferred / snapshot.totalBytes) *
+                            100;
                         setProgress(progress);
                     },
                     (error: any) => {
@@ -65,7 +75,10 @@ const handleImageChange = async (
                         getDownloadURL(uploadTask.snapshot.ref)
                             .then((fullSizeImageURL: string) => {
                                 const firestore = getFirestore(app);
-                                const imagesCollection = collection(firestore, "images");
+                                const imagesCollection = collection(
+                                    firestore,
+                                    "images"
+                                );
                                 const imageDocRef = doc(imagesCollection);
 
                                 updateDoc(imageDocRef, {
@@ -81,21 +94,33 @@ const handleImageChange = async (
                                         reject(error);
                                     },
                                     () => {
-                                        getDownloadURL(lightweightUploadTask.snapshot.ref)
-                                            .then((lightweightImageURL: string) => {
-                                                updateDoc(imageDocRef, {
-                                                    lightweightImageURL: lightweightImageURL,
-                                                });
+                                        getDownloadURL(
+                                            lightweightUploadTask.snapshot.ref
+                                        )
+                                            .then(
+                                                (
+                                                    lightweightImageURL: string
+                                                ) => {
+                                                    updateDoc(imageDocRef, {
+                                                        lightweightImageURL:
+                                                            lightweightImageURL,
+                                                    });
 
-                                                setLightweightImgUrl(lightweightImageURL);
+                                                    setLightweightImgUrl(
+                                                        lightweightImageURL
+                                                    );
 
-                                                const imageUrls: ImageUrls = {
-                                                    fullSizeImageURL: fullSizeImageURL,
-                                                    lightweightImageURL: lightweightImageURL,
-                                                };
+                                                    const imageUrls: ImageUrls =
+                                                        {
+                                                            fullSizeImageURL:
+                                                                fullSizeImageURL,
+                                                            lightweightImageURL:
+                                                                lightweightImageURL,
+                                                        };
 
-                                                resolve(imageUrls);
-                                            })
+                                                    resolve(imageUrls);
+                                                }
+                                            )
                                             .catch((error: Error) => {
                                                 reject(error);
                                             });

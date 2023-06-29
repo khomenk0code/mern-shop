@@ -28,6 +28,7 @@ const Product: React.FC = () => {
     const [isColorSelected, setIsColorSelected] = useState<boolean>(false);
     const products = useAppSelector((state) => state.cart.products);
     const [showNotification, setShowNotification] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     const dispatch = useDispatch();
     const location = useLocation();
@@ -48,12 +49,14 @@ const Product: React.FC = () => {
         });
     };
 
-
+    const handleImageLoad = () => {
+        setImageLoaded(true);
+    };
 
     const handleClick = () => {
-        const hasValidColors = product?.color
-            .filter((c) => validColors.includes(c.toLowerCase()))
-            .length !== 0;
+        const hasValidColors =
+            product?.color.filter((c) => validColors.includes(c.toLowerCase()))
+                .length !== 0;
 
         if (hasValidColors && (!color || color === "")) {
             setIsColorSelected(true);
@@ -93,8 +96,6 @@ const Product: React.FC = () => {
         }
     };
 
-
-
     useEffect(() => {
         const getProducts = async () => {
             try {
@@ -109,12 +110,12 @@ const Product: React.FC = () => {
 
     useEffect(() => {
         if (product?.size && product.size.length > 0) {
-            setColor(product.color[0])
             setSize(product.size[0]);
         }
+        if (product?.color && product.color.length > 0) {
+            setColor(product.color[0]);
+        }
     }, [product]);
-
-    
 
     return (
         <Container>
@@ -122,17 +123,21 @@ const Product: React.FC = () => {
             <Announcement />
             <Wrapper>
                 <ImgContainer>
-                    {/*<Image src={product?.img} />*/}
-                    <Image src={product?.altImg} />
+                    {!imageLoaded && <Image src={product?.altImg} />}
+                    <Image
+                        src={product?.img}
+                        onLoad={handleImageLoad}
+                        style={{ display: imageLoaded ? "block" : "none" }}
+                    />
                 </ImgContainer>
                 <InfoContainer>
                     <Title>{product?.title}</Title>
                     <Desc>{product?.desc}</Desc>
                     <Price>{product?.price} $</Price>
                     <FilterContainer>
-                        {product?.color
-                            .filter((c) => validColors.includes(c.toLowerCase()))
-                            .length !== 0 ? (
+                        {product?.color.filter((c) =>
+                            validColors.includes(c.toLowerCase())
+                        ).length !== 0 ? (
                             <Filter>
                                 <FilterTitle>
                                     {product &&
@@ -158,7 +163,6 @@ const Product: React.FC = () => {
                                     ))}
                             </Filter>
                         ) : null}
-
 
                         {product?.size?.length !== 0 ? (
                             <Filter>

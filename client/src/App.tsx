@@ -22,8 +22,7 @@ const App = () => {
     const user = useAppSelector((state) => state.user.currentUser);
     return (
         <Router>
-               ,
-            
+            <ScrollToTop />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/products/:category" element={<ProductList />} />
@@ -37,32 +36,31 @@ const App = () => {
                     path="/register"
                     element={user ? <Navigate to="/" /> : <Register />}
                 />
-                <Route path="/cabinet/*" element={<CabinetRoutes />}/>
+                <Route path="/cabinet/*" element={<CabinetRoutes />} />
             </Routes>
         </Router>
     );
 };
 
-
 const CabinetRoutes = () => (
     <Container>
-           <Header/>
-            <Wrapper>
-                <Aside/>
-                <Routes>
-                    <Route path="/wishlist" element={<Wishlist />} />
-                </Routes>
-            </Wrapper>
-        </Container>
+        <Header />
+        <Wrapper>
+            <Aside />
+            <Routes>
+                <Route path="/wishlist" element={<Wishlist />} />
+            </Routes>
+        </Wrapper>
+    </Container>
 );
 
 const Container = styled.div`
-display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 `;
 
 const Wrapper = styled.div`
-display: flex;
+    display: flex;
 `;
 
 export default App;

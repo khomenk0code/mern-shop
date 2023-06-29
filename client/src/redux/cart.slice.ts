@@ -39,7 +39,6 @@ const isMatchingProduct = (
     );
 };
 
-
 const cartSlice = createSlice({
     name: "cart",
     initialState,
@@ -47,7 +46,12 @@ const cartSlice = createSlice({
         addProduct: (state, action: PayloadAction<IProduct>) => {
             const product = action.payload;
             const existingProduct = state.products.find((p) =>
-                isMatchingProduct(p, product._id, product.color[0], product.size[0])
+                isMatchingProduct(
+                    p,
+                    product._id,
+                    product.color[0],
+                    product.size[0]
+                )
             );
 
             if (existingProduct) {
@@ -108,11 +112,7 @@ const cartSlice = createSlice({
     },
 });
 
-export const {
-    addProduct,
-    removeProduct,
-    updateQuantity,
-    clearCart,
-} = cartSlice.actions;
+export const { addProduct, removeProduct, updateQuantity, clearCart } =
+    cartSlice.actions;
 
 export default cartSlice.reducer;

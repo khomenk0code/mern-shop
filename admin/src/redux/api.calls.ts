@@ -1,7 +1,8 @@
 import { Dispatch } from "redux";
 import {
     addUserFailure,
-    addUserStart, addUserSuccess,
+    addUserStart,
+    addUserSuccess,
     deleteUserFailure,
     deleteUserStart,
     deleteUserSuccess,
@@ -10,7 +11,10 @@ import {
     getUserSuccess,
     loginFailure,
     loginStart,
-    loginSuccess, updateUserFailure, updateUserStart, updateUserSuccess,
+    loginSuccess,
+    updateUserFailure,
+    updateUserStart,
+    updateUserSuccess,
 } from "./user.slice";
 import { publicRequest, userRequest } from "../utils/requestMethods";
 import {
@@ -80,11 +84,10 @@ export const deleteUser = async (id: string, dispatch: Dispatch) => {
     }
 };
 
-
 export const updateProduct = async (
     id: string,
     product: any,
-    dispatch: Dispatch,
+    dispatch: Dispatch
 ) => {
     dispatch(updateProductStart());
     try {
@@ -97,11 +100,7 @@ export const updateProduct = async (
         throw e;
     }
 };
-export const updateUser = async (
-    id: string,
-    user: any,
-    dispatch: Dispatch,
-) => {
+export const updateUser = async (id: string, user: any, dispatch: Dispatch) => {
     dispatch(updateUserStart());
     try {
         const res = await userRequest.put(`/users/${id}`, user);
@@ -113,7 +112,6 @@ export const updateUser = async (
         throw e;
     }
 };
-
 
 export const addProduct = async (product: any, dispatch: Dispatch) => {
     dispatch(addProductStart());

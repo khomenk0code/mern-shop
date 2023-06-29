@@ -31,19 +31,19 @@ const ContainedRoutes = () => (
         <HeaderComponent />
         <Container>
             <Sidebar />
-           <Main>
-               <Routes>
-                   <Route path="/" element={<Home />} />
-                   <Route path="/users" element={<UserList />} />
-                   <Route path="/user/:userId" element={<User />} />
-                   <Route path="/user/add" element={<NewUser />} />
-                   <Route path="/products" element={<ProductList />} />
-                   <Route path="/product/:productId" element={<Product />} />
-                   <Route path="/product/add" element={<NewProduct />} />
-                   <Route path="/transactions" element={<Transactions />} />
-                   <Route path="/reports" element={<Reports />} />
-               </Routes>
-           </Main>
+            <Main>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/users" element={<UserList />} />
+                    <Route path="/user/:userId" element={<User />} />
+                    <Route path="/user/add" element={<NewUser />} />
+                    <Route path="/products" element={<ProductList />} />
+                    <Route path="/product/:productId" element={<Product />} />
+                    <Route path="/product/add" element={<NewProduct />} />
+                    <Route path="/transactions" element={<Transactions />} />
+                    <Route path="/reports" element={<Reports />} />
+                </Routes>
+            </Main>
         </Container>
     </>
 );
@@ -51,7 +51,7 @@ const ContainedRoutes = () => (
 const Container = styled.div`
     display: flex;
     margin-top: 10px;
-  overflow-x: hidden;
+    overflow-x: hidden;
 `;
 const Main = styled.div`
     width: 100%;

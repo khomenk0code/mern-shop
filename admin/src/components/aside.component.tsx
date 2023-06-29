@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import {
     AttachMoney,
     BarChart,
-    ChatBubbleOutline, ChevronLeft, ChevronRight,
+    ChatBubbleOutline,
+    ChevronLeft,
+    ChevronRight,
     DynamicFeed,
     LineStyle,
     MailOutline,
@@ -27,7 +29,9 @@ const Sidebar: React.FC = () => {
         <SidebarContainer>
             <SidebarWrapper>
                 <SidebarMenu>
-                    <SidebarTitleContainer justify={hideTitles ? "center" : "flex-end"}>
+                    <SidebarTitleContainer
+                        justify={hideTitles ? "center" : "flex-end"}
+                    >
                         {!hideTitles && <SidebarTitle>Dashboard</SidebarTitle>}
                         <ToggleTitlesButton
                             onClick={handleToggleTitles}
@@ -45,25 +49,23 @@ const Sidebar: React.FC = () => {
                                 {!hideTitles && "Home"}
                             </SidebarListItem>
                         </Link>
-                            <SidebarListItem>
-                                <SidebarIcon>
-                                    <Timeline />
-                                </SidebarIcon>
-                                {!hideTitles && "Analytics"}
-                            </SidebarListItem>
-                            <SidebarListItem>
-                                <SidebarIcon>
-                                    <TrendingUp />
-                                </SidebarIcon>
-                                {!hideTitles && "Sales"}
-                            </SidebarListItem>
+                        <SidebarListItem>
+                            <SidebarIcon>
+                                <Timeline />
+                            </SidebarIcon>
+                            {!hideTitles && "Analytics"}
+                        </SidebarListItem>
+                        <SidebarListItem>
+                            <SidebarIcon>
+                                <TrendingUp />
+                            </SidebarIcon>
+                            {!hideTitles && "Sales"}
+                        </SidebarListItem>
                     </SidebarList>
                 </SidebarMenu>
                 <SeparatorLine />
                 <SidebarMenu>
-                    <SidebarTitle>
-                        {!hideTitles && "Quick Menu"}
-                    </SidebarTitle>
+                    <SidebarTitle>{!hideTitles && "Quick Menu"}</SidebarTitle>
                     <SidebarList>
                         <Link to="/users">
                             <SidebarListItem>
@@ -127,9 +129,7 @@ const Sidebar: React.FC = () => {
                 </SidebarMenu>
                 <SeparatorLine />
                 <SidebarMenu>
-                    <SidebarTitle>
-                        {!hideTitles && "Staff"}
-                    </SidebarTitle>
+                    <SidebarTitle>{!hideTitles && "Staff"}</SidebarTitle>
                     <SidebarList>
                         <SidebarListItem>
                             <SidebarIcon>
@@ -158,82 +158,79 @@ const Sidebar: React.FC = () => {
 };
 
 const SidebarContainer = styled.aside`
-  background-color: rgb(251, 251, 255);
-  position: sticky;
-  top: 50px;
+    background-color: rgb(251, 251, 255);
+    position: sticky;
+    top: 50px;
 `;
 
 const SidebarWrapper = styled.div`
-  padding: 20px;
-  color: #555;
+    padding: 20px;
+    color: #555;
 `;
 
 const SidebarMenu = styled.div`
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 `;
 
 const SidebarTitleContainer = styled.div<{ justify: string }>`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: ${props => props.justify};
-  
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: ${(props) => props.justify};
 `;
 
 const SidebarTitle = styled.h3`
-  display: flex;
-  justify-content: center;
-  font-size: 13px;
-  color: rgb(187, 186, 186);
+    display: flex;
+    justify-content: center;
+    font-size: 13px;
+    color: rgb(187, 186, 186);
 `;
 
 const SidebarList = styled.ul`
-  list-style: none;
-  padding: 5px;
+    list-style: none;
+    padding: 5px;
 `;
 
 const SidebarListItem = styled.li`
-  padding: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  border-radius: 10px;
-
-  
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
 `;
 
 const ArrowLeft = styled(ChevronLeft)`
-  &:hover {
-    background-color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+    &:hover {
+        background-color: #eee;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 `;
 
 const ArrowRight = styled(ChevronRight)`
-  &:hover {
-    background-color: #eee;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+    &:hover {
+        background-color: #eee;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 `;
 
 const SidebarIcon = styled.span`
-  margin-right: 5px;
-  font-size: 20px !important;
+    margin-right: 5px;
+    font-size: 20px !important;
 `;
 
 const ToggleTitlesButton = styled.button`
-  padding: 5px;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
+    padding: 5px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
 `;
 
 const SeparatorLine = styled.div`
-  height: 1px;
-  background-color: #ccc;
-  margin: 10px 0;
+    height: 1px;
+    background-color: #ccc;
+    margin: 10px 0;
 `;
 
 export default Sidebar;

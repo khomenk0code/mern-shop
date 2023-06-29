@@ -58,8 +58,6 @@ export const categories = [
     },
 ];
 
-
-
 export const popularProducts = [
     {
         id: 1,

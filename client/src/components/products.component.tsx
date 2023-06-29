@@ -60,13 +60,13 @@ const Products: React.FC<ProductsProps> = ({ category, filters, sort }) => {
 
     useEffect(() => {
         category &&
-        setFilteredProducts(
-            products.filter((item: any) =>
-                Object.entries(filters as Filters).every(([key, value]) =>
-                    item[key].includes(value)
+            setFilteredProducts(
+                products.filter((item: any) =>
+                    Object.entries(filters as Filters).every(([key, value]) =>
+                        item[key].includes(value)
+                    )
                 )
-            )
-        );
+            );
     }, [products, category, filters]);
 
     useEffect(() => {
@@ -90,55 +90,58 @@ const Products: React.FC<ProductsProps> = ({ category, filters, sort }) => {
     };
 
     return (
- <>
-     <Container>
-         {(category ? filteredProducts : products)
-             .slice(0, visibleProductCount)
-             .map((item: any) => (
-                 <ProductsItem item={item} key={item._id} />
-             ))}
-         {isLoading && <Loader>Loading...</Loader>}
-     </Container>
-     <ButtonWrapper>
-         {visibleProductCount < (category ? filteredProducts.length : products.length) && !isLoading && (
-             <ShowMoreButton onClick={handleShowMore}>Show more</ShowMoreButton>
-         )}
-     </ButtonWrapper>
- </>
+        <>
+            <Container>
+                {(category ? filteredProducts : products)
+                    .slice(0, visibleProductCount)
+                    .map((item: any) => (
+                        <ProductsItem item={item} key={item._id} />
+                    ))}
+                {isLoading && <Loader>Loading...</Loader>}
+            </Container>
+            <ButtonWrapper>
+                {visibleProductCount <
+                    (category ? filteredProducts.length : products.length) &&
+                    !isLoading && (
+                        <ShowMoreButton onClick={handleShowMore}>
+                            Show more
+                        </ShowMoreButton>
+                    )}
+            </ButtonWrapper>
+        </>
     );
 };
 
 const Container = styled.div`
-  margin: 3rem 0;
-  padding: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+    margin: 3rem 0;
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 `;
 
 const Loader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1rem;
-  font-weight: bold;
+    height: 1000px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+    font-weight: bold;
 `;
 const ButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
-
-
 const ShowMoreButton = styled.button`
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #eceff3;
-  color: #000;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #eceff3;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 `;
 
 export default Products;

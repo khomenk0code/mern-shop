@@ -3,11 +3,15 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
-import { deleteProduct, deleteUser, getProducts, getUsers } from "../redux/api.calls";
+import {
+    deleteUser,
+    getUsers,
+} from "../redux/api.calls";
 import {
     ConfirmationButton,
     ConfirmationButtons,
-    ConfirmationPopup, ConfirmationText,
+    ConfirmationPopup,
+    ConfirmationText,
     ProductListContainer,
     ProductListDelete,
     ProductListEdit,
@@ -18,7 +22,6 @@ import {
 const UserList = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [UserIdToDelete, setUserIdToDelete] = useState("");
-
 
     const dispatch = useAppDispatch();
     const users = useAppSelector((state) => state.user.users);
@@ -40,7 +43,10 @@ const UserList = () => {
                 setShowConfirmation(false);
             })
             .catch((error) => {
-                console.log(`Error deleting user with id:${UserIdToDelete}`, error);
+                console.log(
+                    `Error deleting user with id:${UserIdToDelete}`,
+                    error
+                );
                 setShowConfirmation(false);
             });
     };
@@ -54,9 +60,8 @@ const UserList = () => {
             field: "_id",
             headerName: "ID",
             align: "center",
-            headerAlign: 'center',
+            headerAlign: "center",
             flex: 300,
-
         },
         {
             field: "username",
@@ -77,23 +82,25 @@ const UserList = () => {
             headerName: "Email",
             flex: 200,
             align: "center",
-            headerAlign: 'center',
+            headerAlign: "center",
         },
         {
             field: "isAdmin",
             headerName: "Is admin",
             flex: 100,
             align: "center",
-            headerAlign: 'center',
+            headerAlign: "center",
         },
         {
             field: "createdAt",
             headerName: "Created",
             flex: 150,
             align: "center",
-            headerAlign: 'center',
+            headerAlign: "center",
             renderCell: (params: any) => {
-                const createdAt = new Date(params.row.createdAt).toLocaleDateString();
+                const createdAt = new Date(
+                    params.row.createdAt
+                ).toLocaleDateString();
                 return <>{createdAt}</>;
             },
         },
@@ -101,7 +108,7 @@ const UserList = () => {
             field: "action",
             headerName: "Action",
             flex: 100,
-            headerAlign: 'center',
+            headerAlign: "center",
             sortable: false,
             filterable: false,
             renderCell: (params: any) => {
@@ -117,7 +124,9 @@ const UserList = () => {
                             <Link to={`/user/${params.row._id}`}>
                                 <EditButton>Edit</EditButton>
                             </Link>
-                            <DeleteOutlineIcon onClick={() => handleDelete(params.row._id)} />
+                            <DeleteOutlineIcon
+                                onClick={() => handleDelete(params.row._id)}
+                            />
                         </>
                     );
                 }
@@ -135,11 +144,11 @@ const UserList = () => {
                 rowCount={users.length}
                 checkboxSelection
                 localeText={{
-                    toolbarDensity: 'Size',
-                    toolbarDensityLabel: 'Size',
-                    toolbarDensityCompact: 'Small',
-                    toolbarDensityStandard: 'Medium',
-                    toolbarDensityComfortable: 'Large',
+                    toolbarDensity: "Size",
+                    toolbarDensityLabel: "Size",
+                    toolbarDensityCompact: "Small",
+                    toolbarDensityStandard: "Medium",
+                    toolbarDensityComfortable: "Large",
                 }}
                 slots={{
                     toolbar: GridToolbar,
@@ -147,10 +156,16 @@ const UserList = () => {
             />
             {showConfirmation && (
                 <UserConfirmationPopup>
-                    <UserConfirmationText>Are you sure you want to delete this product?</UserConfirmationText>
+                    <UserConfirmationText>
+                        Are you sure you want to delete this product?
+                    </UserConfirmationText>
                     <UserConfirmationButtons>
-                        <UserConfirmationButton onClick={confirmDelete}>Yes</UserConfirmationButton>
-                        <ConfirmationButton onClick={cancelDelete}>No</ConfirmationButton>
+                        <UserConfirmationButton onClick={confirmDelete}>
+                            Yes
+                        </UserConfirmationButton>
+                        <ConfirmationButton onClick={cancelDelete}>
+                            No
+                        </ConfirmationButton>
                     </UserConfirmationButtons>
                 </UserConfirmationPopup>
             )}
@@ -158,23 +173,15 @@ const UserList = () => {
     );
 };
 
+export const UserConfirmationPopup = styled(ConfirmationPopup)``;
 
-export const UserConfirmationPopup = styled(ConfirmationPopup)`
+export const UserConfirmationText = styled(ConfirmationText)``;
 
-`;
-
-export const UserConfirmationText = styled(ConfirmationText)`
-
-`;
-
-export const UserConfirmationButtons = styled(ConfirmationButtons)`
-
-`;
+export const UserConfirmationButtons = styled(ConfirmationButtons)``;
 
 export const UserConfirmationButton = styled(ConfirmationButton)``;
 
-const Container = styled(ProductListContainer)`
-`;
+const Container = styled(ProductListContainer)``;
 
 const User = styled(ProductListItem)``;
 
@@ -183,7 +190,5 @@ const UserImage = styled(ProductListImg)``;
 const EditButton = styled(ProductListEdit)``;
 
 const DeleteOutlineIcon = styled(ProductListDelete)``;
-
-
 
 export default UserList;

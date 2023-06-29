@@ -1,6 +1,3 @@
-
-
-
 export const salesData = [
     { name: "Jan", Sales: 1200 },
     { name: "Feb", Sales: 1800 },
