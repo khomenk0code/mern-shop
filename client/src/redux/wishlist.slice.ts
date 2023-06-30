@@ -11,10 +11,10 @@ const wishlistSlice = createSlice({
             state.products.push(action.payload);
         },
 
-        removeProductWishlist: (state, action: PayloadAction<number>) => {
-            const productId = action.payload;
+        removeProductWishlist: (state, action: PayloadAction<any>) => {
+            const productIds = action.payload;
             state.products = state.products.filter(
-                (product) => product._id !== productId.toString()
+                (product) => !productIds.includes(product._id)
             );
         },
 

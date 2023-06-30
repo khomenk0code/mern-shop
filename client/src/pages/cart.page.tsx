@@ -20,6 +20,7 @@ const Cart = () => {
     const [signatureValue, setSignatureValue] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
 
+
     const cart = useAppSelector((state) => state.cart);
     const wishlist = useAppSelector((state) => state.wishlist.products);
     const dispatch = useAppDispatch();
@@ -281,6 +282,8 @@ const Cart = () => {
         </Container>
     );
 };
+
+
 
 const Container = styled.div``;
 

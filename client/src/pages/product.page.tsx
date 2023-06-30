@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import cssColorNames from "css-color-names";
 import { useAppSelector } from "../hooks/hooks";
 
-interface FilterColorProps {
+export interface FilterColorProps {
     color: string;
     isSelected: boolean;
     onClick: () => void;
@@ -29,6 +29,8 @@ const Product: React.FC = () => {
     const products = useAppSelector((state) => state.cart.products);
     const [showNotification, setShowNotification] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
+
+
 
     const dispatch = useDispatch();
     const location = useLocation();
@@ -269,7 +271,7 @@ const Price = styled.span`
     font-size: 40px;
 `;
 
-const FilterContainer = styled.div`
+export const FilterContainer = styled.div`
     width: 50%;
     margin: 30px 0;
     display: flex;
@@ -277,17 +279,17 @@ const FilterContainer = styled.div`
     ${mobile({ width: "100%" })}
 `;
 
-const Filter = styled.div`
+export const Filter = styled.div`
     display: flex;
     align-items: center;
 `;
 
-const FilterTitle = styled.span`
+export const FilterTitle = styled.span`
     font-size: 20px;
     font-weight: 200;
 `;
 
-const FilterColor = styled.div<FilterColorProps>`
+export const FilterColor = styled.div<FilterColorProps>`
     width: ${(props) => (props.color === "White" ? "19px" : "20px")};
     height: ${(props) => (props.color === "White" ? "19px" : "20px")};
     border-radius: 50%;
@@ -300,12 +302,12 @@ const FilterColor = styled.div<FilterColorProps>`
     transition: transform 0.2s ease-in-out;
 `;
 
-const FilterSize = styled.select`
+export const FilterSize = styled.select`
     margin-left: 10px;
     padding: 5px;
 `;
 
-const FilterSizeOption = styled.option``;
+export const FilterSizeOption = styled.option``;
 
 const AddContainer = styled.div`
     width: 70%;

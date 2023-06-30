@@ -1,62 +1,103 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-    Badge,
-    Button,
-    Card,
-    CardContent,
-    CardMedia,
-    Grid,
-    Typography,
-} from "@mui/material";
-import { AddShoppingCart, DeleteOutline } from "@mui/icons-material";
+import { Badge, Button, Card, CardContent, CardMedia, Checkbox, Grid, Typography } from "@mui/material";
+import { AddShoppingCart, Close, DeleteOutline } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { clearWishlist, removeProductWishlist } from "../redux/wishlist.slice";
 import { Hr } from "./cart.page";
+import { Filter, FilterColor, FilterColorProps, FilterContainer, FilterSize, FilterTitle } from "./product.page";
+import cssColorNames from "css-color-names";
+import { Link } from "react-router-dom";
+
 
 const Wishlist: React.FC = () => {
     const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+    const [showCartPopup, setShowCartPopup] = useState(false);
+    const [color, setColor] = useState<string>("");
+    const [selectedTotalPrice, setSelectedTotalPrice] = useState<number>(0);
+    const [isAllSelected, setIsAllSelected] = useState<boolean>(false);
+    const [size, setSize] = useState<string>("");
+    const [isColorSelected, setIsColorSelected] = useState<boolean>(false);
+    const products = useAppSelector((state) => state.cart.products);
+    const [selectedProductsInPopup, setSelectedProductsInPopup] = useState<number[]>([]);
+
 
     const wishlist = useAppSelector((state: any) => state.wishlist.products);
     const dispatch = useAppDispatch();
+    const validColors = Object.keys(cssColorNames);
+
+
+
+
+    useEffect(() => {
+        if (wishlist?.size && wishlist.size.length > 0) {
+            setSize(wishlist.size[0]);
+        }
+        if (wishlist?.color && wishlist.color.length > 0) {
+            setColor(wishlist.color[0]);
+        }
+    }, [wishlist]);
 
     const handleRemoveFromWishlist = (id: number) => {
-        console.log(id);
         dispatch(removeProductWishlist(id));
     };
 
     const handleRemoveAll = () => {
-        dispatch(clearWishlist());
-        setSelectedProducts([]);
+        if (selectedProducts.length === wishlist.length) {
+            dispatch(clearWishlist());
+            setSelectedProducts([]);
+        } else {
+            dispatch(removeProductWishlist(selectedProducts));
+            setSelectedProducts([]);
+        }
     };
-    //
-    // const handleToggleAll = () => {
-    //     if (selectedProducts.length === wishlist.length) {
-    //         setSelectedProducts([]);
-    //         setSelectedTotalPrice(0);
-    //         setIsAllSelected(false)
-    //     } else {
-    //         const allProductIds = wishlist.map((product: any) => product._id);
-    //         setSelectedProducts(allProductIds);
-    //         calculateSelectedTotalPrice(allProductIds);
-    //         setIsAllSelected(true)
-    //
-    //     }
-    // };
-    //
-    // const handleToggleProduct = (id: number) => {
-    //     setSelectedProducts((prevSelectedProducts) => {
-    //         if (prevSelectedProducts.includes(id)) {
-    //             const updatedSelectedProducts = prevSelectedProducts.filter((productId) => productId !== id);
-    //             calculateSelectedTotalPrice(updatedSelectedProducts);
-    //             return updatedSelectedProducts;
-    //         } else {
-    //             const updatedSelectedProducts = [...prevSelectedProducts, id];
-    //             calculateSelectedTotalPrice(updatedSelectedProducts);
-    //             return updatedSelectedProducts;
-    //         }
-    //     });
-    // };
+
+    const calculateSelectedTotalPrice = (selectedProductIds: number[]) => {
+        const totalPrice = selectedProductIds.reduce((total, productId) => {
+            const product = wishlist.find((product: any) => product._id === productId);
+            return total + (product ? product.price : 0);
+        }, 0);
+        setSelectedTotalPrice(totalPrice);
+    };
+
+
+
+    const handleToggleAll = () => {
+        if (selectedProducts.length === wishlist.length) {
+            setSelectedProducts([]);
+            setSelectedProductsInPopup([]);
+            setSelectedTotalPrice(0);
+            setIsAllSelected(false)
+        } else {
+            const allProductIds = wishlist.map((product: any) => product._id);
+            setSelectedProducts(allProductIds);
+            setSelectedProductsInPopup(allProductIds);
+            calculateSelectedTotalPrice(allProductIds);
+            setIsAllSelected(true)
+
+        }
+    };
+
+    const handleToggleProduct = (id: number) => {
+        setSelectedProducts((prevSelectedProducts) => {
+            if (prevSelectedProducts.includes(id)) {
+                const updatedSelectedProducts = prevSelectedProducts.filter((productId) => productId !== id);
+                calculateSelectedTotalPrice(updatedSelectedProducts);
+                return updatedSelectedProducts;
+            } else {
+                const updatedSelectedProducts = [...prevSelectedProducts, id];
+                calculateSelectedTotalPrice(updatedSelectedProducts);
+                return updatedSelectedProducts;
+            }
+        });
+        setSelectedProductsInPopup((prevSelectedProducts) => {
+            if (prevSelectedProducts.includes(id)) {
+                return prevSelectedProducts.filter((productId) => productId !== id);
+            } else {
+                return [...prevSelectedProducts, id];
+            }
+        });
+    };
 
     const calculateTotalPrice = () => {
         return wishlist.reduce((total: any, product: any) => {
@@ -64,7 +105,31 @@ const Wishlist: React.FC = () => {
         }, 0);
     };
 
-    console.log(wishlist);
+    const handleBuyOne = (id:number) => {
+
+        selectedProductsInPopup.splice(0, selectedProductsInPopup.length);
+        selectedProductsInPopup.push(id);
+        setShowCartPopup(true);
+    }
+
+
+    const handleBuyAll = () => {
+        if (selectedProducts.length === 0) {
+            const selectedProductsInPopup:number[] = [];
+
+            wishlist.forEach((product:any) => {
+                const id = product._id;
+                selectedProductsInPopup.push(id);
+            });
+
+            setSelectedProductsInPopup(selectedProductsInPopup);
+        } else {
+            setSelectedProductsInPopup(selectedProducts);
+        }
+
+        setShowCartPopup(true);
+    };
+
 
     return (
         <Container>
@@ -72,17 +137,25 @@ const Wishlist: React.FC = () => {
                 <Typography variant="h4" gutterBottom>
                     Wishlist
                 </Typography>
-                {wishlist.length > 0 && (
-                    <Badge badgeContent={wishlist.length} color="warning">
+                {selectedProducts.length >= 2 && (
+                    <Badge badgeContent={selectedProducts.length} color="warning">
                         <Button
                             variant="contained"
                             color="secondary"
                             onClick={handleRemoveAll}
                         >
-                            Remove All
+                            Remove Selected
                         </Button>
                     </Badge>
                 )}
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleBuyAll}
+                >
+                    {selectedProducts.length >= 1 && selectedProducts.length !== wishlist.length ? "Buy Selected" : "Buy All"}
+                </Button>
+
             </Title>
             <Grid container spacing={2}>
                 {wishlist.map((products: any) => (
@@ -111,14 +184,16 @@ const Wishlist: React.FC = () => {
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        href={`/product/${products._id}`}
+                                        onClick={() => handleBuyOne(products._id)}
                                     >
                                         <AddShoppingCart /> Buy
                                     </Button>
-                                    {/*<Checkbox*/}
-                                    {/*    checked=*/}
-                                    {/*    onChange={() => handleToggleProduct(products._id)}*/}
-                                    {/*/>*/}
+                                    <Checkbox
+                                        checked={selectedProducts.includes(products._id)}
+                                        onChange={() =>
+                                            handleToggleProduct(products._id)
+                                        }
+                                    />
                                 </CardBottom>
                             </ProductCardContent>
                             {selectedProducts.includes(products._id)}
@@ -127,25 +202,220 @@ const Wishlist: React.FC = () => {
                 ))}
             </Grid>
             <HrLine />
-            {/*<Button variant="contained" onClick={handleToggleAll}>*/}
-            {/*    {selectedProducts.length === wishlist.length ? "Deselect All" : "Select All"}*/}
-            {/*</Button>*/}
 
-            {/*{selectedProducts.length > 0 && (*/}
-            {/*    <Typography variant="subtitle1" gutterBottom>*/}
-            {/*        Selected: {selectedProducts.length} products, Total: ${selectedTotalPrice}*/}
-            {/*    </Typography>*/}
-            {/*)}*/}
-            <TotalPrice>
-                <Typography variant="subtitle1">
-                    <strong>{wishlist.length}</strong> products in total, with a
-                    total sum of
-                </Typography>
-                <Typography variant="h5">${calculateTotalPrice()}</Typography>
-            </TotalPrice>
+            {showCartPopup && (
+                <ConfirmationPopup>
+                    <ConfirmationText>
+                        Add to cart
+                    </ConfirmationText>
+                    <ClosePopupButton onClick={() => setShowCartPopup(false)}>
+                        <Close />
+                    </ClosePopupButton>
+
+                    {selectedProductsInPopup.length > 0 && (
+                        <div>
+                            {wishlist
+                                .filter((product:any) => selectedProductsInPopup.includes(product._id)).map((product: any) => (
+
+
+                        <>
+                            <WrapperToCart key={product._id}>
+                                <ImageToCart src={product.img} alt="" />
+                                <div>
+                                    <AddToCartTitle>{product.title}</AddToCartTitle>
+                                    <FilterContainerWishlist>
+                                        {product?.color?.filter((c: any) =>
+                                            validColors.includes(c.toLowerCase())
+                                        ).length !== 0 ? (
+                                            <Filter>
+                                                <FilterTitleWishlist>
+                                                    {product && product.color && product.color.length <= 1
+                                                        ? "Color: "
+                                                        : "Colors: "}
+                                                </FilterTitleWishlist>
+                                                {product?.color
+                                                    .filter((c: any) => validColors.includes(c.toLowerCase()))
+                                                    .map((c: any) => (
+                                                        <FilterColorWishlist
+                                                            color={c}
+                                                            key={c}
+                                                            onClick={() => {
+                                                                setColor(c);
+                                                                setIsColorSelected(false);
+                                                            }}
+                                                            isSelected={c === color}
+                                                        />
+                                                    ))}
+                                            </Filter>
+                                        ) : null}
+
+                                        {product?.size?.length !== 0 ? (
+                                            <FilterWishlist>
+                                                <FilterTitleWishlist>Size: </FilterTitleWishlist>
+                                                <FilterSizeWishlist onChange={(e) => setSize(e.target.value)}>
+                                                    {product?.size
+                                                        .sort((a: any, b: any) => {
+                                                            const sizesOrder = ["XS", "S", "M", "L", "XL", "XXL"];
+                                                            return sizesOrder.indexOf(a) - sizesOrder.indexOf(b);
+                                                        })
+                                                        .map((s: any) => (
+                                                            <option key={s}>{s}</option>
+                                                        ))}
+                                                </FilterSizeWishlist>
+                                            </FilterWishlist>
+                                        ) : null}
+                                    </FilterContainerWishlist>
+                                </div>
+                                <PriceToCart> {product.price}$</PriceToCart>
+
+                            </WrapperToCart>
+                            <HrLineCart/>
+                        </>
+                            ))}
+                        </div>
+                    )}
+                    <ConfirmationButtons>
+                        <ConfirmationButton >
+                            Continue shopping
+                        </ConfirmationButton>
+                        <ConfirmationButton >
+                            Add to cart
+                        </ConfirmationButton>
+                    </ConfirmationButtons>
+                </ConfirmationPopup>
+            )}
+            {wishlist.length > 0 ? (
+                <>
+                    <TotalPrice>
+                        <Typography variant="subtitle1">
+                            <strong>{wishlist.length}</strong> products in total, with a total sum of
+                        </Typography>
+                        <Typography variant="h5">${calculateTotalPrice()}</Typography>
+                    </TotalPrice>
+
+                    <Button variant="contained" onClick={handleToggleAll}>
+                        {selectedProducts.length === wishlist.length ? "Deselect All" : "Select All"}
+                    </Button>
+
+                    {selectedProducts.length > 0 && (
+                        <Typography variant="subtitle1" gutterBottom>
+                            Selected: {selectedProducts.length} products, Total: ${selectedTotalPrice}
+                        </Typography>
+                    )}
+                </>
+            ) : (
+                <EmptyCartMessage>
+                    <h2>Wishlist is empty</h2>
+                    <CartLink to="/">
+                        Continue shopping
+                    </CartLink>
+                </EmptyCartMessage>
+            )}
+
         </Container>
     );
 };
+
+
+const ClosePopupButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+`;
+
+const EmptyCartMessage = styled.div`
+  margin-top: 2rem;
+  font-size: 24px;
+  text-align: center;
+`;
+
+const CartLink = styled(Link)`
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin-top: 2rem;
+  background-color: #75e01b;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+`;
+
+export const ImageToCart = styled.img`
+    height: 100px;
+`;
+
+export const WrapperToCart = styled.div`
+    display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+`;
+
+export const PriceToCart = styled.div`
+    display: flex;
+  align-items: center;
+  font-weight: 600;
+`;
+export const AddToCartTitle = styled.h4`
+  font-size: 20px;
+`;
+
+
+
+
+const FilterContainerWishlist = styled(FilterContainer)``;
+const FilterWishlist = styled(Filter)``;
+const FilterTitleWishlist = styled(FilterTitle)``;
+const FilterColorWishlist = styled(FilterColor)<FilterColorProps>``;
+const FilterSizeWishlist = styled(FilterSize)``;
+
+
+
+export const ConfirmationPopup = styled.div`
+    position: fixed;
+  width: 60%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+`;
+
+export const ConfirmationText = styled.div`
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 22px;
+`;
+
+export const ConfirmationButtons = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
+export const ConfirmationButton = styled.button`
+    margin: 20px 15px;
+    padding: 15px 40px;
+    background-color: #3bb077;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #2d8a5f;
+    }
+`;
+
+const HrLineCart = styled(Hr)`
+  margin-top: 1rem;
+  background-color: #282727;
+`;
 
 const HrLine = styled(Hr)`
     margin-top: 1rem;
@@ -178,8 +448,11 @@ const ProductCard = styled(Card)`
 `;
 
 const ProductImage = styled(CardMedia)`
-    height: 200px;
+    height: 350px;
     position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
 
 const ProductTitle = styled(Typography)`
