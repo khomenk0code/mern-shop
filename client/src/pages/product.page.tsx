@@ -30,8 +30,6 @@ const Product: React.FC = () => {
     const [showNotification, setShowNotification] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
 
-
-
     const dispatch = useDispatch();
     const location = useLocation();
     const id: string = location.pathname.split("/")[2];
