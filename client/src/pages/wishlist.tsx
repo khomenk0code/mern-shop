@@ -8,12 +8,19 @@ import { Hr } from "./cart.page";
 import { Filter, FilterColor, FilterColorProps, FilterContainer, FilterSize, FilterTitle } from "./product.page";
 import cssColorNames from "css-color-names";
 import { Link } from "react-router-dom";
+import { addProduct, updateQuantity } from "../redux/cart.slice";
+interface SelectedColors {
+    [productId: string]: string;
+}
+
 
 const Wishlist: React.FC = () => {
     const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+    const [selectedColors, setSelectedColors] = useState<SelectedColors>({});
     const [showCartPopup, setShowCartPopup] = useState(false);
     const [color, setColor] = useState<string>("");
     const [selectedTotalPrice, setSelectedTotalPrice] = useState<number>(0);
+    const [showNotification, setShowNotification] = useState(false);
     const [isAllSelected, setIsAllSelected] = useState<boolean>(false);
     const [size, setSize] = useState<string>("");
     const [isColorSelected, setIsColorSelected] = useState<boolean>(false);
@@ -112,21 +119,92 @@ const Wishlist: React.FC = () => {
     };
 
     const handleBuyAll = () => {
+        let updatedSelectedProductsInPopup = [];
+
         if (selectedProducts.length === 0) {
-            const selectedProductsInPopup: number[] = [];
-
-            wishlist.forEach((product: any) => {
-                const id = product._id;
-                selectedProductsInPopup.push(id);
-            });
-
-            setSelectedProductsInPopup(selectedProductsInPopup);
+            updatedSelectedProductsInPopup = wishlist.map((product: any) => product._id);
         } else {
-            setSelectedProductsInPopup(selectedProducts);
+            updatedSelectedProductsInPopup = [...selectedProducts];
         }
 
+        setSelectedProductsInPopup(updatedSelectedProductsInPopup);
         setShowCartPopup(true);
     };
+
+    console.log(wishlist);
+    useEffect(() => {
+        wishlist.forEach((product:any) => {
+            if (product.size && product.size.length > 0) {
+                setSize((prevSize) => {
+                    if (!prevSize) {
+                        return product.size[0];
+                    }
+                    return prevSize;
+                });
+            }
+            if (product.color && product.color.length > 0) {
+                setColor((prevColor) => {
+                    if (!prevColor) {
+                        return product.color[0];
+                    }
+                    return prevColor;
+                });
+            }
+        });
+    }, [wishlist]);
+
+
+    const handleClick = () => {
+        const hasValidColors = wishlist?.color.filter((c:any) => validColors.includes(c.toLowerCase())).length !== 0;
+
+        if (hasValidColors && (!color || color === "")) {
+            setIsColorSelected(true);
+            return;
+        }
+
+        setShowNotification(false);
+
+        selectedProductsInPopup.forEach((selectedProductId) => {
+            const selectedProduct = wishlist.find((product: { _id: number; }) => product._id === selectedProductId);
+
+            if (selectedProduct) {
+                const existingProduct = products.find(
+                    (p) =>
+                        p._id === selectedProduct._id &&
+                        p.color.includes(color) &&
+                        p.size.toString() === size
+                );
+
+                if (existingProduct) {
+                    dispatch(
+                        updateQuantity({
+                            productId: existingProduct._id,
+                            color,
+                            size,
+                            quantity: existingProduct.quantity + 1,
+                        })
+                    );
+                } else {
+                    dispatch(
+                        addProduct({
+                            ...selectedProduct,
+                            color: [color],
+                            size: [size],
+                        })
+                    );
+                }
+            }
+        });
+    };
+
+    const handleColorSelection = (productId:any, color:any) => {
+        setSelectedColors((prevSelectedColors) => ({
+            ...prevSelectedColors,
+            [productId]: color,
+        }));
+    };
+
+
 
     return (
         <Container>
@@ -232,36 +310,29 @@ const Wishlist: React.FC = () => {
                                                     {product.title}
                                                 </AddToCartTitle>
                                                 <FilterContainerWishlist>
-                                                    {product?.color?.filter(
-                                                        (c: any) =>
-                                                            validColors.includes(
-                                                                c.toLowerCase())).length !== 0 ? (
+                                                    {product?.color?.filter((c:any) =>
+                                                        validColors.includes(c.toLowerCase())
+                                                    ).length !== 0 ? (
                                                         <Filter>
                                                             <FilterTitleWishlist>
-                                                                {product &&
-                                                                product.color &&
-                                                                product.color
-                                                                    .length <= 1
-                                                                    ? "Color: "
-                                                                    : "Colors: "}
+                                                                {product?.color?.length <= 1 ? "Color: " : "Colors: "}
                                                             </FilterTitleWishlist>
                                                             {product?.color
-                                                                .filter(
-                                                                    (c: any) =>
-                                                                        validColors.includes(
-                                                                            c.toLowerCase()))
-                                                                .map((c: any) => (
-                                                                        <FilterColorWishlist
-                                                                            color={c}
-                                                                            key={c}
-                                                                            onClick={() => {
-                                                                                setColor(c);
-                                                                                setIsColorSelected(false);
-                                                                            }}
-                                                                            isSelected={c === color}
-                                                                        />
-                                                                    ),
-                                                                )}
+                                                                .filter((c:any) =>
+                                                                    validColors.includes(c.toLowerCase())
+                                                                )
+                                                                .map((c:any) => (
+                                                                    <FilterColorWishlist
+                                                                        color={c}
+                                                                        key={c}
+                                                                        onClick={() =>
+                                                                            handleColorSelection(product._id, c)
+                                                                        }
+                                                                        isSelected={
+                                                                            selectedColors[product._id] === c
+                                                                        }
+                                                                    />
+                                                                ))}
                                                         </Filter>
                                                     ) : null}
 
