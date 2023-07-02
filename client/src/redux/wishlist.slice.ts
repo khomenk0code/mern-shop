@@ -13,10 +13,15 @@ const wishlistSlice = createSlice({
 
         removeProductWishlist: (state, action: PayloadAction<any>) => {
             const productIds = action.payload;
-            state.products = state.products.filter(
+            const updatedProducts = state.products.filter(
                 (product) => !productIds.includes(product._id)
             );
+            return {
+                ...state,
+                products: updatedProducts
+            };
         },
+
 
         clearWishlist: (state) => {
             state.products = [];
