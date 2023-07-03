@@ -33,14 +33,6 @@ const Wishlist: React.FC = () => {
     const dispatch = useAppDispatch();
     const validColors = Object.keys(cssColorNames);
 
-    useEffect(() => {
-        if (wishlist?.size && wishlist.size.length > 0) {
-            setSize(wishlist.size[0]);
-        }
-        if (wishlist?.color && wishlist.color.length > 0) {
-            setColor(wishlist.color[0]);
-        }
-    }, [wishlist]);
 
     const handleRemoveFromWishlist = (id: number) => {
         dispatch(removeProductWishlist([id]));
@@ -112,9 +104,11 @@ const Wishlist: React.FC = () => {
         }, 0);
     };
 
+
     const handleBuyOne = (id: number) => {
         selectedProductsInPopup.splice(0, selectedProductsInPopup.length);
         selectedProductsInPopup.push(id);
+
         setShowCartPopup(true);
     };
 
@@ -131,31 +125,17 @@ const Wishlist: React.FC = () => {
         setShowCartPopup(true);
     };
 
-    console.log(wishlist);
-    useEffect(() => {
-        wishlist.forEach((product:any) => {
-            if (product.size && product.size.length > 0) {
-                setSize((prevSize) => {
-                    if (!prevSize) {
-                        return product.size[0];
-                    }
-                    return prevSize;
-                });
-            }
-            if (product.color && product.color.length > 0) {
-                setColor((prevColor) => {
-                    if (!prevColor) {
-                        return product.color[0];
-                    }
-                    return prevColor;
-                });
-            }
-        });
-    }, [wishlist]);
+
 
 
     const handleClick = () => {
-        const hasValidColors = wishlist?.color.filter((c:any) => validColors.includes(c.toLowerCase())).length !== 0;
+        const hasValidColors = wishlist?.filter((product: any) => {
+            return (
+                product.color &&
+                product.color.length > 0 &&
+                product.color.some((c: any) => validColors.includes(c.toLowerCase()))
+            );
+        }).length !== 0;
 
         if (hasValidColors && (!color || color === "")) {
             setIsColorSelected(true);
@@ -165,7 +145,7 @@ const Wishlist: React.FC = () => {
         setShowNotification(false);
 
         selectedProductsInPopup.forEach((selectedProductId) => {
-            const selectedProduct = wishlist.find((product: { _id: number; }) => product._id === selectedProductId);
+            const selectedProduct = wishlist.find((product: { _id: number }) => product._id === selectedProductId);
 
             if (selectedProduct) {
                 const existingProduct = products.find(
@@ -196,6 +176,8 @@ const Wishlist: React.FC = () => {
             }
         });
     };
+
+
 
     const handleColorSelection = (productId:any, color:any) => {
         setSelectedColors((prevSelectedColors) => ({
@@ -238,53 +220,39 @@ const Wishlist: React.FC = () => {
                 </Button>
             </Title>
             <Grid container spacing={2}>
-                {wishlist.map((products: any) => (
-                    <Grid item key={products._id} xs={12} sm={6} md={4} lg={3}>
+                {wishlist.map((product: any) => (
+                    <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
                         <ProductCard>
-                            <ProductImage image={products.img} />
+                            <ProductImage image={product.img} />
                             <DeleteButton
-                                onClick={() =>
-                                    handleRemoveFromWishlist(products._id)
-                                }
+                                onClick={() => handleRemoveFromWishlist(product._id)}
                             >
                                 <DeleteOutline />
                             </DeleteButton>
                             <ProductCardContent>
-                                <ProductTitle variant="h5">
-                                    {products.title}
-                                </ProductTitle>
-                                <ProductDescription>
-                                    {products.desc}
-                                </ProductDescription>
-                                <ProductPrice variant="h5">
-                                    ${products.price}
-                                </ProductPrice>
+                                <ProductTitle variant="h5">{product.title}</ProductTitle>
+                                <ProductDescription>{product.desc}</ProductDescription>
+                                <ProductPrice variant="h5">${product.price}</ProductPrice>
 
                                 <CardBottom>
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        onClick={() =>
-                                            handleBuyOne(products._id)
-                                        }
+                                        onClick={() => handleBuyOne(product._id)}
                                     >
                                         <AddShoppingCart /> Buy
                                     </Button>
                                     <Checkbox
-                                        checked={selectedProducts.includes(
-                                            products._id,
-                                        )}
-                                        onChange={() =>
-                                            handleToggleProduct(products._id)
-                                        }
+                                        checked={selectedProducts.includes(product._id)}
+                                        onChange={() => handleToggleProduct(product._id)}
                                     />
                                 </CardBottom>
                             </ProductCardContent>
-                            {selectedProducts.includes(products._id)}
                         </ProductCard>
                     </Grid>
                 ))}
             </Grid>
+
             <HrLine />
 
             {showCartPopup && (
@@ -382,7 +350,7 @@ const Wishlist: React.FC = () => {
                         <ConfirmationButton>
                             Continue shopping
                         </ConfirmationButton>
-                        <ConfirmationButton>Add to cart</ConfirmationButton>
+                        <ConfirmationButton onClick={handleClick}>Add to cart</ConfirmationButton>
                     </ConfirmationButtons>
                 </ConfirmationPopup>
             )}
