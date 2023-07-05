@@ -1,30 +1,42 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Badge, Button, Card, CardContent, CardMedia, Checkbox, Grid, Typography } from "@mui/material";
+import {
+    Badge,
+    Button,
+    Card,
+    CardContent,
+    CardMedia,
+    Checkbox,
+    Grid,
+    Typography,
+} from "@mui/material";
 import { AddShoppingCart, Close, DeleteOutline } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { clearWishlist, removeProductWishlist } from "../redux/wishlist.slice";
 import { Hr } from "./cart.page";
-import { Filter, FilterColor, FilterColorProps, FilterContainer, FilterSize, FilterTitle } from "./product.page";
+import {
+    Filter,
+    FilterColor,
+    FilterColorProps,
+    FilterContainer,
+    FilterSize,
+    FilterTitle,
+} from "./product.page";
 import cssColorNames from "css-color-names";
 import { Link } from "react-router-dom";
-import { addProduct, updateQuantity } from "../redux/cart.slice";
+import { addProduct } from "../redux/cart.slice";
+
 interface SelectedColors {
     [productId: string]: string;
 }
 
-
 const Wishlist: React.FC = () => {
     const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
     const [selectedColors, setSelectedColors] = useState<SelectedColors>({});
+    const [size, setSize] = useState<any>({});
     const [showCartPopup, setShowCartPopup] = useState(false);
-    const [color, setColor] = useState<string>("");
     const [selectedTotalPrice, setSelectedTotalPrice] = useState<number>(0);
-    const [showNotification, setShowNotification] = useState(false);
     const [isAllSelected, setIsAllSelected] = useState<boolean>(false);
-    const [size, setSize] = useState<string>("");
-    const [isColorSelected, setIsColorSelected] = useState<boolean>(false);
-    const products = useAppSelector((state) => state.cart.products);
     const [selectedProductsInPopup, setSelectedProductsInPopup] = useState<
         number[]
     >([]);
@@ -33,6 +45,34 @@ const Wishlist: React.FC = () => {
     const dispatch = useAppDispatch();
     const validColors = Object.keys(cssColorNames);
 
+    useEffect(() => {
+        selectedProductsInPopup.forEach((productId: number) => {
+            const product = wishlist.find(
+                (product: any) => product._id === productId
+            );
+            if (product) {
+                const validProductColors = Array.isArray(product.color)
+                    ? product.color.filter((c: any) =>
+                          validColors.includes(c.toLowerCase())
+                      )
+                    : [];
+                const defaultColor =
+                    validProductColors.length > 0 ? validProductColors[0] : "";
+
+                setSelectedColors((prevSelectedColors) => ({
+                    ...prevSelectedColors,
+                    [productId]: prevSelectedColors[productId] || defaultColor,
+                }));
+
+                setSize((prevSize: any) => ({
+                    ...prevSize,
+                    [productId]:
+                        prevSize[productId] ||
+                        (product.size.length > 0 ? product.size[0] : ""),
+                }));
+            }
+        });
+    }, [selectedProductsInPopup, wishlist]);
 
     const handleRemoveFromWishlist = (id: number) => {
         dispatch(removeProductWishlist([id]));
@@ -51,7 +91,7 @@ const Wishlist: React.FC = () => {
     const calculateSelectedTotalPrice = (selectedProductIds: number[]) => {
         const totalPrice = selectedProductIds.reduce((total, productId) => {
             const product = wishlist.find(
-                (product: any) => product._id === productId,
+                (product: any) => product._id === productId
             );
             return total + (product ? product.price : 0);
         }, 0);
@@ -77,7 +117,7 @@ const Wishlist: React.FC = () => {
         setSelectedProducts((prevSelectedProducts) => {
             if (prevSelectedProducts.includes(id)) {
                 const updatedSelectedProducts = prevSelectedProducts.filter(
-                    (productId) => productId !== id,
+                    (productId) => productId !== id
                 );
                 calculateSelectedTotalPrice(updatedSelectedProducts);
                 return updatedSelectedProducts;
@@ -90,7 +130,7 @@ const Wishlist: React.FC = () => {
         setSelectedProductsInPopup((prevSelectedProducts) => {
             if (prevSelectedProducts.includes(id)) {
                 return prevSelectedProducts.filter(
-                    (productId) => productId !== id,
+                    (productId) => productId !== id
                 );
             } else {
                 return [...prevSelectedProducts, id];
@@ -104,19 +144,20 @@ const Wishlist: React.FC = () => {
         }, 0);
     };
 
-
     const handleBuyOne = (id: number) => {
-        selectedProductsInPopup.splice(0, selectedProductsInPopup.length);
-        selectedProductsInPopup.push(id);
+        const newSelectedProductsInPopup = [id];
 
         setShowCartPopup(true);
+        setSelectedProductsInPopup(newSelectedProductsInPopup);
     };
 
     const handleBuyAll = () => {
-        let updatedSelectedProductsInPopup = [];
+        let updatedSelectedProductsInPopup: any[];
 
         if (selectedProducts.length === 0) {
-            updatedSelectedProductsInPopup = wishlist.map((product: any) => product._id);
+            updatedSelectedProductsInPopup = wishlist.map(
+                (product: any) => product._id
+            );
         } else {
             updatedSelectedProductsInPopup = [...selectedProducts];
         }
@@ -125,68 +166,35 @@ const Wishlist: React.FC = () => {
         setShowCartPopup(true);
     };
 
-
-
-
     const handleClick = () => {
-        const hasValidColors = wishlist?.filter((product: any) => {
-            return (
-                product.color &&
-                product.color.length > 0 &&
-                product.color.some((c: any) => validColors.includes(c.toLowerCase()))
-            );
-        }).length !== 0;
+        const selectedProductsToAdd = wishlist
+            .filter((product: any) =>
+                selectedProductsInPopup.includes(product._id)
+            )
+            .map((product: any) => {
+                const newSize = size[product._id] || product.size[0];
+                return {
+                    ...product,
+                    color: [selectedColors[product._id] || product.color[0]],
+                    size: [newSize],
+                    quantity: 1,
+                };
+            });
 
-        if (hasValidColors && (!color || color === "")) {
-            setIsColorSelected(true);
-            return;
-        }
-
-        setShowNotification(false);
-
-        selectedProductsInPopup.forEach((selectedProductId) => {
-            const selectedProduct = wishlist.find((product: { _id: number }) => product._id === selectedProductId);
-
-            if (selectedProduct) {
-                const existingProduct = products.find(
-                    (p) =>
-                        p._id === selectedProduct._id &&
-                        p.color.includes(color) &&
-                        p.size.toString() === size
-                );
-
-                if (existingProduct) {
-                    dispatch(
-                        updateQuantity({
-                            productId: existingProduct._id,
-                            color,
-                            size,
-                            quantity: existingProduct.quantity + 1,
-                        })
-                    );
-                } else {
-                    dispatch(
-                        addProduct({
-                            ...selectedProduct,
-                            color: [color],
-                            size: [size],
-                        })
-                    );
-                }
-            }
+        selectedProductsToAdd.forEach((product: any) => {
+            dispatch(addProduct({ ...product }));
         });
+
+        setShowCartPopup(false);
     };
 
 
-
-    const handleColorSelection = (productId:any, color:any) => {
+    const handleColorSelection = (productId: string, color: string) => {
         setSelectedColors((prevSelectedColors) => ({
             ...prevSelectedColors,
             [productId]: color,
         }));
     };
-
-
 
     return (
         <Container>
@@ -225,26 +233,40 @@ const Wishlist: React.FC = () => {
                         <ProductCard>
                             <ProductImage image={product.img} />
                             <DeleteButton
-                                onClick={() => handleRemoveFromWishlist(product._id)}
+                                onClick={() =>
+                                    handleRemoveFromWishlist(product._id)
+                                }
                             >
                                 <DeleteOutline />
                             </DeleteButton>
                             <ProductCardContent>
-                                <ProductTitle variant="h5">{product.title}</ProductTitle>
-                                <ProductDescription>{product.desc}</ProductDescription>
-                                <ProductPrice variant="h5">${product.price}</ProductPrice>
+                                <ProductTitle variant="h5">
+                                    {product.title}
+                                </ProductTitle>
+                                <ProductDescription>
+                                    {product.desc}
+                                </ProductDescription>
+                                <ProductPrice variant="h5">
+                                    ${product.price}
+                                </ProductPrice>
 
                                 <CardBottom>
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        onClick={() => handleBuyOne(product._id)}
+                                        onClick={() =>
+                                            handleBuyOne(product._id)
+                                        }
                                     >
                                         <AddShoppingCart /> Buy
                                     </Button>
                                     <Checkbox
-                                        checked={selectedProducts.includes(product._id)}
-                                        onChange={() => handleToggleProduct(product._id)}
+                                        checked={selectedProducts.includes(
+                                            product._id
+                                        )}
+                                        onChange={() =>
+                                            handleToggleProduct(product._id)
+                                        }
                                     />
                                 </CardBottom>
                             </ProductCardContent>
@@ -266,7 +288,11 @@ const Wishlist: React.FC = () => {
                         <div>
                             {wishlist
                                 .filter((product: any) =>
-                                    selectedProductsInPopup.includes(product._id)).map((product: any) => (
+                                    selectedProductsInPopup.includes(
+                                        product._id
+                                    )
+                                )
+                                .map((product: any) => (
                                     <div key={product._id}>
                                         <WrapperToCart>
                                             <ImageToCart
@@ -278,29 +304,54 @@ const Wishlist: React.FC = () => {
                                                     {product.title}
                                                 </AddToCartTitle>
                                                 <FilterContainerWishlist>
-                                                    {product?.color?.filter((c:any) =>
-                                                        validColors.includes(c.toLowerCase())
+                                                    {product?.color?.filter(
+                                                        (c: any) =>
+                                                            validColors.includes(
+                                                                c.toLowerCase()
+                                                            )
                                                     ).length !== 0 ? (
                                                         <Filter>
                                                             <FilterTitleWishlist>
-                                                                {product?.color?.length <= 1 ? "Color: " : "Colors: "}
+                                                                {product?.color
+                                                                    ?.length <=
+                                                                1
+                                                                    ? "Color: "
+                                                                    : "Colors: "}
                                                             </FilterTitleWishlist>
                                                             {product?.color
-                                                                .filter((c:any) =>
-                                                                    validColors.includes(c.toLowerCase())
+                                                                .filter(
+                                                                    (c: any) =>
+                                                                        validColors.includes(
+                                                                            c.toLowerCase()
+                                                                        )
                                                                 )
-                                                                .map((c:any) => (
-                                                                    <FilterColorWishlist
-                                                                        color={c}
-                                                                        key={c}
-                                                                        onClick={() =>
-                                                                            handleColorSelection(product._id, c)
-                                                                        }
-                                                                        isSelected={
-                                                                            selectedColors[product._id] === c
-                                                                        }
-                                                                    />
-                                                                ))}
+                                                                .map(
+                                                                    (
+                                                                        c: any,
+                                                                    ) => (
+                                                                        <FilterColorWishlist
+                                                                            color={
+                                                                                c
+                                                                            }
+                                                                            key={
+                                                                                c
+                                                                            }
+                                                                            onClick={() =>
+                                                                                handleColorSelection(
+                                                                                    product._id,
+                                                                                    c
+                                                                                )
+                                                                            }
+                                                                            isSelected={
+                                                                                selectedColors[
+                                                                                    product
+                                                                                        ._id
+                                                                                ] ===
+                                                                                c
+                                                                            }
+                                                                        />
+                                                                    )
+                                                                )}
                                                         </Filter>
                                                     ) : null}
 
@@ -312,24 +363,66 @@ const Wishlist: React.FC = () => {
                                                             </FilterTitleWishlist>
                                                             <FilterSizeWishlist
                                                                 onChange={(e) =>
-                                                                    setSize(e.target.value)}
+                                                                    setSize(
+                                                                        (
+                                                                            prevSize: any
+                                                                        ) => ({
+                                                                            ...prevSize,
+                                                                            [product._id]:
+                                                                                e
+                                                                                    .target
+                                                                                    .value, // Update size for the corresponding product ID
+                                                                        })
+                                                                    )
+                                                                }
+                                                                value={
+                                                                    size[
+                                                                        product
+                                                                            ._id
+                                                                    ] ||
+                                                                    product
+                                                                        ?.size[0]
+                                                                } // Use selected size or default size
                                                             >
-                                                                {product?.size.sort((a: any, b: any) => {
-                                                                    const sizesOrder =
-                                                                        [
-                                                                            "XS",
-                                                                            "S",
-                                                                            "M",
-                                                                            "L",
-                                                                            "XL",
-                                                                            "XXL",
-                                                                        ];
-                                                                    return (
-                                                                        sizesOrder.indexOf(a)
-                                                                        - sizesOrder.indexOf(b));
-                                                                })
-                                                                    .map((s: any) => (
-                                                                        <option key={s}>{s}</option>),
+                                                                {product?.size
+                                                                    .sort(
+                                                                        (
+                                                                            a: any,
+                                                                            b: any
+                                                                        ) => {
+                                                                            const sizesOrder =
+                                                                                [
+                                                                                    "XS",
+                                                                                    "S",
+                                                                                    "M",
+                                                                                    "L",
+                                                                                    "XL",
+                                                                                    "XXL",
+                                                                                ];
+                                                                            return (
+                                                                                sizesOrder.indexOf(
+                                                                                    a
+                                                                                ) -
+                                                                                sizesOrder.indexOf(
+                                                                                    b
+                                                                                )
+                                                                            );
+                                                                        }
+                                                                    )
+                                                                    .map(
+                                                                        (
+                                                                            s: any
+                                                                        ) => (
+                                                                            <option
+                                                                                key={
+                                                                                    s
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    s
+                                                                                }
+                                                                            </option>
+                                                                        )
                                                                     )}
                                                             </FilterSizeWishlist>
                                                         </FilterWishlist>
@@ -350,7 +443,9 @@ const Wishlist: React.FC = () => {
                         <ConfirmationButton>
                             Continue shopping
                         </ConfirmationButton>
-                        <ConfirmationButton onClick={handleClick}>Add to cart</ConfirmationButton>
+                        <ConfirmationButton onClick={handleClick}>
+                            Add to cart
+                        </ConfirmationButton>
                     </ConfirmationButtons>
                 </ConfirmationPopup>
             )}
@@ -359,7 +454,7 @@ const Wishlist: React.FC = () => {
                     <TotalPrice>
                         <Typography variant="subtitle1">
                             <strong>{wishlist.length}</strong> products in
-                                                               total, with a total sum of
+                            total, with a total sum of
                         </Typography>
                         <Typography variant="h5">
                             ${calculateTotalPrice()}
@@ -390,49 +485,49 @@ const Wishlist: React.FC = () => {
 };
 
 const ClosePopupButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
 `;
 
 const EmptyCartMessage = styled.div`
-  margin-top: 2rem;
-  font-size: 24px;
-  text-align: center;
+    margin-top: 2rem;
+    font-size: 24px;
+    text-align: center;
 `;
 
 const CartLink = styled(Link)`
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  margin-top: 2rem;
-  background-color: #75e01b;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin-top: 2rem;
+    background-color: #75e01b;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
 `;
 
 export const ImageToCart = styled.img`
-  height: 100px;
+    height: 100px;
 `;
 
 export const WrapperToCart = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 10px 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
 `;
 
 export const PriceToCart = styled.div`
-  display: flex;
-  align-items: center;
-  font-weight: 600;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
 `;
 export const AddToCartTitle = styled.h4`
-  font-size: 20px;
+    font-size: 20px;
 `;
 
 const FilterContainerWishlist = styled(FilterContainer)``;
@@ -442,129 +537,129 @@ const FilterColorWishlist = styled(FilterColor)<FilterColorProps>``;
 const FilterSizeWishlist = styled(FilterSize)``;
 
 export const ConfirmationPopup = styled.div`
-  position: fixed;
-  width: 60%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 9999;
+    position: fixed;
+    width: 60%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
 `;
 
 export const ConfirmationText = styled.div`
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 22px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 22px;
 `;
 
 export const ConfirmationButtons = styled.div`
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 `;
 
 export const ConfirmationButton = styled.button`
-  margin: 20px 15px;
-  padding: 15px 40px;
-  background-color: #3bb077;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+    margin: 20px 15px;
+    padding: 15px 40px;
+    background-color: #3bb077;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 
-  &:hover {
-    background-color: #2d8a5f;
-  }
+    &:hover {
+        background-color: #2d8a5f;
+    }
 `;
 
 const HrLineCart = styled(Hr)`
-  margin-top: 1rem;
-  background-color: #282727;
+    margin-top: 1rem;
+    background-color: #282727;
 `;
 
 const HrLine = styled(Hr)`
-  margin-top: 1rem;
+    margin-top: 1rem;
 `;
 
 const Container = styled.div`
-  padding: 20px;
-  width: 100%;
+    padding: 20px;
+    width: 100%;
 `;
 const TotalPrice = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    align-items: flex-end;
 `;
 const Title = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-  text-align: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    text-align: center;
 `;
 
 const ProductCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
 `;
 
 const ProductImage = styled(CardMedia)`
-  height: 350px;
-  position: relative;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+    height: 350px;
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 `;
 
 const ProductTitle = styled(Typography)`
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  flex: 1;
-  min-height: 30px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-height: 30px;
 `;
 
 const ProductDescription = styled(Typography)`
-  margin-bottom: 10px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  flex: 3;
+    margin-bottom: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 3;
 `;
 
 const ProductPrice = styled(Typography)`
-  flex: 1;
-  display: flex;
-  align-items: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
 `;
 
 const DeleteButton = styled.button`
-  align-self: flex-end;
-  background-color: #eef3f3;
-  position: absolute;
-  cursor: pointer;
-  border-radius: 50%;
-  border: none;
-  margin: 5px;
+    align-self: flex-end;
+    background-color: #eef3f3;
+    position: absolute;
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+    margin: 5px;
 
-  &:hover {
-    background-color: #d1dada;
-  }
+    &:hover {
+        background-color: #d1dada;
+    }
 `;
 const CardBottom = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 const ProductCardContent = styled(CardContent)`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
 `;
 
 export default Wishlist;

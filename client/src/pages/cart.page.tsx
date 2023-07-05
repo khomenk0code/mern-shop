@@ -26,17 +26,12 @@ const Cart = () => {
 
     const validColors = Object.keys(cssColorNames);
     const hasValidColors: any = [];
-
     cart.products.forEach((product, index) => {
         const validColorCount = product.color.filter((c) =>
             validColors.includes(c.toLowerCase())
         ).length;
 
         hasValidColors[index] = validColorCount !== 0;
-    });
-
-    cart.products.forEach((p) => {
-        console.log(p.size);
     });
 
     const axiosClient = axios.create({
