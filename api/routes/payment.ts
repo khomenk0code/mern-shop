@@ -31,7 +31,18 @@ router.post("/liqpay-callback", async (req: Request, res: Response) => {
         return;
     }
 
-    res.sendStatus(200);
+    liqpay.api("request", {
+        "action": "status",
+        "version": "3",
+        "order_id": "order_id_1" // Замініть на відповідний ідентифікатор замовлення
+    }, function(json) {
+
+
+
+        const paymentStatus = json.status;
+
+        res.status(200).json({ status: paymentStatus });
+    });
 });
 
 module.exports = router;

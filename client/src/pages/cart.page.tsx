@@ -19,6 +19,7 @@ const Cart = () => {
     const [dataValue, setDataValue] = useState("");
     const [signatureValue, setSignatureValue] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [paymentStatus, setPaymentStatus] = useState("");
 
     const cart = useAppSelector((state) => state.cart);
     const wishlist = useAppSelector((state) => state.wishlist.products);
@@ -37,6 +38,24 @@ const Cart = () => {
     const axiosClient = axios.create({
         baseURL: "https://mern-shop-api.vercel.app/api",
     });
+
+    useEffect(() => {
+        const fetchPaymentStatus = async () => {
+            try {
+                const response = await axios.post("/liqpay-callback"); // Зробити запит на сервер
+
+
+                const { status } = response.data;
+
+
+                setPaymentStatus(status);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchPaymentStatus();
+    }, []);
 
     useEffect(() => {
         const fetchForm = async () => {
@@ -78,6 +97,7 @@ const Cart = () => {
 
         fetchForm();
     }, [cart.total]);
+
 
     const handleRemoveFromCart = (
         productId: string,
@@ -125,18 +145,22 @@ const Cart = () => {
                     <button onClick={handleClearCart}>Очистить корзину</button>
                     <TopButton to="/cabinet/wishlist" types="filled">
                         Your Wishlist ({wishlist.length || 0})
+                        <div>
+                            <h1>Status: {paymentStatus}</h1>
+                        </div>
                     </TopButton>
                 </Top>
                 <Bottom>
                     <Info>
                         {cart.products.length > 0 ? (
                             cart.products.map((product: IProduct, index) => (
-                                <>
-                                    <Product key={index}>
+                                <div key={index}>
+                                    <Product >
                                         <ProductDetail>
                                             {!imageLoaded && (
                                                 <Image src={product?.altImg} />
                                             )}
+                                            <Link to={`/product/${product._id}`}>
                                             <Image
                                                 src={product?.img}
                                                 onLoad={handleImageLoad}
@@ -146,6 +170,8 @@ const Cart = () => {
                                                         : "none",
                                                 }}
                                             />
+                                            </Link>
+
                                             <Details>
                                                 <ProductName>
                                                     <b>Product:</b>{" "}
@@ -225,7 +251,7 @@ const Cart = () => {
                                         </PriceDetail>
                                     </Product>
                                     <Hr />
-                                </>
+                                </div>
                             ))
                         ) : (
                             <p>Your cart is empty.</p>

@@ -23,7 +23,7 @@ import {
     FilterTitle,
 } from "./product.page";
 import cssColorNames from "css-color-names";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { addProduct } from "../redux/cart.slice";
 
 interface SelectedColors {
@@ -40,6 +40,7 @@ const Wishlist: React.FC = () => {
     const [selectedProductsInPopup, setSelectedProductsInPopup] = useState<
         number[]
     >([]);
+
 
     const wishlist = useAppSelector((state: any) => state.wishlist.products);
     const dispatch = useAppDispatch();
@@ -231,7 +232,9 @@ const Wishlist: React.FC = () => {
                 {wishlist.map((product: any) => (
                     <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
                         <ProductCard>
+                            <Link to={`/product/${product._id}`}>
                             <ProductImage image={product.img} />
+                            </Link>
                             <DeleteButton
                                 onClick={() =>
                                     handleRemoveFromWishlist(product._id)
@@ -425,7 +428,7 @@ const Wishlist: React.FC = () => {
                                                                         )
                                                                     )}
                                                             </FilterSizeWishlist>
-                                                        </FilterWishlist>
+                                                         </FilterWishlist>
                                                     ) : null}
                                                 </FilterContainerWishlist>
                                             </div>
