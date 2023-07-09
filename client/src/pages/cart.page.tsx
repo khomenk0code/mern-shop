@@ -4,7 +4,7 @@ import { mobile } from "../utils/responsive";
 import { Add, Announcement, DeleteOutline, Remove } from "@mui/icons-material";
 import FooterComponent from "../components/footer.component";
 import Navbar from "../components/header.component";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { IProduct } from "../components/products.component";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 import { clearCart, removeProduct, updateQuantity } from "../redux/cart.slice";
@@ -45,10 +45,17 @@ const Cart = () => {
                 const response = await axiosClient.post("/payment/liqpay-callback");
 
                 const { status } = response.data;
-
+                console.log(response.data);
+                console.log(response.status);
                 setPaymentStatus(status);
-            } catch (error) {
+            } catch (error:any) {
                 console.error(error);
+                console.error(error.response.data);
+                console.error(error.response.status);
+                console.error(error.response.statusText);
+                console.error(error.response.headers);
+                console.error(error.config);
+                console.error(error.stack);
             }
         };
 
