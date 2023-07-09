@@ -24,9 +24,14 @@ router.post("/", async (req: Request, res: Response) => {
 router.post("/liqpay-callback", async (req: Request, res: Response) => {
     const { data, signature } = req.body;
 
-    const sign = liqpay.str_to_sign(process.env.LIQPAY_PRIVATE_KEY + data + process.env.LIQPAY_PRIVATE_KEY);
-    if (signature !== sign) {
+    console.log("Received data:", data);
+    console.log("Received signature:", signature);
 
+    const sign = liqpay.str_to_sign(process.env.LIQPAY_PRIVATE_KEY + data + process.env.LIQPAY_PRIVATE_KEY);
+    console.log("Calculated signature:", sign);
+
+    if (signature !== sign) {
+        console.log("Signature verification failed");
         res.sendStatus(400);
         return;
     }
@@ -36,13 +41,13 @@ router.post("/liqpay-callback", async (req: Request, res: Response) => {
         "version": "3",
         "order_id": "order_id_1"
     }, function(json) {
-
-
+        console.log("Received LiqPay response:", json);
 
         const paymentStatus = json.status;
 
         res.status(200).json({ status: paymentStatus });
     });
 });
+
 
 module.exports = router;
