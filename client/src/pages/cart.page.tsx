@@ -42,11 +42,9 @@ const Cart = () => {
     useEffect(() => {
         const fetchPaymentStatus = async () => {
             try {
-                const response = await axios.post("/liqpay-callback"); // Зробити запит на сервер
-
+                const response = await axiosClient.post("/payment/liqpay-callback");
 
                 const { status } = response.data;
-
 
                 setPaymentStatus(status);
             } catch (error) {

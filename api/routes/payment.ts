@@ -34,7 +34,7 @@ router.post("/liqpay-callback", async (req: Request, res: Response) => {
     liqpay.api("request", {
         "action": "status",
         "version": "3",
-        "order_id": "order_id_1" // Замініть на відповідний ідентифікатор замовлення
+        "order_id": "order_id_1"
     }, function(json) {
 
 
