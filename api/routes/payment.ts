@@ -24,18 +24,12 @@ router.post("/", async (req: Request, res: Response) => {
 router.post("/callback", async (req, res) => {
     const data = req.body.data;
     const signature = req.body.signature;
-
-    console.log("data",data);
-    console.log("signature",signature);
-
     const privateKey = process.env.LIQPAY_PRIVATE_KEY;
 
     const expectedSignature = crypto.createHash("sha1")
         .update(`${privateKey}${data}${privateKey}`, "binary")
         .digest("base64");
 
-    console.log("Received Signature:", signature);
-    console.log("Expected Signature:", expectedSignature);
 
     if (signature === expectedSignature) {
         const decodedData = Buffer.from(data, "base64").toString("utf-8");
@@ -60,6 +54,29 @@ router.get("/get-order/:order_id", async (req, res) => {
         action: "status",
         version: "3",
         order_id: orderId,
+    };
+
+    liqpay.api("request", data, function(json) {
+        console.log("LiqPay API Response:", json);
+
+
+        res.status(200).json({ status: json });
+    });
+});
+
+router.get("/get-orders", async (req, res) => {
+    const currentDate = new Date();
+    const yesterday = new Date(currentDate);
+    yesterday.setDate(currentDate.getDate() - 1);
+
+    const dateFrom = yesterday.getTime(); // Получить timestamp для вчерашней даты
+    const dateTo = currentDate.getTime();
+
+    const data = {
+        "action"    : "reports",
+        "version"   : "3",
+        "date_from" : dateFrom,
+        "date_to"   : dateTo
     };
 
     liqpay.api("request", data, function(json) {
