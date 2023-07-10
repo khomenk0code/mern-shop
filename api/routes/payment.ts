@@ -27,7 +27,7 @@ router.post("/liqpay-callback", async (req: Request, res: Response) => {
     const { data, signature } = req.body;
 
 
-    const sign = liqpay.str_to_sign(process.env.LIQPAY_PRIVATE_KEY + data + process.env.LIQPAY_PRIVATE_KEY);
+    const sign = liqpay.str_to_sign(process.env.LIQPAY_PUBLIC_KEY + data + process.env.LIQPAY_PRIVATE_KEY);
 
 
     if (signature !== sign) {
@@ -39,7 +39,7 @@ router.post("/liqpay-callback", async (req: Request, res: Response) => {
     liqpay.api("request", {
         "action": "status",
         "version": "3",
-        "order_id": req.body.tokenId,
+        "order_id": 555,
 
     }, function(json) {
 
