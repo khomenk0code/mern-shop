@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import crypto from "crypto";
 
 require('dotenv').config();
 const router = require("express").Router();
@@ -24,10 +25,18 @@ router.post("/callback", async (req, res) => {
     const data = req.body.data;
     const signature = req.body.signature;
 
-    const isSignatureValid = liqpay.verify_signature(data, signature);
+    const privateKey = process.env.LIQPAY_PRIVATE_KEY;
 
-    if (isSignatureValid) {
-        const decodedData = Buffer.from(data, 'base64').toString('utf-8');
+    const expectedSignature = Buffer.from(
+        crypto
+            .createHash("sha1")
+            .update(`${privateKey}${data}${privateKey}`, "utf8")
+            .digest("binary"),
+        "binary"
+    ).toString("base64");
+
+    if (signature === expectedSignature) {
+        const decodedData = Buffer.from(data, "base64").toString("utf-8");
         const transactionInfo = JSON.parse(decodedData);
 
         console.log(transactionInfo);
@@ -38,9 +47,10 @@ router.post("/callback", async (req, res) => {
     }
 });
 
+
 router.get("/get-order/:order_id", async (req, res) => {
     const orderId = req.params.order_id;
-
+    console.log("orderId", orderId);
 
     const data = {
         action: "status",
@@ -49,8 +59,10 @@ router.get("/get-order/:order_id", async (req, res) => {
     };
 
     liqpay.api("request", data, function(json) {
+        console.log("LiqPay API Response:", json);
 
-        res.status(200).json({ status: json });
+        const paymentStatus = json.status;
+        res.status(200).json({ status: paymentStatus });
     });
 });
 
