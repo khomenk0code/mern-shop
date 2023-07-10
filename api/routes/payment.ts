@@ -22,35 +22,21 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.get("/get-order/:order_id", async (req, res) => {
-    console.log(process.env.LIQPAY_PUBLIC_KEY);
-    console.log(process.env.LIQPAY_PRIVATE_KEY);
-
     const orderId = req.params.order_id;
+    console.log("orderId", orderId);
 
     const data = {
         action: "status",
         version: "3",
         order_id: orderId,
-        public_key: process.env.LIQPAY_PUBLIC_KEY,
-        private_key: process.env.LIQPAY_PRIVATE_KEY,
     };
 
-    const signature = liqpay.str_to_sign(process.env.LIQPAY_PRIVATE_KEY + JSON.stringify(data) + process.env.LIQPAY_PRIVATE_KEY);
+    liqpay.api("request", data, function(json) {
+        console.log("LiqPay API Response:", json);
 
-    try {
-        const response = await axios.post("https://www.liqpay.ua/api/request", qs.stringify({
-            data: Buffer.from(JSON.stringify(data)).toString('base64'),
-            signature: Buffer.from(signature).toString('base64')
-        }));
-
-        console.log("LiqPay API Response:", response.data);
-
-        const paymentStatus = response.data.status;
+        const paymentStatus = json.status;
         res.status(200).json({ status: paymentStatus });
-    } catch (error) {
-        console.error("Error fetching payment status:", error);
-        res.status(500).json({ error: "Failed to fetch payment status" });
-    }
+    });
 });
 
 module.exports = router;
