@@ -15,7 +15,9 @@ router.post("/", async (req: Request, res: Response) => {
         'currency': 'USD',
         'description': 'description text',
         'order_id': req.body.tokenId,
-        'version': '3'
+        'version': '3',
+        'result_url': 'https://mern-shop-client.vercel.app',
+        'server_url': 'https://mern-shop-api.vercel.app'
     });
     res.send(order)
 })
@@ -24,11 +26,9 @@ router.post("/", async (req: Request, res: Response) => {
 router.post("/liqpay-callback", async (req: Request, res: Response) => {
     const { data, signature } = req.body;
 
-    console.log("Received data:", data);
-    console.log("Received signature:", signature);
 
     const sign = liqpay.str_to_sign(process.env.LIQPAY_PRIVATE_KEY + data + process.env.LIQPAY_PRIVATE_KEY);
-    console.log("Calculated signature:", sign);
+
 
     if (signature !== sign) {
         console.log("Signature verification failed");
@@ -39,9 +39,9 @@ router.post("/liqpay-callback", async (req: Request, res: Response) => {
     liqpay.api("request", {
         "action": "status",
         "version": "3",
-        "order_id": "order_id_1"
+        "order_id": req.body.tokenId,
+
     }, function(json) {
-        console.log("Received LiqPay response:", json);
 
         const paymentStatus = json.status;
 
