@@ -16,7 +16,7 @@ router.post("/", async (req: Request, res: Response) => {
         'order_id': req.body.tokenId,
         'version': '3',
         'result_url': 'https://mern-shop-client.vercel.app',
-        'server_url': 'https://mern-shop-api.vercel.app'
+        'server_url': 'https://mern-shop-api.vercel.app/api/payment/callback'
     });
     res.send(order);
 });
