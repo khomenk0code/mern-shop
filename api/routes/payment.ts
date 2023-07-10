@@ -22,15 +22,20 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.get("/get-order/:order_id", async (req, res) => {
+    console.log(process.env.LIQPAY_PUBLIC_KEY);
+    console.log(process.env.LIQPAY_PRIVATE_KEY);
+
     const orderId = req.params.order_id;
 
     const data = {
         action: "status",
         version: "3",
         order_id: orderId,
+        public_key: process.env.LIQPAY_PUBLIC_KEY,
+        private_key: process.env.LIQPAY_PRIVATE_KEY,
     };
 
-    const signature = liqpay.str_to_sign(process.env.LIQPAY_PUBLIC_KEY + JSON.stringify(data) + process.env.LIQPAY_PRIVATE_KEY);
+    const signature = liqpay.str_to_sign(process.env.LIQPAY_PRIVATE_KEY + JSON.stringify(data) + process.env.LIQPAY_PRIVATE_KEY);
 
     try {
         const response = await axios.post("https://www.liqpay.ua/api/request", qs.stringify({
