@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import axios from "axios";
-import qs from "querystring";
+import qs from "qs";
 require('dotenv').config();
 const router = require("express").Router();
 const LiqPay = require('./liqpay');
@@ -25,28 +25,25 @@ router.get("/get-order/:order_id", async (req, res) => {
     const orderId = req.params.order_id;
 
     const data = {
-        action: 'status',
-        version: '3',
+        action: "status",
+        version: "3",
         order_id: orderId,
     };
 
-    const dataString = qs.stringify(data);
-    const signature = Buffer.from(process.env.LIQPAY_PRIVATE_KEY + dataString + process.env.LIQPAY_PRIVATE_KEY).toString('base64');
+    const signature = liqpay.str_to_sign(process.env.LIQPAY_PRIVATE_KEY + JSON.stringify(data) + process.env.LIQPAY_PRIVATE_KEY);
 
-    const requestData = {
-        data: dataString,
-        signature: signature,
-    };
+    try {
+        const response = await axios.post("https://www.liqpay.ua/api/request", qs.stringify({
+            data: Buffer.from(JSON.stringify(data)).toString('base64'),
+            signature: Buffer.from(signature).toString('base64')
+        }));
 
-    axios.post('https://www.liqpay.ua/api/request', qs.stringify(requestData))
-        .then(response => {
-            const orderStatus = response.data.status;
-            res.status(200).json({ status: orderStatus });
-        })
-        .catch(error => {
-            console.error(error);
-            res.sendStatus(500);
-        });
+        const paymentStatus = response.data.status;
+        res.status(200).json({ status: paymentStatus });
+    } catch (error) {
+        console.error("Error fetching payment status:", error);
+        res.status(500).json({ error: "Failed to fetch payment status" });
+    }
 });
 
 module.exports = router;
