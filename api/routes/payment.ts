@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import axios from "axios";
-import qs from "qs";
+import qs from "querystring";
 require('dotenv').config();
 const router = require("express").Router();
 const LiqPay = require('./liqpay');
@@ -37,6 +37,8 @@ router.get("/get-order/:order_id", async (req, res) => {
             data: Buffer.from(JSON.stringify(data)).toString('base64'),
             signature: Buffer.from(signature).toString('base64')
         }));
+
+        console.log("LiqPay API Response:", response.data);
 
         const paymentStatus = response.data.status;
         res.status(200).json({ status: paymentStatus });
