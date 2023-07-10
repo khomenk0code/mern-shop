@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import axios from "axios";
-import qs from "querystring";
+
 require('dotenv').config();
 const router = require("express").Router();
 const LiqPay = require('./liqpay');
@@ -16,14 +15,32 @@ router.post("/", async (req: Request, res: Response) => {
         'order_id': req.body.tokenId,
         'version': '3',
         'result_url': 'https://mern-shop-client.vercel.app',
-        'server_url': 'https://mern-shop-api.vercel.app'
+        'server_url': 'https://mern-shop-api.vercel.app/api/payment/callback'
     });
     res.send(order);
 });
 
+router.post("/callback", async (req, res) => {
+    const data = req.body.data;
+    const signature = req.body.signature;
+
+    const isSignatureValid = liqpay.verify_signature(data, signature);
+
+    if (isSignatureValid) {
+        const decodedData = Buffer.from(data, 'base64').toString('utf-8');
+        const transactionInfo = JSON.parse(decodedData);
+
+        console.log(transactionInfo);
+
+        res.status(200).json({ success: true, data: transactionInfo });
+    } else {
+        res.status(400).json({ error: "Invalid signature" });
+    }
+});
+
 router.get("/get-order/:order_id", async (req, res) => {
     const orderId = req.params.order_id;
-    console.log("orderId", orderId);
+
 
     const data = {
         action: "status",
@@ -32,10 +49,8 @@ router.get("/get-order/:order_id", async (req, res) => {
     };
 
     liqpay.api("request", data, function(json) {
-        console.log("LiqPay API Response:", json);
 
-        const paymentStatus = json.status;
-        res.status(200).json({ status: paymentStatus });
+        res.status(200).json({ status: json });
     });
 });
 
