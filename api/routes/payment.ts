@@ -30,7 +30,7 @@ router.get("/get-order/:order_id", async (req, res) => {
         order_id: orderId,
     };
 
-    const signature = liqpay.str_to_sign(process.env.LIQPAY_PRIVATE_KEY + JSON.stringify(data) + process.env.LIQPAY_PRIVATE_KEY);
+    const signature = liqpay.str_to_sign(process.env.LIQPAY_PUBLIC_KEY + JSON.stringify(data) + process.env.LIQPAY_PRIVATE_KEY);
 
     try {
         const response = await axios.post("https://www.liqpay.ua/api/request", qs.stringify({
