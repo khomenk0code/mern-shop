@@ -23,31 +23,20 @@ router.post("/", async (req: Request, res: Response) => {
 })
 
 
-router.post("/liqpay-callback", async (req: Request, res: Response) => {
-    const { data, signature } = req.body;
-
-
-    const sign = liqpay.str_to_sign(process.env.LIQPAY_PUBLIC_KEY + data + process.env.LIQPAY_PRIVATE_KEY);
-
-
-    if (signature !== sign) {
-        console.log("Signature verification failed");
-        res.sendStatus(400);
-        return;
-    }
+router.get("/get-order/:order_id", async (req, res) => {
+    const orderId = req.params.order_id;
 
     liqpay.api("request", {
         "action": "status",
         "version": "3",
-        "order_id": 555,
-
+        "order_id": orderId
     }, function(json) {
-
-        const paymentStatus = json.status;
-
-        res.status(200).json({ status: paymentStatus });
+        // Обработка ответа и отправка данных о товаре
+        const orderStatus = json.status;
+        res.status(200).json({ status: orderStatus });
     });
 });
+
 
 
 module.exports = router;
