@@ -27,13 +27,9 @@ router.post("/callback", async (req, res) => {
 
     const privateKey = process.env.LIQPAY_PRIVATE_KEY;
 
-    const expectedSignature = Buffer.from(
-        crypto
-            .createHash("sha1")
-            .update(`${privateKey}${data}${privateKey}`, "utf8")
-            .digest("binary"),
-        "binary"
-    ).toString("base64");
+    const expectedSignature = crypto.createHash("sha1")
+        .update(`${privateKey}${data}${privateKey}`, "binary")
+        .digest("base64");
 
     if (signature === expectedSignature) {
         const decodedData = Buffer.from(data, "base64").toString("utf-8");
@@ -47,10 +43,8 @@ router.post("/callback", async (req, res) => {
     }
 });
 
-
 router.get("/get-order/:order_id", async (req, res) => {
     const orderId = req.params.order_id;
-    console.log("orderId", orderId);
 
     const data = {
         action: "status",
@@ -61,8 +55,8 @@ router.get("/get-order/:order_id", async (req, res) => {
     liqpay.api("request", data, function(json) {
         console.log("LiqPay API Response:", json);
 
-        const paymentStatus = json.status;
-        res.status(200).json({ status: paymentStatus });
+
+        res.status(200).json({ status: json });
     });
 });
 
