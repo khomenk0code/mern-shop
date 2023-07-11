@@ -19,7 +19,7 @@ const Cart = () => {
     const [dataValue, setDataValue] = useState("");
     const [signatureValue, setSignatureValue] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
-    const [paymentStatus, setPaymentStatus] = useState("");
+    const [productsValue, setProductsValue] = useState([]);
 
     const cart = useAppSelector((state) => state.cart);
     const wishlist = useAppSelector((state) => state.wishlist.products);
@@ -43,6 +43,11 @@ const Cart = () => {
     useEffect(() => {
         const fetchForm = async () => {
             const total = cart.total || "0";
+            const products = cart.products.map((product) => ({
+                productId: product._id,
+                quantity: product.quantity
+            }));
+
             try {
                 const response = await axiosClient.post(
                     "/payment",
@@ -50,6 +55,7 @@ const Cart = () => {
                         amount: total,
                         description: "Order payment",
                         currency: "USD",
+                        products: products
                     },
                     {
                         headers: {
@@ -128,9 +134,6 @@ const Cart = () => {
                     <button onClick={handleClearCart}>Очистить корзину</button>
                     <TopButton to="/cabinet/wishlist" types="filled">
                         Your Wishlist ({wishlist.length || 0})
-                        <div>
-                            <h1>Status: {paymentStatus}</h1>
-                        </div>
                     </TopButton>
                 </Top>
                 <Bottom>
