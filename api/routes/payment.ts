@@ -5,6 +5,9 @@ require('dotenv').config();
 const router = require("express").Router();
 const LiqPay = require('./liqpay');
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const liqpay = new LiqPay(process.env.LIQPAY_PUBLIC_KEY, process.env.LIQPAY_PRIVATE_KEY);
 
 router.post("/", async (req: Request, res: Response) => {
@@ -94,10 +97,8 @@ router.get("/get-orders", async (req, res) => {
     };
 
     liqpay.api("request", data, function(json) {
-        console.log("LiqPay API Response:", json);
 
-
-        res.status(200).json({ status: json });
+        res.status(200).json( json );
     });
 });
 
