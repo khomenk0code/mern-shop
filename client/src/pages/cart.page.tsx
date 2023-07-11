@@ -126,20 +126,6 @@ const Cart = () => {
         setImageLoaded(true);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await axiosClient.post("/liqpay-callback", {
-                data: dataValue,
-                signature: signatureValue,
-            });
-            const { status, paymentInfo } = response.data;
-            setPaymentStatus(status);
-            setPaymentInfo(paymentInfo);
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
 
 
@@ -284,7 +270,6 @@ const Cart = () => {
                             <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <form
-                            onSubmit={handleSubmit}
                             method="POST"
                             action="https://www.liqpay.ua/api/3/checkout"
                             acceptCharset="utf-8"
@@ -302,9 +287,6 @@ const Cart = () => {
                             />
                             <Button type="submit">CHECKOUT NOW</Button>
                         </form>
-                        {paymentStatus === "success" && (
-                            <p>Payment Successful. Order ID: {paymentInfo.order_id}</p>
-                        )}
                     </Summary>
                 </Bottom>
             </Wrapper>
