@@ -4,12 +4,12 @@ import { mobile } from "../utils/responsive";
 import { Add, Announcement, DeleteOutline, Remove } from "@mui/icons-material";
 import FooterComponent from "../components/footer.component";
 import Navbar from "../components/header.component";
-import axiosfrom "axios";
 import { IProduct } from "../components/products.component";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 import { clearCart, removeProduct, updateQuantity } from "../redux/cart.slice";
 import { Link } from "react-router-dom";
 import cssColorNames from "css-color-names";
+import axios from "axios";
 
 type StyledTypesProps = {
     types?: "filled" | "total";

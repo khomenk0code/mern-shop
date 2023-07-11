@@ -15,13 +15,15 @@ router.post("/", async (req: Request, res: Response) => {
         'description': 'description text',
         'order_id': req.body.tokenId,
         'version': '3',
-        'result_url': 'https://mern-shop-client.vercel.app',
+        'result_url': 'https://mern-shop-client.vercel.app/cart',
         'server_url': 'https://mern-shop-api.vercel.app/api/payment/liqpay-callback'
     });
     res.send(order);
 });
 
 const verifyCallbackSignature = (data, signature, private_key) => {
+
+
     const sign = crypto
         .createHash('sha1')
         .update(private_key + data + private_key)
@@ -32,6 +34,7 @@ const verifyCallbackSignature = (data, signature, private_key) => {
 };
 
 router.post('/liqpay-callback', async (req, res) => {
+    console.log(req.body);
     const data = req.body.data;
     const signature = req.body.signature;
     console.log(data);
