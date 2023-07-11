@@ -4,12 +4,12 @@ import { mobile } from "../utils/responsive";
 import { Add, Announcement, DeleteOutline, Remove } from "@mui/icons-material";
 import FooterComponent from "../components/footer.component";
 import Navbar from "../components/header.component";
+import axios, { AxiosError } from "axios";
 import { IProduct } from "../components/products.component";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 import { clearCart, removeProduct, updateQuantity } from "../redux/cart.slice";
 import { Link } from "react-router-dom";
 import cssColorNames from "css-color-names";
-import axios from "axios";
 
 type StyledTypesProps = {
     types?: "filled" | "total";
@@ -19,9 +19,7 @@ const Cart = () => {
     const [dataValue, setDataValue] = useState("");
     const [signatureValue, setSignatureValue] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
-    const [productsValue, setProductsValue] = useState([]);
     const [paymentStatus, setPaymentStatus] = useState("");
-    const [paymentInfo, setPaymentInfo] = useState<any>(null);
 
     const cart = useAppSelector((state) => state.cart);
     const wishlist = useAppSelector((state) => state.wishlist.products);
@@ -45,19 +43,13 @@ const Cart = () => {
     useEffect(() => {
         const fetchForm = async () => {
             const total = cart.total || "0";
-            const products = cart.products.map((product) => ({
-                productId: product._id,
-                quantity: product.quantity
-            }));
-
             try {
                 const response = await axiosClient.post(
                     "/payment",
                     {
                         amount: total,
-                        description: "Order payment",
+                        description: "Оплата заказа",
                         currency: "USD",
-                        products: products
                     },
                     {
                         headers: {
@@ -113,11 +105,10 @@ const Cart = () => {
         size: string,
         quantity: number
     ) => {
-        if (cart.quantity > cart.products.length && quantity >= 1) {
+        if (cart.quantity > cart.products.length) {
             dispatch(updateQuantity({ productId, color, size, quantity }));
         }
     };
-
     const handleClearCart = () => {
         dispatch(clearCart());
     };
@@ -125,9 +116,6 @@ const Cart = () => {
     const handleImageLoad = () => {
         setImageLoaded(true);
     };
-
-
-
 
     return (
         <Container>
@@ -140,6 +128,9 @@ const Cart = () => {
                     <button onClick={handleClearCart}>Очистить корзину</button>
                     <TopButton to="/cabinet/wishlist" types="filled">
                         Your Wishlist ({wishlist.length || 0})
+                        <div>
+                            <h1>Status: {paymentStatus}</h1>
+                        </div>
                     </TopButton>
                 </Top>
                 <Bottom>
