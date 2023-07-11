@@ -20,6 +20,8 @@ const Cart = () => {
     const [signatureValue, setSignatureValue] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
     const [productsValue, setProductsValue] = useState([]);
+    const [paymentStatus, setPaymentStatus] = useState("");
+    const [paymentInfo, setPaymentInfo] = useState<any>(null);
 
     const cart = useAppSelector((state) => state.cart);
     const wishlist = useAppSelector((state) => state.wishlist.products);
@@ -111,10 +113,11 @@ const Cart = () => {
         size: string,
         quantity: number
     ) => {
-        if (cart.quantity > cart.products.length) {
+        if (cart.quantity > cart.products.length && quantity >= 1) {
             dispatch(updateQuantity({ productId, color, size, quantity }));
         }
     };
+
     const handleClearCart = () => {
         dispatch(clearCart());
     };
@@ -122,6 +125,23 @@ const Cart = () => {
     const handleImageLoad = () => {
         setImageLoaded(true);
     };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const response = await axiosClient.post("/liqpay-callback", {
+                data: dataValue,
+                signature: signatureValue,
+            });
+            const { status, paymentInfo } = response.data;
+            setPaymentStatus(status);
+            setPaymentInfo(paymentInfo);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
 
     return (
         <Container>
@@ -264,6 +284,7 @@ const Cart = () => {
                             <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <form
+                            onSubmit={handleSubmit}
                             method="POST"
                             action="https://www.liqpay.ua/api/3/checkout"
                             acceptCharset="utf-8"
@@ -281,6 +302,9 @@ const Cart = () => {
                             />
                             <Button type="submit">CHECKOUT NOW</Button>
                         </form>
+                        {paymentStatus === "success" && (
+                            <p>Payment Successful. Order ID: {paymentInfo.order_id}</p>
+                        )}
                     </Summary>
                 </Bottom>
             </Wrapper>
