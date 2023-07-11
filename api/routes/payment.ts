@@ -16,33 +16,44 @@ router.post("/", async (req: Request, res: Response) => {
         'order_id': req.body.tokenId,
         'version': '3',
         'result_url': 'https://mern-shop-client.vercel.app',
-        'server_url': 'https://mern-shop-api.vercel.app/api/payment/callback'
+        'server_url': 'https://mern-shop-api.vercel.app/api/payment/liqpay-callback'
     });
     res.send(order);
 });
 
-router.post("/callback", async (req, res) => {
+const verifyCallbackSignature = (data, signature, private_key) => {
+    const sign = crypto
+        .createHash('sha1')
+        .update(private_key + data + private_key)
+        .digest('binary');
+    const calculatedSignature = Buffer.from(sign, 'binary').toString('base64');
+
+    return signature === calculatedSignature;
+};
+
+router.post('/liqpay-callback', async (req, res) => {
     const data = req.body.data;
     const signature = req.body.signature;
-    const privateKey = process.env.LIQPAY_PRIVATE_KEY;
+    console.log(data);
+    console.log(signature);
 
-    const expectedSignature = crypto.createHash("sha1")
-        .update(`${privateKey}${data}${privateKey}`, "binary")
-        .digest("base64");
+    const private_key = process.env.LIQPAY_PRIVATE_KEY;
 
+    // Проверяем подлинность сигнатуры
+    const isValidSignature = verifyCallbackSignature(data, signature, private_key);
 
-    if (signature === expectedSignature) {
-        const decodedData = Buffer.from(data, "base64").toString("utf-8");
-        const transactionInfo = JSON.parse(decodedData);
+    if (isValidSignature) {
+        // Сигнатура верна, обрабатываем данные о платеже
+        const decodedData = Buffer.from(data, 'base64').toString('utf-8');
+        const paymentInfo = JSON.parse(decodedData);
 
-        const paymentId = transactionInfo.payment_id;
+        console.log(paymentInfo);
 
-        console.log("Payment ID:", paymentId);
-
-        res.status(200).json({ success: true, data: transactionInfo });
+        // Отправляем успешный ответ
+        res.status(200).json({ status: 'success' });
     } else {
-        console.log("Invalid Signature");
-        res.status(400).json({ error: "Invalid signature" });
+        // Сигнатура не верна, отклоняем коллбек
+        res.status(403).json({ error: 'Invalid signature' });
     }
 });
 
