@@ -5,8 +5,6 @@ require('dotenv').config();
 const router = require("express").Router();
 const LiqPay = require('./liqpay');
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const liqpay = new LiqPay(process.env.LIQPAY_PUBLIC_KEY, process.env.LIQPAY_PRIVATE_KEY);
 
