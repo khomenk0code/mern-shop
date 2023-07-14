@@ -23,8 +23,8 @@ import {
     FilterTitle,
 } from "./product.page";
 import cssColorNames from "css-color-names";
-import { Link, useLocation } from "react-router-dom";
-import { addProduct } from "../redux/cart.slice";
+import { Link } from "react-router-dom";
+import { addProduct, addProducts } from "../redux/cart.slice";
 
 interface SelectedColors {
     [productId: string]: string;
@@ -45,6 +45,8 @@ const Wishlist: React.FC = () => {
     const wishlist = useAppSelector((state: any) => state.wishlist.products);
     const dispatch = useAppDispatch();
     const validColors = Object.keys(cssColorNames);
+
+
 
     useEffect(() => {
         selectedProductsInPopup.forEach((productId: number) => {
@@ -128,6 +130,8 @@ const Wishlist: React.FC = () => {
                 return updatedSelectedProducts;
             }
         });
+
+
         setSelectedProductsInPopup((prevSelectedProducts) => {
             if (prevSelectedProducts.includes(id)) {
                 return prevSelectedProducts.filter(
@@ -182,9 +186,8 @@ const Wishlist: React.FC = () => {
                 };
             });
 
-        selectedProductsToAdd.forEach((product: any) => {
-            dispatch(addProduct({ ...product }));
-        });
+            dispatch(addProducts( selectedProductsToAdd ));
+
 
         setShowCartPopup(false);
     };
@@ -196,6 +199,8 @@ const Wishlist: React.FC = () => {
             [productId]: color,
         }));
     };
+
+
 
     return (
         <Container>
@@ -374,7 +379,7 @@ const Wishlist: React.FC = () => {
                                                                             [product._id]:
                                                                                 e
                                                                                     .target
-                                                                                    .value, // Update size for the corresponding product ID
+                                                                                    .value,
                                                                         })
                                                                     )
                                                                 }
@@ -385,7 +390,7 @@ const Wishlist: React.FC = () => {
                                                                     ] ||
                                                                     product
                                                                         ?.size[0]
-                                                                } // Use selected size or default size
+                                                                }
                                                             >
                                                                 {product?.size
                                                                     .sort(

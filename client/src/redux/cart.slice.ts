@@ -63,6 +63,27 @@ const cartSlice = createSlice({
             state.quantity += product.quantity;
             state.total += product.price * product.quantity;
         },
+        addProducts: (state, action: PayloadAction<IProduct[]>) => {
+            const productsToAdd = action.payload;
+
+            //проверить пейлоад если массив использовать форич если не массив а обьет добавить его в массив
+
+            productsToAdd.forEach((product) => {
+                const existingProduct = state.products.find((p) =>
+                    isMatchingProduct(p, product._id, product.color[0], product.size[0])
+                );
+
+                if (existingProduct) {
+                    existingProduct.quantity += product.quantity;
+                } else {
+                    state.products.push(product);
+                }
+
+                state.quantity += product.quantity;
+                state.total += product.price * product.quantity;
+            });
+        },
+
         removeProduct: (state, action: PayloadAction<RemoveProductPayload>) => {
             const { productId, color, size } = action.payload;
             const productIndex = state.products.findIndex((product) =>
@@ -112,7 +133,7 @@ const cartSlice = createSlice({
     },
 });
 
-export const { addProduct, removeProduct, updateQuantity, clearCart } =
+export const { addProduct, addProducts, removeProduct, updateQuantity, clearCart } =
     cartSlice.actions;
 
 export default cartSlice.reducer;
