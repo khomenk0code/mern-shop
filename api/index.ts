@@ -32,28 +32,28 @@ mongoose.connect(
         console.log(err);
     })
 
-io.use((socket, next) => {
-    authenticateSocket(socket, (err?: Error) => {
-        if (err) {
-            next(err);
-        } else {
-            next();
-        }
-    });
-});
-
-io.on("connection", (socket) => {
-    console.log("A client connected");
-
-    socket.on("someEvent", (data) => {
-        console.log("socket data", data );
-        console.log(`Received event from user ${socket.user?._id}`);
-    });
-    socket.on("disconnect", () => {
-        console.log("A client disconnected");
-    });
-});
-
+// io.use((socket, next) => {
+//     authenticateSocket(socket, (err?: Error) => {
+//         if (err) {
+//             next(err);
+//         } else {
+//             next();
+//         }
+//     });
+// });
+//
+// io.on("connection", (socket) => {
+//     console.log("A client connected");
+//
+//     socket.on("someEvent", (data) => {
+//         console.log("socket data", data );
+//         console.log(`Received event from user ${socket.user?._id}`);
+//     });
+//     socket.on("disconnect", () => {
+//         console.log("A client disconnected");
+//     });
+// });
+//
 
 
 app.use(cors());

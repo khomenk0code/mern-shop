@@ -1,5 +1,5 @@
 import { loginFailure, loginStart, loginSuccess } from "./user.slice";
-import { publicRequest } from "../utils/requestMethods";
+import { publicRequest, userRequest } from "../utils/requestMethods";
 
 const login = async (dispatch: any, user: any) => {
     dispatch(loginStart());
@@ -16,7 +16,7 @@ const login = async (dispatch: any, user: any) => {
 export const addToWishlist = async (product: any, userId: any) => {
     try {
         const wishlistItem = { ...product, userId };
-        const res = await publicRequest.post("/wishlist", wishlistItem);
+        const res = await userRequest.post("/wishlist", wishlistItem);
         return res.data;
     } catch (error) {
         throw new Error("Failed to add product to wishlist");
@@ -26,7 +26,7 @@ export const addToWishlist = async (product: any, userId: any) => {
 
 export const removeFromWishlist = async (productId: any) => {
     try {
-        const res = await publicRequest.delete(`/wishlist/${productId}`);
+        const res = await userRequest.delete(`/wishlist/${productId}`);
         return res.data;
     } catch (error) {
         throw new Error("Failed to remove product from wishlist");
@@ -35,7 +35,7 @@ export const removeFromWishlist = async (productId: any) => {
 
 export const getWishlist = async (userId: any) => {
     try {
-        const res = await publicRequest.get(`/wishlist/find/${userId}`);
+        const res = await userRequest.get(`/wishlist/find/${userId}`);
         return res.data;
     } catch (error) {
         throw new Error("Failed to fetch wishlist");

@@ -10,7 +10,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { addToWishlist } from "../redux/api.calls";
-import { log } from "util";
 
 
 
@@ -34,7 +33,7 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
     const userId = user._id;
 
 
-
+    console.log(wishlistProducts);
 
 
     const dispatch = useAppDispatch();
@@ -54,19 +53,15 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
             dispatch(removeProductWishlist(item._id));
         } else {
             try {
-                const wishlistItem = {
-                    productId: item._id,
-                    quantity: 1 //
-                };
-                await addToWishlist(wishlistItem, userId);
+                const wishlistItem = { ...item, userId };
                 dispatch(addProductWishlist(wishlistItem));
+                await addToWishlist(wishlistItem, userId);
             } catch (error) {
                 console.log("Failed to add product to wishlist:", error);
             }
         }
         setLiked(!liked);
     };
-
 
     const handleImageLoad = () => {
         setImageLoaded(true);
