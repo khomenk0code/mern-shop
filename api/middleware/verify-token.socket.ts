@@ -1,6 +1,5 @@
-import { IUser } from "../models/user";
+
 import { Socket } from "socket.io";
-import { ExtendedError } from "socket.io/dist/namespace";
 import { JwtPayload, VerifyErrors } from "jsonwebtoken";
 const jwt = require("jsonwebtoken")
 
@@ -11,10 +10,16 @@ declare module "socket.io" {
     }
 }
 
-const authenticateSocket = (
+interface IUser {
+    // Define the user interface here based on your actual user model.
+    _id: string;
+    username: string;
+    // Other user properties...
+}
+
+export const authenticateSocket = (
     socket: Socket,
-    data: any,
-    callback: (err?: ExtendedError | undefined) => void
+    next: (err?: Error) => void,
 ) => {
     if (socket.handshake.query && socket.handshake.query.token) {
         const token = socket.handshake.query.token as string;
@@ -25,15 +30,16 @@ const authenticateSocket = (
             { complete: true },
             (err: VerifyErrors | null, decoded: JwtPayload | undefined) => {
                 if (err) {
-                    callback(new Error("Authentication error"));
-                } else {
-                    socket.user = decoded as IUser;
-                    callback();
+                    return next(new Error("Authentication error"));
                 }
+
+                // Attach the decoded user information to the socket object.
+                socket.user = decoded as IUser;
+                next();
             }
         );
     } else {
-        callback(new Error("Authentication error"));
+        next(new Error("Authentication error"));
     }
 };
 

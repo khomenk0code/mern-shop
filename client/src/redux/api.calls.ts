@@ -12,6 +12,7 @@ const login = async (dispatch: any, user: any) => {
         throw new Error("Login failed");
     }
 };
+
 export const addToWishlist = async (product: any, userId: any) => {
     try {
         const wishlistItem = { ...product, userId };

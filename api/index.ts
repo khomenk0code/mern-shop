@@ -1,5 +1,5 @@
 import * as http from "http";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import authenticateSocket from "./middleware/verify-token.socket";
 
 const express = require("express");
@@ -32,6 +32,16 @@ mongoose.connect(
         console.log(err);
     })
 
+io.use((socket, next) => {
+    authenticateSocket(socket, (err?: Error) => {
+        if (err) {
+            next(err);
+        } else {
+            next();
+        }
+    });
+});
+
 io.on("connection", (socket) => {
     console.log("A client connected");
 
@@ -42,10 +52,6 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("A client disconnected");
     });
-});
-
-io.use((socket: Socket, next) => {
-    authenticateSocket(socket, socket.handshake.query, next);
 });
 
 
