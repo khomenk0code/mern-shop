@@ -3,15 +3,9 @@ import mongoose from "mongoose";
 
 const wishlistSchema = new mongoose.Schema({
     userId: {type: String},
-    products: [
+    productId: [
         {
-            productId:{
-                type:String
-            },
-            quantity:{
-                type:Number,
-                default:1,
-            }
+            type:String
         }
     ],
 });

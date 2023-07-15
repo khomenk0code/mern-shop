@@ -33,7 +33,6 @@ export const authenticateSocket = (
                     return next(new Error("Authentication error"));
                 }
 
-                // Attach the decoded user information to the socket object.
                 socket.user = decoded as IUser;
                 next();
             }
