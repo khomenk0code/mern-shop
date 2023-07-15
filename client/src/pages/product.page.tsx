@@ -9,7 +9,7 @@ import { mobile } from "../utils/responsive";
 import { useLocation } from "react-router-dom";
 import { IProduct } from "../components/products.component";
 import { publicRequest } from "../utils/requestMethods";
-import { addProduct, updateQuantity } from "../redux/cart.slice";
+import { addProducts, updateQuantity } from "../redux/cart.slice";
 import { useDispatch } from "react-redux";
 import cssColorNames from "css-color-names";
 import { useAppSelector } from "../hooks/hooks";
@@ -86,12 +86,14 @@ const Product: React.FC = () => {
             }
 
             dispatch(
-                addProduct({
-                    ...product,
-                    quantity,
-                    color: [color],
-                    size: [size],
-                })
+                addProducts([
+                    {
+                        ...product,
+                        quantity,
+                        color: [color],
+                        size: [size],
+                    } as IProduct
+                ])
             );
         }
     };

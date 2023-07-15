@@ -24,7 +24,7 @@ import {
 } from "./product.page";
 import cssColorNames from "css-color-names";
 import { Link } from "react-router-dom";
-import { addProduct, addProducts } from "../redux/cart.slice";
+import {  addProducts } from "../redux/cart.slice";
 
 interface SelectedColors {
     [productId: string]: string;
@@ -59,8 +59,8 @@ const Wishlist: React.FC = () => {
                           validColors.includes(c.toLowerCase())
                       )
                     : [];
-                const defaultColor =
-                    validProductColors.length > 0 ? validProductColors[0] : "";
+                const defaultColor = validProductColors.length > 0 ? validProductColors[0] : "";
+                const defaultSize = (product.size.length > 0 ? product.size[0] : "");
 
                 setSelectedColors((prevSelectedColors) => ({
                     ...prevSelectedColors,
@@ -69,9 +69,7 @@ const Wishlist: React.FC = () => {
 
                 setSize((prevSize: any) => ({
                     ...prevSize,
-                    [productId]:
-                        prevSize[productId] ||
-                        (product.size.length > 0 ? product.size[0] : ""),
+                    [productId]: prevSize[productId] || defaultSize,
                 }));
             }
         });
@@ -177,11 +175,13 @@ const Wishlist: React.FC = () => {
                 selectedProductsInPopup.includes(product._id)
             )
             .map((product: any) => {
-                const newSize = size[product._id] || product.size[0];
+                const newColor = [selectedColors[product._id] || product.color[0]];
+                const newSize = [size[product._id] || product.size[0]];
+
                 return {
                     ...product,
-                    color: [selectedColors[product._id] || product.color[0]],
-                    size: [newSize],
+                    color: newColor,
+                    size: newSize,
                     quantity: 1,
                 };
             });
