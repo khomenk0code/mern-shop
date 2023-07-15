@@ -1,6 +1,3 @@
-import * as http from "http";
-import { Server, Socket } from "socket.io";
-
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose")
@@ -13,14 +10,11 @@ const cartRouter = require("./routes/cart")
 const paymentRouter = require("./routes/payment")
 const configRouter = require("./routes/firebase-config")
 const cors = require('cors');
-const { authenticateSocket } = require("../middleware/verifyToken")
-
-const server = http.createServer(app);
-const io = new Server(server);
-
-
 
 dotenv.config()
+
+
+
 
 mongoose.connect(
     process.env.MONGO_URL
@@ -29,23 +23,6 @@ mongoose.connect(
     .catch((err: Error) => {
         console.log(err);
     })
-
-io.on("connection", (socket) => {
-    console.log("A client connected");
-
-    socket.on("someEvent", (data) => {
-        console.log("socket data", data );
-        console.log(`Received event from user ${socket.user?._id}`);
-    });
-    socket.on("disconnect", () => {
-        console.log("A client disconnected");
-    });
-});
-
-io.use((socket: Socket, next) => {
-    authenticateSocket(socket, next, socket.handshake.query);
-});
-
 
 app.use(cors());
 app.use(express.json())
@@ -62,6 +39,3 @@ app.use('/api/config', configRouter);
 app.options("/api/payment", cors());
 
 
-server.listen(() => {
-    console.log("Server is running");
-});
