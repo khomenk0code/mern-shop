@@ -1,7 +1,16 @@
-import {Response, NextFunction, Request} from "express";
+import { NextFunction, Request, Response } from "express";
 import { IUser } from "../models/user";
+import { Socket } from "socket.io";
+import { ExtendedError } from "socket.io/dist/namespace";
+
 const jwt = require("jsonwebtoken")
 
+
+declare module "socket.io" {
+    interface Socket {
+        user?: IUser;
+    }
+}
 
 interface customRequest extends Request {
     user: IUser
@@ -25,6 +34,30 @@ const verifyToken = (req: customRequest, res: Response, next: NextFunction) => {
     }
 }
 
+const authenticateSocket = (
+    socket: Socket,
+    data: any,
+    callback: (err?: ExtendedError | undefined) => void
+) => {
+    if (socket.handshake.query && socket.handshake.query.token) {
+        try {
+            socket.user = jwt.verify(
+                <string>socket.handshake.query.token,
+                process.env.JWT_SECRET,
+                { complete: true }
+            ) as IUser;
+            callback();
+        } catch (err) {
+            callback(new Error("Authentication error"));
+        }
+    } else {
+        callback(new Error("Authentication error"));
+    }
+};
+
+
+
+
 const verifyTokenAndAuth = (req: any, res: Response, next: NextFunction) => {
     verifyToken(req, res, () => {
         if (req.user.id === req.params.id || req.user.isAdmin) {
@@ -47,4 +80,4 @@ const verifyTokenAndAdmin = (req: any, res: Response, next: NextFunction) => {
 
 
 
-module.exports = {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin};
+module.exports = {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin, authenticateSocket};
