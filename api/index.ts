@@ -55,12 +55,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRouter)
 app.use("/api/users", userRouter)
+app.use('/api/wishlist', wishlistRouter);
 app.use("/api/products", productsRouter)
 app.use("/api/orders", ordersRouter)
 app.use("/api/cart", cartRouter)
 app.use("/api/payment", paymentRouter)
 app.use('/api/config', configRouter);
-app.use('/api/wishlist', wishlistRouter);
 
 
 app.options("/api/payment", cors());

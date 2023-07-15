@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 const router = require("express").Router()
 const {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin} = require("../middleware/verifyToken")
-const Wishlist = require("../models/cart");
+const Wishlist = require("../models/wishlist");
 
 
 router.post("/", verifyToken, async (req: Request, res: Response) => {
@@ -56,8 +56,8 @@ router.get("/find/:userId", verifyTokenAndAuth, async (req: Request, res: Respon
 
 router.get("/", verifyTokenAndAdmin, async (req: Request, res: Response) => {
     try {
-        const carts = await Wishlist.find()
-        res.status(200).json(carts)
+        const wishlist = await Wishlist.find()
+        res.status(200).json(wishlist)
     } catch (e) {
         res.status(500).json(e)
     }
