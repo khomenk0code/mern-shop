@@ -6,9 +6,12 @@ const login = async (dispatch: any, user: any) => {
     try {
         const res = await publicRequest.post("/auth/login", user);
         dispatch(loginSuccess(res.data));
+        return res.data;
     } catch (e) {
         dispatch(loginFailure());
+        throw new Error("Login failed");
     }
 };
+
 
 export default login;
