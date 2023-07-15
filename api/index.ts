@@ -34,7 +34,7 @@ io.on("connection", (socket) => {
     console.log("A client connected");
 
     socket.on("someEvent", (data) => {
-
+        console.log("socket data", data );
         console.log(`Received event from user ${socket.user?._id}`);
     });
     socket.on("disconnect", () => {
