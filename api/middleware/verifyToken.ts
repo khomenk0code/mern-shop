@@ -1,16 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import {Response, NextFunction, Request} from "express";
 import { IUser } from "../models/user";
-import { Socket } from "socket.io";
-import { ExtendedError } from "socket.io/dist/namespace";
-
 const jwt = require("jsonwebtoken")
 
-
-declare module "socket.io" {
-    interface Socket {
-        user?: IUser;
-    }
-}
 
 interface customRequest extends Request {
     user: IUser
@@ -19,6 +10,7 @@ interface customRequest extends Request {
 
 const verifyToken = (req: customRequest, res: Response, next: NextFunction) => {
     const authHeader: any = req.headers.authorization;
+
 
     if (authHeader && authHeader.startsWith("Bearer")) {
         const token  = authHeader.split(" ")[1];
@@ -52,26 +44,7 @@ const verifyTokenAndAdmin = (req: any, res: Response, next: NextFunction) => {
     })
 };
 
-const authenticateSocket = (
-    socket: Socket,
-    data: any,
-    callback: (err?: ExtendedError | undefined) => void
-) => {
-    if (socket.handshake.query && socket.handshake.query.token) {
-        try {
-            socket.user = jwt.verify(
-                <string>socket.handshake.query.token,
-                process.env.JWT_SECRET,
-                { complete: true }
-            );
-            callback();
-        } catch (err) {
-            callback(new Error("Authentication error"));
-        }
-    } else {
-        callback(new Error("Authentication error"));
-    }
-};
 
 
-module.exports = {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin, authenticateSocket};
+
+module.exports = {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin};
