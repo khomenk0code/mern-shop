@@ -5,15 +5,17 @@ const Wishlist = require("../models/cart");
 
 
 router.post("/", verifyToken, async (req: Request, res: Response) => {
-    const newWishlist: any  = new Wishlist(req.body)
+    const { userId, ...wishlistData } = req.body;
+    const newWishlist = new Wishlist({ userId, ...wishlistData });
 
     try {
-        const savedWishlist: any = await newWishlist.save()
-        res.status(200).json(savedWishlist)
+        const savedWishlist = await newWishlist.save();
+        res.status(200).json(savedWishlist);
     } catch (e) {
-        res.status(500).json(e)
+        res.status(500).json(e);
     }
-})
+});
+
 
 
 router.put("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {

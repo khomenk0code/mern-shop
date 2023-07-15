@@ -9,6 +9,11 @@ import {
 } from "../redux/wishlist.slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { addToWishlist } from "../redux/api.calls";
+import { log } from "util";
+
+
+
 
 export interface IPopularProducts {
     altImg: any;
@@ -24,7 +29,17 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
     const [liked, setLiked] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     const wishlistProducts = useAppSelector((state) => state.wishlist.products);
+    const user: any  = useAppSelector(state => state.user.currentUser)
+
+    const userId = user._id;
+
+
+
+
+
     const dispatch = useAppDispatch();
+
+
 
     useEffect(() => {
         const isProductInWishlist = wishlistProducts.some(
@@ -33,14 +48,25 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
         setLiked(isProductInWishlist);
     }, [wishlistProducts, item._id]);
 
-    const handleLike = () => {
+
+    const handleLike = async () => {
         if (liked) {
             dispatch(removeProductWishlist(item._id));
         } else {
-            dispatch(addProductWishlist(item));
+            try {
+                const wishlistItem = {
+                    productId: item._id,
+                    quantity: 1 //
+                };
+                await addToWishlist(wishlistItem, userId);
+                dispatch(addProductWishlist(wishlistItem));
+            } catch (error) {
+                console.log("Failed to add product to wishlist:", error);
+            }
         }
         setLiked(!liked);
     };
+
 
     const handleImageLoad = () => {
         setImageLoaded(true);

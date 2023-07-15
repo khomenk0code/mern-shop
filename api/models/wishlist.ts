@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 
 const wishlistSchema = new mongoose.Schema({
-    userId: {type: String, required: true},
+    userId: {type: String},
     products: [
         {
             productId:{

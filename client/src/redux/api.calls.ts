@@ -12,6 +12,33 @@ const login = async (dispatch: any, user: any) => {
         throw new Error("Login failed");
     }
 };
+export const addToWishlist = async (product: any, userId: any) => {
+    try {
+        const wishlistItem = { ...product, userId };
+        const res = await publicRequest.post("/wishlist", wishlistItem);
+        return res.data;
+    } catch (error) {
+        throw new Error("Failed to add product to wishlist");
+    }
+};
 
+
+export const removeFromWishlist = async (productId: any) => {
+    try {
+        const res = await publicRequest.delete(`/wishlist/${productId}`);
+        return res.data;
+    } catch (error) {
+        throw new Error("Failed to remove product from wishlist");
+    }
+};
+
+export const getWishlist = async (userId: any) => {
+    try {
+        const res = await publicRequest.get(`/wishlist/find/${userId}`);
+        return res.data;
+    } catch (error) {
+        throw new Error("Failed to fetch wishlist");
+    }
+};
 
 export default login;
