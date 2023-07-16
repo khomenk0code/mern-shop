@@ -20,17 +20,25 @@ export const addToWishlist = async (productId: any, userId: any) => {
         if (existingWishlist && existingWishlist.data !== null && existingWishlist.status === 200) {
             const wishlistId = existingWishlist.data._id;
 
-            const updatedWishlist = {
-                userId,
-                productId: [...existingWishlist.data.productId, productId],
-            };
+            // Check if the productId is already in the wishlist
+            if (!existingWishlist.data.productId.includes(productId)) {
+                // If the productId is not in the wishlist, add it to the list of productIds
+                const updatedWishlist = {
+                    userId,
+                    productId, // Pass the productId as a single string, not an array
+                };
 
-            const res = await userRequest.put(`/wishlist/${wishlistId}`, updatedWishlist);
-            return res.data;
+                const res = await userRequest.put(`/wishlist/${wishlistId}`, updatedWishlist);
+                return res.data;
+            } else {
+                // If the productId is already in the wishlist, return the existing wishlist without changes
+                return existingWishlist.data;
+            }
         } else {
+            // If the wishlist doesn't exist, create a new one with the productId
             const newWishlist = {
                 userId,
-                productId: [productId],
+                productId: [productId], // Ensure that productId is passed as an array with a single string element
             };
             const res = await userRequest.post("/wishlist", newWishlist);
             return res.data;
@@ -39,6 +47,8 @@ export const addToWishlist = async (productId: any, userId: any) => {
         throw new Error("Failed to add product to wishlist");
     }
 };
+
+
 
 
 

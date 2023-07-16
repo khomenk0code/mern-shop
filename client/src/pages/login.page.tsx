@@ -1,25 +1,36 @@
 import styled from "styled-components";
 import { mobile } from "../utils/responsive";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import login from "../redux/api.calls";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [socket, setSocket] = useState<Socket | null>(null);
+
     const dispatch = useAppDispatch();
-    const socket = io("https://mern-shop-api.vercel.app/");
+
 
     const { isFetching, error } = useAppSelector((state) => state.user);
+    useEffect(() => {
+        const newSocket = io("https://mern-shop-api.vercel.app/");
+        setSocket(newSocket);
+        return () => {
+            newSocket.disconnect();
+        };
+    }, []);
 
-    function handleLoginClick(e: React.MouseEvent<HTMLButtonElement>) {
+
+    const handleLoginClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         login(dispatch, { username, password }).then((res) => {
-
-            socket.emit("authenticate", { token: res.accessToken });
+            if (socket) {
+                socket.emit("authenticate", { token: res.accessToken });
+            }
         });
-    }
+    };
 
     return (
         <Container>
