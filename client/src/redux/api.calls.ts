@@ -17,11 +17,11 @@ export const addToWishlist = async (productId: any, userId: any) => {
     try {
         const existingWishlist = await userRequest.get(`/wishlist/find/${userId}`);
 
-        if (existingWishlist) {
+        if (existingWishlist && existingWishlist.data !== null && existingWishlist.status === 200) {
             const wishlistId = existingWishlist.data._id;
 
             const updatedWishlist = {
-                userId: userId,
+                userId,
                 productId: [...existingWishlist.data.productId, productId],
             };
 
@@ -29,7 +29,7 @@ export const addToWishlist = async (productId: any, userId: any) => {
             return res.data;
         } else {
             const newWishlist = {
-                userId: userId,
+                userId,
                 productId: [productId],
             };
             const res = await userRequest.post("/wishlist", newWishlist);
@@ -42,14 +42,29 @@ export const addToWishlist = async (productId: any, userId: any) => {
 
 
 
-export const removeFromWishlist = async (productId: any) => {
+
+
+export const removeFromWishlist = async (productId: any, userId: any) => {
     try {
-        const res = await userRequest.delete(`/wishlist/${productId}`);
-        return res.data;
+        const existingWishlist = await userRequest.get(`/wishlist/find/${userId}`);
+
+        if (existingWishlist && existingWishlist.status === 200) {
+            const wishlistId = existingWishlist.data._id;
+            const updatedWishlist = {
+                userId,
+                productId: existingWishlist.data.productId.filter((id: string) => id !== productId),
+            };
+
+            const res = await userRequest.put(`/wishlist/${wishlistId}/${productId}`, updatedWishlist);
+            return res.data;
+        } else {
+            throw new Error("Wishlist not found");
+        }
     } catch (error) {
         throw new Error("Failed to remove product from wishlist");
     }
 };
+
 
 export const getWishlist = async (userId: any) => {
     try {

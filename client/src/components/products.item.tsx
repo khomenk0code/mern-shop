@@ -9,7 +9,7 @@ import {
 } from "../redux/wishlist.slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { addToWishlist } from "../redux/api.calls";
+import { addToWishlist, removeFromWishlist } from "../redux/api.calls";
 
 
 
@@ -51,12 +51,12 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
     const handleLike = async () => {
         if (liked) {
             dispatch(removeProductWishlist(item._id));
+            await removeFromWishlist(item._id, userId);
         } else {
             try {
                 const wishlistItem = { ...item, userId };
-
-                await addToWishlist(item._id, userId);
                 dispatch(addProductWishlist(wishlistItem));
+                await addToWishlist(item._id, userId);
             } catch (error) {
                 console.log("Failed to add product to wishlist:", error);
             }

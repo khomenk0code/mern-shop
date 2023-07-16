@@ -23,9 +23,37 @@ router.put("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
     const productId = req.body.productId;
 
     try {
+        const wishlist = await Wishlist.findById(wishlistId);
+
+        if (wishlist) {
+            const existingProductIndex = wishlist.productId.indexOf(productId);
+            if (existingProductIndex === -1) {
+                // Если продукт еще не существует в вишлисте, добавляем его
+                wishlist.productId.push(productId);
+                const updatedWishlist = await wishlist.save();
+                res.status(200).json(updatedWishlist);
+            } else {
+                // Если продукт уже существует в вишлисте, возвращаем текущий вишлист без изменений
+                res.status(200).json(wishlist);
+            }
+        } else {
+            // Вишлист не найден
+            res.status(404).json({ message: "Wishlist not found" });
+        }
+    } catch (e) {
+        res.status(500).json(e);
+    }
+});
+
+
+router.put("/:id/:productId", verifyTokenAndAuth, async (req: Request, res: Response) => {
+    const wishlistId = req.params.id;
+    const productId = req.params.productId;
+
+    try {
         const updatedWishlist = await Wishlist.findByIdAndUpdate(
             wishlistId,
-            { $push: { productId: productId } },
+            { $pull: { productId: productId } },
             { new: true }
         );
         res.status(200).json(updatedWishlist);
@@ -33,6 +61,7 @@ router.put("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
         res.status(500).json(e);
     }
 });
+
 
 
 
