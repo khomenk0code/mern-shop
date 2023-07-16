@@ -33,7 +33,7 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
     const userId = user._id;
 
 
-    console.log(wishlistProducts);
+
 
 
     const dispatch = useAppDispatch();
@@ -54,8 +54,9 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
         } else {
             try {
                 const wishlistItem = { ...item, userId };
+
+                await addToWishlist(item._id, userId);
                 dispatch(addProductWishlist(wishlistItem));
-                await addToWishlist(wishlistItem, userId);
             } catch (error) {
                 console.log("Failed to add product to wishlist:", error);
             }

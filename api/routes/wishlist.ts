@@ -25,7 +25,7 @@ router.put("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
     try {
         const updatedWishlist = await Wishlist.findByIdAndUpdate(
             wishlistId,
-            { $push: { products: { productId } } },
+            { $push: { productId: productId } },
             { new: true }
         );
         res.status(200).json(updatedWishlist);
@@ -33,6 +33,7 @@ router.put("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
         res.status(500).json(e);
     }
 });
+
 
 
 router.delete("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {

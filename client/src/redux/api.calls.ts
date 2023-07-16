@@ -13,15 +13,33 @@ const login = async (dispatch: any, user: any) => {
     }
 };
 
-export const addToWishlist = async (product: any, userId: any) => {
+export const addToWishlist = async (productId: any, userId: any) => {
     try {
-        const wishlistItem = { ...product, userId };
-        const res = await userRequest.post("/wishlist", wishlistItem);
-        return res.data;
+        const existingWishlist = await userRequest.get(`/wishlist/find/${userId}`);
+
+        if (existingWishlist) {
+            const wishlistId = existingWishlist.data._id;
+
+            const updatedWishlist = {
+                userId: userId,
+                productId: [...existingWishlist.data.productId, productId],
+            };
+
+            const res = await userRequest.put(`/wishlist/${wishlistId}`, updatedWishlist);
+            return res.data;
+        } else {
+            const newWishlist = {
+                userId: userId,
+                productId: [productId],
+            };
+            const res = await userRequest.post("/wishlist", newWishlist);
+            return res.data;
+        }
     } catch (error) {
         throw new Error("Failed to add product to wishlist");
     }
 };
+
 
 
 export const removeFromWishlist = async (productId: any) => {

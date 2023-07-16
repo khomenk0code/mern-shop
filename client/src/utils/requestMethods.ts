@@ -13,7 +13,7 @@ const TOKEN = localStorageItem
     ? JSON.parse(JSON.parse(localStorageItem)?.user)?.currentUser
     ?.accessToken || ""
     : "";
-console.log(TOKEN);
+
 
 export const publicRequest = axios.create({
     baseURL: BASE_URL,
