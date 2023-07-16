@@ -63,16 +63,21 @@ router.put("/:id/:productId", verifyToken, async (req: Request, res: Response) =
 });
 
 
-router.delete("/:id", verifyToken, async (req, res) => {
-    const wishlistId = req.params.id ;
+router.delete("/user/:userId", verifyToken, async (req, res) => {
+    const userId = req.params.userId;
 
     try {
-        await Wishlist.deleteOne({ wishlistId: wishlistId });
-        res.status(200).json({ message: "Wishlist removed successfully" });
+        const removedWishlist = await Wishlist.findOneAndDelete({ userId: userId });
+        if (removedWishlist) {
+            res.status(200).json({ message: "Wishlist removed successfully" });
+        } else {
+            res.status(404).json({ error: "Wishlist not found" });
+        }
     } catch (error) {
         res.status(500).json({ error: "Failed to remove wishlist" });
     }
 });
+
 
 
 
