@@ -64,10 +64,10 @@ router.put("/:id/:productId", verifyToken, async (req: Request, res: Response) =
 
 
 router.delete("/:id", verifyToken, async (req, res) => {
-    const wishlistId = req.params.id;
+    const userId = req.params.userId;
 
     try {
-        await Wishlist.deleteOne({ _id: wishlistId });
+        await Wishlist.deleteOne({ userId: userId });
         res.status(200).json({ message: "Wishlist removed successfully" });
     } catch (error) {
         res.status(500).json({ error: "Failed to remove wishlist" });
