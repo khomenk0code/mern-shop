@@ -64,7 +64,7 @@ router.put("/:id/:productId", verifyToken, async (req: Request, res: Response) =
 
 
 
-router.get("/find/:userId", verifyTokenAndAuth, async (req: Request, res: Response) => {
+router.get("/find/:userId", verifyToken, async (req: Request, res: Response) => {
     try {
         const list  = await Wishlist.findOne({userId: req.params.userId})
 
