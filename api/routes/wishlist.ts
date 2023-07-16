@@ -64,7 +64,7 @@ router.put("/:id/:productId", verifyToken, async (req: Request, res: Response) =
 
 
 router.delete("/:id", verifyToken, async (req, res) => {
-    const wishlistId = req.params.id;
+    const wishlistId = req.params.id ;
 
     try {
         await Wishlist.deleteOne({ _id: wishlistId });
