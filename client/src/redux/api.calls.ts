@@ -77,8 +77,10 @@ export const removeFromWishlist = async (productId: any, userId: any) => {
 
 export const removeFromWishlistAll = async (userId: any) => {
     try {
-        const response = await userRequest.delete(`/wishlist/remove/${userId}`);
-        return response.data;
+
+        const res = await userRequest.put(`/wishlist/clear/${userId}`);
+        return res.data;
+
     } catch (error) {
         throw new Error("Failed to remove all products from wishlist");
     }

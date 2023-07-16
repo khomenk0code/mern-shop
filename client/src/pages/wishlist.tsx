@@ -65,13 +65,14 @@ const Wishlist: React.FC = () => {
     };
 
 
-    const handleRemoveAll = async () => {
+    const handleRemoveAll = async (userId: any) => {
         try {
             if (selectedProducts.length === wishlist.length) {
                 dispatch(clearWishlist());
+                console.log(userId);
                 await removeFromWishlistAll(userId);
                 setSelectedProducts([]);
-                console.log("All products removed from wishlist successfully!");
+
             } else {
                 dispatch(removeProductWishlist(selectedProducts));
                 setSelectedProducts([]);
@@ -208,7 +209,7 @@ const Wishlist: React.FC = () => {
                         <Button
                             variant="contained"
                             color="secondary"
-                            onClick={handleRemoveAll}
+                            onClick={() => handleRemoveAll(userId)}
                         >
                             Remove Selected
                         </Button>

@@ -63,7 +63,7 @@ router.put("/:id/:productId", verifyToken, async (req: Request, res: Response) =
 });
 
 
-router.put("remove/:id", verifyToken, async (req, res) => {
+router.put("clear/:id", verifyToken, async (req, res) => {
     const wishlistId = req.params.id;
 
     try {

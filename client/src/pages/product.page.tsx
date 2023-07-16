@@ -39,6 +39,8 @@ const Product: React.FC = () => {
     const user: any  = useAppSelector(state => state.user.currentUser)
     const userId = user ? user._id : null;
 
+
+
     const dispatch = useDispatch();
     const location = useLocation();
     const id: string = location.pathname.split("/")[2];
