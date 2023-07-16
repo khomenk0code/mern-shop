@@ -67,12 +67,13 @@ router.delete("/:id", verifyToken, async (req, res) => {
     const wishlistId = req.params.id;
 
     try {
-        const removedWishlist = await Wishlist.findByIdAndRemove(wishlistId);
+        await Wishlist.deleteOne({ _id: wishlistId });
         res.status(200).json({ message: "Wishlist removed successfully" });
     } catch (error) {
         res.status(500).json({ error: "Failed to remove wishlist" });
     }
 });
+
 
 
 
