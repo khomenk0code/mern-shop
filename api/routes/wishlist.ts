@@ -63,7 +63,7 @@ router.put("/:id/:productId", verifyToken, async (req: Request, res: Response) =
 });
 
 
-router.delete("/:id", verifyToken, async (req, res) => {
+router.put("remove/:id", verifyToken, async (req, res) => {
     const wishlistId = req.params.id;
 
     try {
@@ -77,6 +77,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
         res.status(500).json(e);
     }
 });
+
 
 
 router.get("/find/:userId", verifyToken, async (req: Request, res: Response) => {
