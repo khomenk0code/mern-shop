@@ -78,7 +78,7 @@ export const removeFromWishlist = async (productId: any, userId: any) => {
 export const removeFromWishlistAll = async (userId: any) => {
     try {
 
-        const res = await userRequest.put(`/wishlist/clear/${userId}`);
+        const res = await userRequest.delete(`/wishlist/${userId}`);
         return res.data;
 
     } catch (error) {

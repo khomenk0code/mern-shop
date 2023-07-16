@@ -1,7 +1,6 @@
 import {Request, Response} from "express";
-import mongoose from "mongoose";
 const router = require("express").Router()
-const {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin} = require("../middleware/verifyToken")
+const {verifyToken, verifyTokenAndAdmin} = require("../middleware/verifyToken")
 const Wishlist = require("../models/wishlist");
 
 
@@ -64,25 +63,14 @@ router.put("/:id/:productId", verifyToken, async (req: Request, res: Response) =
 });
 
 
-
-router.put("/clear/:id", verifyToken, async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
     const wishlistId = req.params.id;
 
-
-    if (mongoose.Types.ObjectId.isValid(wishlistId)) {
-        try {
-            const updatedWishlist = await Wishlist.findByIdAndUpdate(
-                wishlistId,
-                { $set: { productId: [] } },
-                { new: true }
-            );
-            res.status(200).json(updatedWishlist);
-        } catch (e) {
-            res.status(500).json(e);
-        }
-    } else {
-
-        res.status(400).json({ message: "Invalid wishlistId" });
+    try {
+        const removedWishlist = await Wishlist.findByIdAndRemove(wishlistId);
+        res.status(200).json({ message: "Wishlist removed successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to remove wishlist" });
     }
 });
 
