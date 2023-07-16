@@ -18,7 +18,7 @@ router.post("/", verifyToken, async (req: Request, res: Response) => {
 
 
 
-router.put("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
+router.put("/:id", verifyToken, async (req: Request, res: Response) => {
     const wishlistId = req.params.id;
     const productId = req.body.productId;
 
@@ -46,7 +46,7 @@ router.put("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
 });
 
 
-router.put("/:id/:productId", verifyTokenAndAuth, async (req: Request, res: Response) => {
+router.put("/:id/:productId", verifyToken, async (req: Request, res: Response) => {
     const wishlistId = req.params.id;
     const productId = req.params.productId;
 
@@ -63,16 +63,6 @@ router.put("/:id/:productId", verifyTokenAndAuth, async (req: Request, res: Resp
 });
 
 
-
-
-router.delete("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
-    try {
-        await Wishlist.findByIdAndDelete(req.params.id)
-        res.status(200).json("Product was removed from wishlist!")
-    } catch (e) {
-        res.status(500).json(e)
-    }
-})
 
 router.get("/find/:userId", verifyTokenAndAuth, async (req: Request, res: Response) => {
     try {

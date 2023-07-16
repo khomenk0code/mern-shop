@@ -30,10 +30,7 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
     const wishlistProducts = useAppSelector((state) => state.wishlist.products);
     const user: any  = useAppSelector(state => state.user.currentUser)
 
-    const userId = user._id;
-
-
-
+    const userId = user ? user._id : null;
 
 
     const dispatch = useAppDispatch();
@@ -49,6 +46,11 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
 
 
     const handleLike = async () => {
+        if (!userId) {
+            console.log("User is not logged in. Cannot add to wishlist.");
+            return;
+        }
+
         if (liked) {
             dispatch(removeProductWishlist(item._id));
             await removeFromWishlist(item._id, userId);
