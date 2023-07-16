@@ -13,6 +13,11 @@ import { addProducts, updateQuantity } from "../redux/cart.slice";
 import { useDispatch } from "react-redux";
 import cssColorNames from "css-color-names";
 import { useAppSelector } from "../hooks/hooks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { addProductWishlist, removeProductWishlist } from "../redux/wishlist.slice";
+import { addToWishlist, removeFromWishlist } from "../redux/api.calls";
+import { Icon } from "@mui/material";
 
 export interface FilterColorProps {
     color: string;
@@ -29,11 +34,22 @@ const Product: React.FC = () => {
     const products = useAppSelector((state) => state.cart.products);
     const [showNotification, setShowNotification] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [liked, setLiked] = useState(false);
+    const wishlistProducts = useAppSelector((state) => state.wishlist.products);
+    const user: any  = useAppSelector(state => state.user.currentUser)
+    const userId = user ? user._id : null;
 
     const dispatch = useDispatch();
     const location = useLocation();
     const id: string = location.pathname.split("/")[2];
     const validColors = Object.keys(cssColorNames);
+
+    useEffect(() => {
+        const isProductInWishlist = wishlistProducts.some(
+            (product) => product._id === product._id.toString()
+        );
+        setLiked(isProductInWishlist);
+    }, [wishlistProducts, product?._id]);
 
     const handleQuantity = (type: "inc" | "dec") => {
         setQuantity((prevState) => {
@@ -51,6 +67,29 @@ const Product: React.FC = () => {
 
     const handleImageLoad = () => {
         setImageLoaded(true);
+    };
+
+
+
+    const handleLike = async () => {
+        if (!userId) {
+            console.log("User is not logged in. Cannot add to wishlist.");
+            return;
+        }
+
+        if (liked) {
+            dispatch(removeProductWishlist(product?._id));
+            await removeFromWishlist(product?._id, userId);
+        } else {
+            try {
+                const wishlistItem = { ...product, userId };
+                dispatch(addProductWishlist(wishlistItem));
+                await addToWishlist(product?._id, userId);
+            } catch (error) {
+                console.log("Failed to add product to wishlist:", error);
+            }
+        }
+        setLiked(!liked);
     };
 
     const handleClick = () => {
@@ -218,6 +257,26 @@ const Product: React.FC = () => {
                             )}
                             <Button onClick={handleClick}>ADD TO CART</Button>
                         </ButtonContainer>
+                            <LikeIcon onClick={handleLike}>
+                                {liked ? (
+                                    <FontAwesomeIcon
+                                        icon={faHeart}
+                                        beat
+                                        size={"lg"}
+                                        style={{
+                                            color: "#fe2a2a",
+                                            animationDuration: "1s",
+                                            animationIterationCount: "1",
+                                        }}
+                                    />
+                                ) : (
+                                    <FontAwesomeIcon
+                                        icon={faHeart}
+                                        size={"lg"}
+                                        style={{ color: "#000000" }}
+                                    />
+                                )}
+                            </LikeIcon>
                     </AddContainer>
                 </InfoContainer>
             </Wrapper>
@@ -310,7 +369,7 @@ export const FilterSize = styled.select`
 export const FilterSizeOption = styled.option``;
 
 const AddContainer = styled.div`
-    width: 70%;
+  
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -359,6 +418,13 @@ const Button = styled.button`
     &:hover {
         background-color: #f8f4f4;
     }
+`;
+
+const LikeIcon = styled.div`
+    margin-left: 30px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 `;
 
 export default Product;

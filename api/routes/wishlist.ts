@@ -63,6 +63,21 @@ router.put("/:id/:productId", verifyToken, async (req: Request, res: Response) =
 });
 
 
+router.delete("/:id", verifyToken, async (req, res) => {
+    const wishlistId = req.params.id;
+
+    try {
+        const updatedWishlist = await Wishlist.findByIdAndUpdate(
+            wishlistId,
+            { $set: { productId: [] } },
+            { new: true }
+        );
+        res.status(200).json(updatedWishlist);
+    } catch (e) {
+        res.status(500).json(e);
+    }
+});
+
 
 router.get("/find/:userId", verifyToken, async (req: Request, res: Response) => {
     try {
