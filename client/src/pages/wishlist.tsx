@@ -74,7 +74,14 @@ const Wishlist: React.FC = () => {
                 setSelectedProducts([]);
 
             } else {
-                dispatch(removeProductWishlist(selectedProducts));
+                for (const productId of selectedProducts) {
+                    try {
+                        await removeFromWishlist(productId, userId);
+                        dispatch(removeProductWishlist([productId]));
+                    } catch (error) {
+                        console.log("Failed to remove product from wishlist:", error);
+                    }
+                }
                 setSelectedProducts([]);
             }
         } catch (error) {
