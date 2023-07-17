@@ -11,9 +11,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { addToWishlist, removeFromWishlist } from "../redux/api.calls";
 
-
-
-
 export interface IPopularProducts {
     altImg: any;
     _id: number;
@@ -28,14 +25,11 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
     const [liked, setLiked] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     const wishlistProducts = useAppSelector((state) => state.wishlist.products);
-    const user: any  = useAppSelector(state => state.user.currentUser)
+    const user: any = useAppSelector((state) => state.user.currentUser);
 
     const userId = user ? user._id : null;
 
-
     const dispatch = useAppDispatch();
-
-
 
     useEffect(() => {
         const isProductInWishlist = wishlistProducts.some(
@@ -43,7 +37,6 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
         );
         setLiked(isProductInWishlist);
     }, [wishlistProducts, item._id]);
-
 
     const handleLike = async () => {
         if (!userId) {

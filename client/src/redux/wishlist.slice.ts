@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IProduct } from "../components/products.component";
 
-
-
 const wishlistSlice = createSlice({
     name: "wishlist",
     initialState: {
@@ -25,7 +23,6 @@ const wishlistSlice = createSlice({
         },
     },
 });
-
 
 export const { addProductWishlist, removeProductWishlist, clearWishlist } =
     wishlistSlice.actions;

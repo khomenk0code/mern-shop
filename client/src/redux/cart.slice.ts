@@ -47,7 +47,12 @@ const cartSlice = createSlice({
             const productsToAdd = action.payload;
             const updatedProducts = productsToAdd.reduce((updated, product) => {
                 const existingProductIndex = updated.findIndex((p) =>
-                    isMatchingProduct(p, product._id, product.color[0], product.size[0])
+                    isMatchingProduct(
+                        p,
+                        product._id,
+                        product.color[0],
+                        product.size[0]
+                    )
                 );
                 if (existingProductIndex !== -1) {
                     const existingProduct = updated[existingProductIndex];
@@ -65,15 +70,19 @@ const cartSlice = createSlice({
                 }
             }, state.products);
 
-            const updatedQuantity = state.quantity + productsToAdd.reduce(
-                (acc, product) => acc + product.quantity,
-                0
-            );
+            const updatedQuantity =
+                state.quantity +
+                productsToAdd.reduce(
+                    (acc, product) => acc + product.quantity,
+                    0
+                );
 
-            const updatedTotal = state.total + productsToAdd.reduce(
-                (acc, product) => acc + product.price * product.quantity,
-                0
-            );
+            const updatedTotal =
+                state.total +
+                productsToAdd.reduce(
+                    (acc, product) => acc + product.price * product.quantity,
+                    0
+                );
 
             return {
                 ...state,
@@ -94,7 +103,8 @@ const cartSlice = createSlice({
                 const removedQuantity = removedProduct.quantity;
 
                 const updatedQuantity = state.quantity - removedQuantity;
-                const updatedTotal = state.total - removedProduct.price * removedQuantity;
+                const updatedTotal =
+                    state.total - removedProduct.price * removedQuantity;
                 const updatedProducts = [
                     ...state.products.slice(0, productIndex),
                     ...state.products.slice(productIndex + 1),
@@ -150,11 +160,7 @@ const cartSlice = createSlice({
     },
 });
 
-export const {
-    addProducts,
-    removeProduct,
-    updateQuantity,
-    clearCart,
-} = cartSlice.actions;
+export const { addProducts, removeProduct, updateQuantity, clearCart } =
+    cartSlice.actions;
 
 export default cartSlice.reducer;

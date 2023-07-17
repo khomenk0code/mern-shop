@@ -12,7 +12,6 @@ const Login: React.FC = () => {
 
     const dispatch = useAppDispatch();
 
-
     const { isFetching, error } = useAppSelector((state) => state.user);
     useEffect(() => {
         const newSocket = io("https://mern-shop-api.vercel.app/");
@@ -21,7 +20,6 @@ const Login: React.FC = () => {
             newSocket.disconnect();
         };
     }, []);
-
 
     const handleLoginClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();

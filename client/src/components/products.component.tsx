@@ -31,7 +31,6 @@ export interface IProduct {
     inStock: boolean;
 }
 
-
 const Products: React.FC<ProductsProps> = ({ category, filters, sort }) => {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);

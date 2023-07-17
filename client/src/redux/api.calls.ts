@@ -15,9 +15,15 @@ const login = async (dispatch: any, user: any) => {
 
 export const addToWishlist = async (productId: any, userId: any) => {
     try {
-        const existingWishlist = await userRequest.get(`/wishlist/find/${userId}`);
+        const existingWishlist = await userRequest.get(
+            `/wishlist/find/${userId}`
+        );
 
-        if (existingWishlist && existingWishlist.data !== null && existingWishlist.status === 200) {
+        if (
+            existingWishlist &&
+            existingWishlist.data !== null &&
+            existingWishlist.status === 200
+        ) {
             const wishlistId = existingWishlist.data._id;
 
             // Check if the productId is already in the wishlist
@@ -28,7 +34,10 @@ export const addToWishlist = async (productId: any, userId: any) => {
                     productId, // Pass the productId as a single string, not an array
                 };
 
-                const res = await userRequest.put(`/wishlist/${wishlistId}`, updatedWishlist);
+                const res = await userRequest.put(
+                    `/wishlist/${wishlistId}`,
+                    updatedWishlist
+                );
                 return res.data;
             } else {
                 // If the productId is already in the wishlist, return the existing wishlist without changes
@@ -48,24 +57,25 @@ export const addToWishlist = async (productId: any, userId: any) => {
     }
 };
 
-
-
-
-
-
-
 export const removeFromWishlist = async (productId: any, userId: any) => {
     try {
-        const existingWishlist = await userRequest.get(`/wishlist/find/${userId}`);
+        const existingWishlist = await userRequest.get(
+            `/wishlist/find/${userId}`
+        );
 
         if (existingWishlist && existingWishlist.status === 200) {
             const wishlistId = existingWishlist.data._id;
             const updatedWishlist = {
                 userId,
-                productId: existingWishlist.data.productId.filter((id: string) => id !== productId),
+                productId: existingWishlist.data.productId.filter(
+                    (id: string) => id !== productId
+                ),
             };
 
-            const res = await userRequest.put(`/wishlist/${wishlistId}/${productId}`, updatedWishlist);
+            const res = await userRequest.put(
+                `/wishlist/${wishlistId}/${productId}`,
+                updatedWishlist
+            );
             return res.data;
         } else {
             throw new Error("Wishlist not found");
@@ -77,15 +87,12 @@ export const removeFromWishlist = async (productId: any, userId: any) => {
 
 export const removeFromWishlistAll = async (userId: any) => {
     try {
-
         const res = await userRequest.delete(`/wishlist/user/${userId}`);
         return res.data;
-
     } catch (error) {
         throw new Error("Failed to remove all products from wishlist");
     }
 };
-
 
 export const getWishlist = async (userId: any) => {
     try {

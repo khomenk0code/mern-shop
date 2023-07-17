@@ -15,7 +15,10 @@ import cssColorNames from "css-color-names";
 import { useAppSelector } from "../hooks/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { addProductWishlist, removeProductWishlist } from "../redux/wishlist.slice";
+import {
+    addProductWishlist,
+    removeProductWishlist,
+} from "../redux/wishlist.slice";
 import { addToWishlist, removeFromWishlist } from "../redux/api.calls";
 import { Icon } from "@mui/material";
 
@@ -36,10 +39,8 @@ const Product: React.FC = () => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [liked, setLiked] = useState(false);
     const wishlistProducts = useAppSelector((state) => state.wishlist.products);
-    const user: any  = useAppSelector(state => state.user.currentUser)
+    const user: any = useAppSelector((state) => state.user.currentUser);
     const userId = user ? user._id : null;
-
-
 
     const dispatch = useDispatch();
     const location = useLocation();
@@ -70,8 +71,6 @@ const Product: React.FC = () => {
     const handleImageLoad = () => {
         setImageLoaded(true);
     };
-
-
 
     const handleLike = async () => {
         if (!userId) {
@@ -133,7 +132,7 @@ const Product: React.FC = () => {
                         quantity,
                         color: [color],
                         size: [size],
-                    } as IProduct
+                    } as IProduct,
                 ])
             );
         }
@@ -259,26 +258,26 @@ const Product: React.FC = () => {
                             )}
                             <Button onClick={handleClick}>ADD TO CART</Button>
                         </ButtonContainer>
-                            <LikeIcon onClick={handleLike}>
-                                {liked ? (
-                                    <FontAwesomeIcon
-                                        icon={faHeart}
-                                        beat
-                                        size={"lg"}
-                                        style={{
-                                            color: "#fe2a2a",
-                                            animationDuration: "1s",
-                                            animationIterationCount: "1",
-                                        }}
-                                    />
-                                ) : (
-                                    <FontAwesomeIcon
-                                        icon={faHeart}
-                                        size={"lg"}
-                                        style={{ color: "#000000" }}
-                                    />
-                                )}
-                            </LikeIcon>
+                        <LikeIcon onClick={handleLike}>
+                            {liked ? (
+                                <FontAwesomeIcon
+                                    icon={faHeart}
+                                    beat
+                                    size={"lg"}
+                                    style={{
+                                        color: "#fe2a2a",
+                                        animationDuration: "1s",
+                                        animationIterationCount: "1",
+                                    }}
+                                />
+                            ) : (
+                                <FontAwesomeIcon
+                                    icon={faHeart}
+                                    size={"lg"}
+                                    style={{ color: "#000000" }}
+                                />
+                            )}
+                        </LikeIcon>
                     </AddContainer>
                 </InfoContainer>
             </Wrapper>
@@ -371,7 +370,6 @@ export const FilterSize = styled.select`
 export const FilterSizeOption = styled.option``;
 
 const AddContainer = styled.div`
-  
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -424,9 +422,9 @@ const Button = styled.button`
 
 const LikeIcon = styled.div`
     margin-left: 30px;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 `;
 
 export default Product;

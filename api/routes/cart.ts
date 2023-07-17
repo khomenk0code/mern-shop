@@ -34,6 +34,8 @@ router.put("/:cartId/products/:productId/:color/:size", verifyToken, async (req:
             { new: true }
         );
 
+        console.log("Updated cart:", updatedCart);
+
         res.status(200).json(updatedCart);
     } catch (e) {
         res.status(500).json(e);
@@ -84,4 +86,3 @@ router.get("/", verifyTokenAndAdmin, async (req: Request, res: Response) => {
 
 
 module.exports = router;
-

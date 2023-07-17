@@ -39,7 +39,6 @@ const Cart = () => {
         baseURL: "https://mern-shop-api.vercel.app/api",
     });
 
-
     useEffect(() => {
         const fetchForm = async () => {
             const total = cart.total || "0";
@@ -80,7 +79,6 @@ const Cart = () => {
 
         fetchForm();
     }, [cart.total]);
-
 
     const handleRemoveFromCart = (
         productId: string,
@@ -138,21 +136,23 @@ const Cart = () => {
                         {cart.products.length > 0 ? (
                             cart.products.map((product: IProduct, index) => (
                                 <div key={index}>
-                                    <Product >
+                                    <Product>
                                         <ProductDetail>
                                             {!imageLoaded && (
                                                 <Image src={product?.altImg} />
                                             )}
-                                            <Link to={`/product/${product._id}`}>
-                                            <Image
-                                                src={product?.img}
-                                                onLoad={handleImageLoad}
-                                                style={{
-                                                    display: imageLoaded
-                                                        ? "block"
-                                                        : "none",
-                                                }}
-                                            />
+                                            <Link
+                                                to={`/product/${product._id}`}
+                                            >
+                                                <Image
+                                                    src={product?.img}
+                                                    onLoad={handleImageLoad}
+                                                    style={{
+                                                        display: imageLoaded
+                                                            ? "block"
+                                                            : "none",
+                                                    }}
+                                                />
                                             </Link>
 
                                             <Details>
