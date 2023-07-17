@@ -5,6 +5,8 @@ export interface Cart extends Document{
     products: [
         {
             productId: string;
+            color: string;
+            size: string;
             quantity: number;
         }
     ]
@@ -17,10 +19,17 @@ const CartSchema = new mongoose.Schema<Cart>({
             productId:{
                 type:String
             },
+             color:{
+                type:String
+            },
+             size:{
+                type:String
+            },
             quantity:{
                 type:Number,
                 default:1,
-            }
+            },
+
         }
     ],
 
