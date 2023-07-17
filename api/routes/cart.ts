@@ -16,10 +16,13 @@ router.post("/", verifyToken, async (req: Request, res: Response) => {
 })
 
 
-router.put("/:cartId/products/:productId/:color/:size", verifyToken, async (req: Request, res: Response) => {
+router.put("/:cartId/products/update", verifyToken, async (req: Request, res: Response) => {
     try {
-        const { cartId, productId, color, size } = req.params;
-        const { quantity } = req.body;
+        const { cartId } = req.params;
+        const { productId, color, size, quantity } = req.body;
+
+        console.log("Received data:", { cartId, productId, color, size, quantity });
+
 
         const updatedCart = await Cart.findOneAndUpdate(
             {
