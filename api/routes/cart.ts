@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 const router = require("express").Router()
-const {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin} = require("../middleware/verifyToken")
+const {verifyToken, verifyTokenAndAdmin} = require("../middleware/verifyToken")
 const Cart = require("../models/cart");
 
 
@@ -16,33 +16,54 @@ router.post("/", verifyToken, async (req: Request, res: Response) => {
 })
 
 
-router.put("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
-
+router.put("/:cartId/products/:productId/:color/:size", verifyToken, async (req: Request, res: Response) => {
     try {
-        const updatedCart = await Cart.findByIdAndUpdate(
-            req.params.id,
+        const { cartId, productId, color, size } = req.params;
+        const { quantity } = req.body;
+
+        const updatedCart = await Cart.findOneAndUpdate(
             {
-                $set: req.body,
+                _id: cartId,
+                "products.productId": productId,
+                "products.color": color,
+                "products.size": size
             },
-            {new: true}
+            {
+                $set: { "products.$.quantity": quantity }
+            },
+            { new: true }
         );
-        res.status(200).json(updatedCart)
+
+        res.status(200).json(updatedCart);
     } catch (e) {
-        res.status(500).json(e)
+        res.status(500).json(e);
     }
+});
 
-})
 
-router.delete("/:id", verifyTokenAndAuth, async (req: Request, res: Response) => {
+
+router.delete("/:cartId/products/:productId/:color/:size", verifyToken, async (req: Request, res: Response) => {
     try {
-        await Cart.findByIdAndDelete(req.params.id)
-        res.status(200).json("Product was removed from cart!")
-    } catch (e) {
-        res.status(500).json(e)
-    }
-})
+        const { cartId, productId, color, size } = req.params;
 
-router.get("/find/:userId", verifyTokenAndAuth, async (req: Request, res: Response) => {
+        await Cart.findOneAndUpdate(
+            {
+                _id: cartId
+            },
+            {
+                $pull: { "products": { productId, color, size } }
+            },
+            { new: true }
+        );
+
+        res.status(200).json("Product was removed from cart!");
+    } catch (e) {
+        res.status(500).json(e);
+    }
+});
+
+
+router.get("/find/:userId", verifyToken, async (req: Request, res: Response) => {
     try {
         const cart  = await Cart.findOne({userId: req.params.userId})
 
