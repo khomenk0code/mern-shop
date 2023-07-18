@@ -24,8 +24,8 @@ router.post("/1", verifyToken, async (req: Request, res: Response) => {
 router.post("/", verifyToken, async (req: AuthReq, res: Response) => {
     try {
         const userId = req.user.id;
-        const newCart = req.body;
-
+        const newCart = req.body.products;
+        console.log(req.body);
         const updatedCart = await Cart.findOneAndUpdate(
             { userId },
             { products: newCart },
