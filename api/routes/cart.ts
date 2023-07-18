@@ -69,6 +69,20 @@ router.delete("/:cartId/products/delete", verifyToken, async (req: Request, res:
 });
 
 
+router.delete("/:cartId", verifyToken, async (req: Request, res: Response) => {
+    try {
+        const { cartId } = req.params;
+
+        await Cart.findByIdAndDelete(cartId);
+
+        res.status(200).json("Cart was deleted successfully!");
+    } catch (e) {
+        res.status(500).json(e);
+    }
+});
+
+
+
 
 router.get("/find/:userId", verifyToken, async (req: Request, res: Response) => {
     try {
