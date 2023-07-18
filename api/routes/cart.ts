@@ -22,8 +22,6 @@ router.put("/:cartId/quantity/update", verifyToken, async (req: Request, res: Re
         const { cartId } = req.params;
         const { productId, color, size, quantity } = req.body;
 
-        console.log("Received data:", { cartId, productId, color, size, quantity });
-
 
         const updatedCart = await Cart.findOneAndUpdate(
             {
@@ -38,7 +36,6 @@ router.put("/:cartId/quantity/update", verifyToken, async (req: Request, res: Re
             { new: true }
         );
 
-        console.log("Updated cart:", updatedCart);
 
         res.status(200).json(updatedCart);
     } catch (e) {
@@ -122,10 +119,10 @@ router.delete("/:cartId", verifyToken, async (req: Request, res: Response) => {
 
 
 
-router.get("/find/:userId", verifyToken, async (req: Request, res: Response) => {
+router.get("/find/:userId", verifyToken, async (req: any, res: Response) => {
     try {
         const cart  = await Cart.findOne({userId: req.params.userId})
-
+        console.log("Logged user:", req.user);
         res.status(200).json(cart)
     } catch (e) {
         res.status(500).json(e)
