@@ -103,57 +103,23 @@ export const getWishlist = async (userId: any) => {
     }
 };
 
-export const addToCart = async (userId: any, product: any) => {
+
+
+export const updateCart = async ( products: any) => {
     try {
-        const existingCart = await userRequest.get(`/cart/find/${userId}`);
 
-        if (existingCart && existingCart.data !== null && existingCart.status === 200) {
-            const cartId = existingCart.data._id;
-
-            // Check if the product is already in the cart
-            const existingProduct = existingCart.data.products.find(
-                (item: any) =>
-                    item.productId === product.productId &&
-                    item.color === product.color &&
-                    item.size === product.size
-            );
-
-            if (existingProduct) {
-                // If the product already exists in the cart, update its quantity
-                const updatedProduct = {
-                    productId: existingProduct.productId,
-                    color: existingProduct.color,
-                    size: existingProduct.size,
-                    quantity: existingProduct.quantity + product.quantity,
-                };
-
-                const res = await userRequest.put(`/cart/${cartId}/quantity/update`, updatedProduct);
-                return res.data;
-            } else {
-                // If the product is not in the cart, use the new route to add it to the cart
-                const res = await userRequest.put(`/cart/${cartId}/add`, {
-                    productId: product.productId,
-                    color: product.color,
-                    size: product.size,
-                    quantity: product.quantity,
-                });
-
-                return res.data;
-            }
-        } else {
-            // If the cart doesn't exist, create a new one with the product
             const newCart = {
-                userId,
-                products: [product],
+                products,
             };
 
             const res = await userRequest.post("/cart", newCart);
             return res.data;
-        }
+
     } catch (error) {
-        throw new Error("Failed to add product to cart");
+        throw new Error("Failed to update cart");
     }
 };
+
 
 
 export default login;
