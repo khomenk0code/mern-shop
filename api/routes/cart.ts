@@ -16,6 +16,7 @@ router.post("/", verifyToken, async (req: Request, res: Response) => {
 })
 
 
+
 router.put("/:cartId/quantity/update", verifyToken, async (req: Request, res: Response) => {
     try {
         const { cartId } = req.params;
@@ -45,6 +46,43 @@ router.put("/:cartId/quantity/update", verifyToken, async (req: Request, res: Re
     }
 });
 
+router.put("/:cartId/add", async (req, res) => {
+    try {
+        const cartId = req.params.cartId;
+        const { productId, color, size, quantity } = req.body;
+
+        const existingCart = await Cart.findById(cartId);
+
+        if (existingCart) {
+            existingCart.products.push({
+                productId,
+                color,
+                size,
+                quantity,
+            });
+
+            const updatedCart = await existingCart.save();
+            res.status(200).json(updatedCart);
+        } else {
+            const newCart = new Cart({
+                userId: req.body.userId,
+                products: [
+                    {
+                        productId,
+                        color,
+                        size,
+                        quantity,
+                    },
+                ],
+            });
+
+            const savedCart = await newCart.save();
+            res.status(200).json(savedCart);
+        }
+    } catch (error) {
+        res.status(500).json(error);
+    }
+});
 
 
 router.delete("/:cartId/products/delete", verifyToken, async (req: Request, res: Response) => {
