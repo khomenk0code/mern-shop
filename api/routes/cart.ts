@@ -16,7 +16,7 @@ router.post("/", verifyToken, async (req: Request, res: Response) => {
 })
 
 
-router.put("/:cartId/products/update", verifyToken, async (req: Request, res: Response) => {
+router.put("/:cartId/quantity/update", verifyToken, async (req: Request, res: Response) => {
     try {
         const { cartId } = req.params;
         const { productId, color, size, quantity } = req.body;
@@ -47,9 +47,10 @@ router.put("/:cartId/products/update", verifyToken, async (req: Request, res: Re
 
 
 
-router.delete("/:cartId/products/:productId/:color/:size", verifyToken, async (req: Request, res: Response) => {
+router.delete("/:cartId/products/delete", verifyToken, async (req: Request, res: Response) => {
     try {
-        const { cartId, productId, color, size } = req.params;
+        const { cartId } = req.params;
+        const { productId, color, size } = req.body;
 
         await Cart.findOneAndUpdate(
             {
@@ -66,6 +67,7 @@ router.delete("/:cartId/products/:productId/:color/:size", verifyToken, async (r
         res.status(500).json(e);
     }
 });
+
 
 
 router.get("/find/:userId", verifyToken, async (req: Request, res: Response) => {
