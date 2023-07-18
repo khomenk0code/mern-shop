@@ -83,62 +83,9 @@ const Cart = () => {
         fetchForm();
     }, [cart.total]);
 
-    const handleRemoveFromCart = async (
-        productId: string,
-        color: string,
-        size: string
-    ) => {
-        try {
-            const updatedCart = cart.products.filter(
-                (product: any) =>
-                    product.productId !== productId ||
-                    product.color !== color ||
-                    product.size !== size
-            );
-
-            // await updateCart(updatedCart);
-            dispatch(removeProduct({ productId, color, size }));
-        } catch (error) {
-            throw new Error("Failed to remove product from cart");
-        }
-    };
-
-    const handlePlusQuantity = async (
-        productId: string,
-        color: string,
-        size: string,
-        quantity: number
-    ) => {
-        try {
-
-
-            dispatch(updateQuantity({ productId, color, size, quantity }));
-
-            const formattedProducts = cart.products.map((product) => ({
-                productId: product._id,
-                color: product.color[0],
-                size: product.size[0],
-                quantity: product.quantity,
-            }));
-
-
-           await updateCart(formattedProducts);
-        } catch (error) {
-            throw new Error("Failed to update quantity");
-        }
-    };
-
-    const handleMinusQuantity = async (
-        productId: string,
-        color: string,
-        size: string,
-        quantity: number
-    ) => {
-        try {
-            if (quantity >= 1) {
-
-                dispatch(updateQuantity({ productId, color, size, quantity}));
-
+    useEffect(() => {
+        const updateCartOnServer = async () => {
+            try {
                 const formattedProducts = cart.products.map((product) => ({
                     productId: product._id,
                     color: product.color[0],
@@ -146,10 +93,41 @@ const Cart = () => {
                     quantity: product.quantity,
                 }));
 
-               await updateCart(formattedProducts);
+                await updateCart(formattedProducts);
+            } catch (error) {
+                throw new Error("Failed to update quantity");
             }
-        } catch (error) {
-            throw new Error("Failed to update quantity");
+        };
+        updateCartOnServer();
+    }, [cart]);
+
+
+
+    const handleRemoveFromCart = (
+        productId: string,
+        color: string,
+        size: string
+    ) => {
+        dispatch(removeProduct({ productId, color, size }));
+    };
+
+    const handleIncQuantity = (
+        productId: string,
+        color: string,
+        size: string,
+        quantity: number
+    ) => {
+        dispatch(updateQuantity({ productId, color, size, quantity }));
+    };
+
+    const handleDecQuantity = (
+        productId: string,
+        color: string,
+        size: string,
+        quantity: number
+    ) => {
+        if (cart.quantity > cart.products.length) {
+            dispatch(updateQuantity({ productId, color, size, quantity }));
         }
     };
 
@@ -157,7 +135,6 @@ const Cart = () => {
 
     const handleClearCart = async () => {
         try {
-            await updateCart([]);
             dispatch(clearCart());
         } catch (error) {
             throw new Error("Failed to clear cart");
@@ -168,6 +145,7 @@ const Cart = () => {
     const handleImageLoad = () => {
         setImageLoaded(true);
     };
+
 
     return (
         <Container>
@@ -258,7 +236,7 @@ const Cart = () => {
                                             <ProductAmountContainer>
                                                 <Add
                                                     onClick={() =>
-                                                        handlePlusQuantity(
+                                                        handleIncQuantity(
                                                             product._id,
                                                             product.color[0],
                                                             product.size[0],
@@ -271,7 +249,7 @@ const Cart = () => {
                                                 </ProductAmount>
                                                 <Remove
                                                     onClick={() =>
-                                                        handleMinusQuantity(
+                                                        handleDecQuantity(
                                                             product._id,
                                                             product.color[0],
                                                             product.size[0],
