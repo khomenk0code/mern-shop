@@ -3,8 +3,13 @@ const router = require("express").Router()
 const {verifyToken, verifyTokenAndAdmin} = require("../middleware/verifyToken")
 const Cart = require("../models/cart");
 
+interface AuthReq extends Request {
+    user: {
+        id: string;
+    };
+}
 
-router.post("/", verifyToken, async (req: Request, res: Response) => {
+router.post("/1", verifyToken, async (req: Request, res: Response) => {
     const newCart: any  = new Cart(req.body)
 
     try {
@@ -15,6 +20,23 @@ router.post("/", verifyToken, async (req: Request, res: Response) => {
     }
 })
 
+
+router.post("/", verifyToken, async (req: AuthReq, res: Response) => {
+    try {
+        const userId = req.user.id;
+        const newCart = req.body;
+
+        const updatedCart = await Cart.findOneAndUpdate(
+            { userId },
+            { products: newCart },
+            { new: true, upsert: true }
+        );
+
+        res.status(200).json(updatedCart);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+});
 
 
 router.put("/:cartId/quantity/update", verifyToken, async (req: Request, res: Response) => {
@@ -43,12 +65,12 @@ router.put("/:cartId/quantity/update", verifyToken, async (req: Request, res: Re
     }
 });
 
-router.put("/:cartId/add", async (req, res) => {
+router.put("/add", verifyToken, async (req, res) => {
     try {
-        const cartId = req.params.cartId;
+        const userId = req.user.userId;
         const { productId, color, size, quantity } = req.body;
 
-        const existingCart = await Cart.findById(cartId);
+        const existingCart = await Cart.findOne({ userId });
 
         if (existingCart) {
             existingCart.products.push({
