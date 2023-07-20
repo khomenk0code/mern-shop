@@ -333,130 +333,48 @@ const Wishlist: React.FC = () => {
                                                     {product.title}
                                                 </AddToCartTitle>
                                                 <FilterContainerWishlist>
-                                                    {product?.color?.filter(
-                                                        (c: any) =>
-                                                            validColors.includes(
-                                                                c.toLowerCase()
-                                                            )
-                                                    ).length !== 0 ? (
+                                                    {product?.color?.filter((c: any) => validColors.includes(c.toLowerCase())).length !== 0 ? (
                                                         <Filter>
                                                             <FilterTitleWishlist>
-                                                                {product?.color
-                                                                    ?.length <=
-                                                                1
-                                                                    ? "Color: "
-                                                                    : "Colors: "}
+                                                                {product?.color?.length <= 1 ? "Color: " : "Colors: "}
                                                             </FilterTitleWishlist>
-                                                            {product?.color
-                                                                .filter(
-                                                                    (c: any) =>
-                                                                        validColors.includes(
-                                                                            c.toLowerCase()
-                                                                        )
-                                                                )
-                                                                .map(
-                                                                    (
-                                                                        c: any
-                                                                    ) => (
-                                                                        <FilterColorWishlist
-                                                                            color={
-                                                                                c
-                                                                            }
-                                                                            key={
-                                                                                c
-                                                                            }
-                                                                            onClick={() =>
-                                                                                handleColorSelection(
-                                                                                    product._id,
-                                                                                    c
-                                                                                )
-                                                                            }
-                                                                            isSelected={
-                                                                                selectedColors[
-                                                                                    product
-                                                                                        ._id
-                                                                                ] ===
-                                                                                c
-                                                                            }
-                                                                        />
-                                                                    )
-                                                                )}
+                                                            {product?.color?.filter((c: any) => validColors.includes(c.toLowerCase())).map((c: any) => (
+                                                                <FilterColorWishlist
+                                                                    color={c}
+                                                                    key={c}
+                                                                    onClick={() => handleColorSelection(product._id, c)}
+                                                                    isSelected={selectedColors[product._id] === c}
+                                                                />
+                                                            ))}
                                                         </Filter>
                                                     ) : null}
 
-                                                    {product?.size?.length !==
-                                                    0 ? (
+                                                    {product?.size?.length !== 0 ? (
                                                         <FilterWishlist>
-                                                            <FilterTitleWishlist>
-                                                                Size:{" "}
-                                                            </FilterTitleWishlist>
+                                                            <FilterTitleWishlist>Size: </FilterTitleWishlist>
                                                             <FilterSizeWishlist
                                                                 onChange={(e) =>
-                                                                    setSize(
-                                                                        (
-                                                                            prevSize: any
-                                                                        ) => ({
-                                                                            ...prevSize,
-                                                                            [product._id]:
-                                                                                e
-                                                                                    .target
-                                                                                    .value,
-                                                                        })
-                                                                    )
+                                                                    setSize((prevSize: any) => ({
+                                                                        ...prevSize,
+                                                                        [product._id]: e.target.value,
+                                                                    }))
                                                                 }
-                                                                value={
-                                                                    size[
-                                                                        product
-                                                                            ._id
-                                                                    ] ||
-                                                                    product
-                                                                        ?.size[0]
-                                                                }
+                                                                value={size[product?._id] || product?.size[0]}
                                                             >
                                                                 {product?.size
-                                                                    .sort(
-                                                                        (
-                                                                            a: any,
-                                                                            b: any
-                                                                        ) => {
-                                                                            const sizesOrder =
-                                                                                [
-                                                                                    "XS",
-                                                                                    "S",
-                                                                                    "M",
-                                                                                    "L",
-                                                                                    "XL",
-                                                                                    "XXL",
-                                                                                ];
-                                                                            return (
-                                                                                sizesOrder.indexOf(
-                                                                                    a
-                                                                                ) -
-                                                                                sizesOrder.indexOf(
-                                                                                    b
-                                                                                )
-                                                                            );
-                                                                        }
-                                                                    )
-                                                                    .map(
-                                                                        (
-                                                                            s: any
-                                                                        ) => (
-                                                                            <option
-                                                                                key={
-                                                                                    s
-                                                                                }
-                                                                            >
-                                                                                {
-                                                                                    s
-                                                                                }
-                                                                            </option>
-                                                                        )
-                                                                    )}
+                                                                    .slice()
+                                                                    .sort((a: any, b: any) => {
+                                                                        const sizesOrder = ["XS", "S", "M", "L", "XL", "XXL"];
+                                                                        return sizesOrder.indexOf(a) - sizesOrder.indexOf(b);
+                                                                    })
+                                                                    .map((s: any) => (
+                                                                        <option key={s}>{s}</option>
+                                                                    ))}
                                                             </FilterSizeWishlist>
                                                         </FilterWishlist>
                                                     ) : null}
-                                                </FilterContainerWishlist>
+                                                </FilterContainerWishlist>;
+
                                             </div>
                                             <PriceToCart>
                                                 {" "}
