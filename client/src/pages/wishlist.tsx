@@ -85,7 +85,6 @@ const Wishlist: React.FC = () => {
         try {
             if (selectedProducts.length === wishlist.length) {
                 dispatch(clearWishlist());
-                console.log(userId);
                 await removeFromWishlistAll(userId);
                 setSelectedProducts([]);
             } else {
