@@ -95,7 +95,7 @@ const Cart = () => {
 
                 await updateCart(formattedProducts);
             } catch (error) {
-                throw new Error("Failed to update quantity");
+                console.error("Failed to update cart:", error);
             }
         };
         updateCartOnServer();
