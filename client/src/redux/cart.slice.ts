@@ -121,7 +121,10 @@ const cartSlice = createSlice({
             return state;
         },
 
-        updateQuantity: (state, action: PayloadAction<UpdateProductQuantityPayload>) => {
+        updateQuantity: (
+            state,
+            action: PayloadAction<UpdateProductQuantityPayload>
+        ) => {
             const { productId, color, size, quantity } = action.payload;
             const updatedProducts = state.products.map((product) => {
                 if (isMatchingProduct(product, productId, color, size)) {
@@ -134,12 +137,22 @@ const cartSlice = createSlice({
                 return product;
             });
 
+            const updatedQuantity = updatedProducts.reduce(
+                (acc, product) => acc + product.quantity,
+                0
+            );
+            const updatedTotal = updatedProducts.reduce(
+                (acc, product) => acc + product.price * product.quantity,
+                0
+            );
+
             return {
                 ...state,
                 products: updatedProducts,
+                quantity: updatedQuantity,
+                total: updatedTotal,
             };
         },
-
         clearCart: () => initialState,
     },
 });
