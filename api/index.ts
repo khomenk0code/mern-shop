@@ -53,6 +53,8 @@ io.use((socket, next) => {
   });
 });
 
+app.set("socketServer", io);
+
 io.on("connection", (socket) => {
   console.log("A client connected");
 

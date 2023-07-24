@@ -21,7 +21,6 @@ router.post("/", verifyToken, async (req: AuthReq, res: Response) => {
         const updatedCart = await Cart.findOneAndUpdate({ userId }, { products: newCart }, options);
         const io = req.app.get("socketServer").io;
 
-
         io.emit(`cartUpdated:${userId}`, updatedCart);
         console.log(`Emitted cartUpdated event for user ${userId}`);
         res.status(200).json(updatedCart);
