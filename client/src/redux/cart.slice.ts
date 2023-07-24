@@ -30,7 +30,7 @@ const isMatchingProduct = (
     product: IProduct,
     productId: string,
     color?: string,
-    size?: string
+    size?: string,
 ): boolean => {
     return (
         product._id === productId &&
@@ -51,8 +51,8 @@ const cartSlice = createSlice({
                         p,
                         product._id,
                         product.color[0],
-                        product.size[0]
-                    )
+                        product.size[0],
+                    ),
                 );
                 if (existingProductIndex !== -1) {
                     const existingProduct = updated[existingProductIndex];
@@ -74,14 +74,14 @@ const cartSlice = createSlice({
                 state.quantity +
                 productsToAdd.reduce(
                     (acc, product) => acc + product.quantity,
-                    0
+                    0,
                 );
 
             const updatedTotal =
                 state.total +
                 productsToAdd.reduce(
                     (acc, product) => acc + product.price * product.quantity,
-                    0
+                    0,
                 );
 
             return {
@@ -95,7 +95,7 @@ const cartSlice = createSlice({
         removeProduct: (state, action: PayloadAction<RemoveProductPayload>) => {
             const { productId, color, size } = action.payload;
             const productIndex = state.products.findIndex((product) =>
-                isMatchingProduct(product, productId, color, size)
+                isMatchingProduct(product, productId, color, size),
             );
 
             if (productIndex !== -1) {
@@ -123,7 +123,7 @@ const cartSlice = createSlice({
 
         updateQuantity: (
             state,
-            action: PayloadAction<UpdateProductQuantityPayload>
+            action: PayloadAction<UpdateProductQuantityPayload>,
         ) => {
             const { productId, color, size, quantity } = action.payload;
             const updatedProducts = state.products.map((product) => {
@@ -139,11 +139,11 @@ const cartSlice = createSlice({
 
             const updatedQuantity = updatedProducts.reduce(
                 (acc, product) => acc + product.quantity,
-                0
+                0,
             );
             const updatedTotal = updatedProducts.reduce(
                 (acc, product) => acc + product.price * product.quantity,
-                0
+                0,
             );
 
             return {
@@ -153,11 +153,26 @@ const cartSlice = createSlice({
                 total: updatedTotal,
             };
         },
+        updateCartViaWebSocket: (state, action: PayloadAction<CartState>) => {
+            const updatedCart = action.payload;
+            return {
+                ...state,
+                products: updatedCart.products,
+                quantity: updatedCart.quantity,
+                total: updatedCart.total,
+            };
+        },
+
         clearCart: () => initialState,
     },
 });
 
-export const { addProducts, removeProduct, updateQuantity, clearCart } =
+export const {
+    addProducts,
+    removeProduct,
+    updateQuantity,
+    updateCartViaWebSocket,
+    clearCart } =
     cartSlice.actions;
 
 export default cartSlice.reducer;

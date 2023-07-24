@@ -3,7 +3,6 @@ import { Server } from "socket.io";
 import authenticateSocket from "./middleware/verify-token.socket";
 
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRouter = require("./routes/user");
@@ -16,8 +15,13 @@ const paymentRouter = require("./routes/payment");
 const configRouter = require("./routes/firebase-config");
 const cors = require("cors");
 
+const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: ["https://mern-shop-client.vercel.app/", "https://mern-shop-admin.vercel.app/", "http://localhost:3006/"]
+  }
+});
 
 dotenv.config();
 
@@ -41,10 +45,7 @@ io.use((socket, next) => {
 io.on("connection", (socket) => {
   console.log("A client connected");
 
-  socket.on("someEvent", (data) => {
-    console.log("socket data", data);
-    console.log(`Received event from user ${socket.user?._id}`);
-  });
+
   socket.on("disconnect", () => {
     console.log("A client disconnected");
   });

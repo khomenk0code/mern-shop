@@ -4,13 +4,14 @@ import { mobile } from "../utils/responsive";
 import { Add, Announcement, DeleteOutline, Remove } from "@mui/icons-material";
 import FooterComponent from "../components/footer.component";
 import Navbar from "../components/header.component";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { IProduct } from "../components/products.component";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
-import { clearCart, removeProduct, updateQuantity } from "../redux/cart.slice";
+import { clearCart, removeProduct, updateCartViaWebSocket, updateQuantity } from "../redux/cart.slice";
 import { Link } from "react-router-dom";
 import cssColorNames from "css-color-names";
 import { updateCart } from "../redux/api.calls";
+import { io } from "socket.io-client";
 
 type StyledTypesProps = {
     types?: "filled" | "total";
@@ -20,12 +21,14 @@ const Cart = () => {
     const [dataValue, setDataValue] = useState("");
     const [signatureValue, setSignatureValue] = useState("");
     const [imageLoaded, setImageLoaded] = useState(false);
-    const [paymentStatus, setPaymentStatus] = useState("");
+
 
     const cart = useAppSelector((state) => state.cart);
     const wishlist = useAppSelector((state) => state.wishlist.products);
     const dispatch = useAppDispatch();
-
+    const user = useAppSelector((state) => state.user.currentUser);
+    const userId = user ? user._id : null;
+    const socket = io("https://mern-shop-api.vercel.app");
 
 
     const validColors = Object.keys(cssColorNames);
@@ -98,9 +101,19 @@ const Cart = () => {
                 console.error("Failed to update cart:", error);
             }
         };
-        updateCartOnServer();
-    }, [cart]);
 
+        updateCartOnServer();
+
+        socket.on(`cartUpdated:${userId}`, (updatedCart) => {
+            console.log("Received updated cart:", updatedCart);
+            dispatch(updateCartViaWebSocket(updatedCart));
+        });
+
+
+        return () => {
+            socket.off(`cartUpdated:${userId}`);
+        };
+    }, [dispatch, socket, userId]);
 
 
     const handleRemoveFromCart = (
@@ -159,7 +172,7 @@ const Cart = () => {
                     <TopButton to="/cabinet/wishlist" types="filled">
                         Your Wishlist ({wishlist.length || 0})
                         <div>
-                            <h1>Status: {paymentStatus}</h1>
+                            <h1>Status: </h1>
                         </div>
                     </TopButton>
                 </Top>
