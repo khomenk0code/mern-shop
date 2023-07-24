@@ -17,9 +17,15 @@ const cors = require("cors");
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: ["https://mern-shop-client.vercel.app/", "https://mern-shop-api.vercel.app/", "https://mern-shop-admin.vercel.app/", "http://localhost:3006/"]
+    origin: [
+      "https://mern-shop-client.vercel.app",
+      "https://mern-shop-api.vercel.app",
+      "https://mern-shop-admin.vercel.app",
+      "http://localhost:3006"
+    ]
   }
 });
 
@@ -65,7 +71,7 @@ app.use("/api/config", configRouter);
 
 app.options("/api/payment", cors());
 
-app.set("socketServer", io);
+
 
 server.listen(() => {
   console.log("Server is running");

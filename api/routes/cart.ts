@@ -1,10 +1,10 @@
 import {Request, Response} from "express";
 const {verifyToken} = require("../middleware/verifyToken")
 const Cart = require("../models/cart");
-const { Server } = require("socket.io");
+
 
 const router = require("express").Router()
-const io = Server();
+
 
 interface AuthReq extends Request {
     user: {
