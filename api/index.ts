@@ -33,11 +33,6 @@ mongoose
   });
 
 
-app.use((req: any, res: any, next: any) => {
-  req.socketServer = { io };
-  next();
-});
-
 io.use((socket, next) => {
   authenticateSocket(socket, (err?: Error) => {
     if (err) {
@@ -71,7 +66,6 @@ app.use("/api/config", configRouter);
 
 app.options("/api/payment", cors());
 
-app.set("socketServer", io);
 
 server.listen(() => {
   console.log("Server is running");
