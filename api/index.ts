@@ -57,7 +57,9 @@ app.set("socketServer", io);
 
 io.on("connection", (socket) => {
   console.log("A client connected");
-
+  socket.on("updateCart", async (formattedProducts) => {
+    console.log(formattedProducts);
+  });
 
   socket.on("disconnect", () => {
     console.log("A client disconnected");

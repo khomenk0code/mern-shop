@@ -12,7 +12,7 @@ interface AuthReq extends Request {
     };
 }
 
-router.post("/", verifyToken, async (req: AuthReq, res: Response) => {
+router.post("/", verifyToken, async (req: any, res: Response) => {
 
     try {
         const userId = req.user.id;

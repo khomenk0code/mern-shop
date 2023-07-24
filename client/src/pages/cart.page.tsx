@@ -97,6 +97,7 @@ const Cart = () => {
                 }));
 
                 await updateCart(formattedProducts);
+                socket.emit("updateCart", formattedProducts);
             } catch (error) {
                 console.error("Failed to update cart:", error);
             }
