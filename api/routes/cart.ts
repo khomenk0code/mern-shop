@@ -17,14 +17,12 @@ router.post("/", verifyToken, async (req: AuthReq, res: Response) => {
     try {
         const userId = req.user.id;
         const newCart = req.body.products;
+        const options: { new: boolean; upsert: true } = { new: true, upsert: true };
+        const updatedCart = await Cart.findOneAndUpdate({ userId }, { products: newCart }, options);
+        const io = req.app.get("socketServer").io;
 
-        const updatedCart = await Cart.findOneAndUpdate(
-            { userId },
-            { products: newCart },
-            { new: true, upsert: true }
-        );
 
-        req.app.get("socketServer").io.emit(`cartUpdated:${userId}`, updatedCart);
+        io.emit(`cartUpdated:${userId}`, updatedCart);
         console.log(`Emitted cartUpdated event for user ${userId}`);
         res.status(200).json(updatedCart);
     } catch (error) {

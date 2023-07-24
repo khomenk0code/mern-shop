@@ -29,6 +29,11 @@ const io = new Server(server, {
   }
 });
 
+app.use((req:any, res:any, next:any) => {
+  req.io = io;
+  next();
+});
+
 dotenv.config();
 
 mongoose
@@ -68,11 +73,11 @@ app.use("/api/orders", ordersRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/payment", paymentRouter);
 app.use("/api/config", configRouter);
-
 app.options("/api/payment", cors());
-
-
 
 server.listen(() => {
   console.log("Server is running");
 });
+
+
+
