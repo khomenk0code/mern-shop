@@ -105,7 +105,7 @@ const Cart = () => {
         updateCartOnServer();
 
         socket.on(`cartUpdated:${userId}`, (updatedCart) => {
-            console.log("Received updated cart:", updatedCart);
+            console.log(`Received cartUpdated event for user ${userId}`);
             dispatch(updateCartViaWebSocket(updatedCart));
         });
 

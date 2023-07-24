@@ -24,8 +24,8 @@ router.post("/", verifyToken, async (req: AuthReq, res: Response) => {
             { new: true, upsert: true }
         );
 
-        io.emit(`cartUpdated:${userId}`, updatedCart);
-
+        req.app.get("socketServer").io.emit(`cartUpdated:${userId}`, updatedCart);
+        console.log(`Emitted cartUpdated event for user ${userId}`);
         res.status(200).json(updatedCart);
     } catch (error) {
         console.error("Error updating cart:", error);
