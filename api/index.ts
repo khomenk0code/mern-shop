@@ -15,6 +15,7 @@ const wishlistRouter = require("./routes/wishlist");
 const paymentRouter = require("./routes/payment");
 const configRouter = require("./routes/firebase-config");
 const cors = require("cors");
+const Cart = require("../models/cart");
 
 const app = express();
 const server = http.createServer(app);
@@ -26,7 +27,8 @@ const io = new Server(server, {
       "https://mern-shop-api.vercel.app",
       "https://mern-shop-admin.vercel.app",
       "http://localhost:3006"
-    ]
+    ],
+    methods: ["GET", "POST"]
   }
 });
 setSocketInstance(io);
@@ -56,10 +58,38 @@ io.use((socket, next) => {
 
 app.set("socketServer", io);
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log("A client connected");
+
+
+  try {
+    const userId = socket.user ? socket.user._id : null;
+    if (userId) {
+      const cart = await Cart.findOne({ userId });
+      socket.emit("cartData", cart.products);
+    }
+  } catch (error) {
+    console.error("Error fetching cart data:", error);
+  }
+
   socket.on("updateCart", async (formattedProducts) => {
-    console.log(formattedProducts);
+
+    try {
+      const userId = socket.user ? socket.user._id : null;
+      if (userId) {
+
+        const updatedCart = await Cart.findOneAndUpdate(
+            { userId },
+            { products: formattedProducts },
+            { new: true, upsert: true }
+        );
+
+        io.emit(`cartUpdated:${userId}`, updatedCart);
+        console.log(`Emitted cartUpdated event for user ${userId}`);
+      }
+    } catch (error) {
+      console.error("Error updating cart:", error);
+    }
   });
 
   socket.on("disconnect", () => {
