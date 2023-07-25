@@ -29,7 +29,6 @@ const Cart = () => {
     const user = useAppSelector((state) => state.user.currentUser);
     const userId = user ? user._id : null;
 
-    const socket = io("https://mern-shop-api.vercel.app");
 
 
     const validColors = Object.keys(cssColorNames);
@@ -99,8 +98,6 @@ const Cart = () => {
 
                 await updateCart(formattedProducts);
 
-                socket.emit("updateCart", formattedProducts);
-
             } catch (error) {
                 console.error("Failed to update cart:", error);
             }
@@ -108,20 +105,7 @@ const Cart = () => {
 
         updateCartOnServer();
 
-        socket.on(`cartUpdated:${userId}`, (updatedCart) => {
-            console.log(`Received cartUpdated event for user ${userId}`);
-            dispatch(updateCartViaWebSocket(updatedCart));
-        });
-
-        socket.on("error", (error) => {
-            console.error("Socket error:", error);
-        });
-
-        return () => {
-            socket.off(`cartUpdated:${userId}`);
-            socket.off("error");
-        };
-    }, [dispatch, socket, userId]);
+    }, [dispatch, userId]);
 
 
     const handleRemoveFromCart = (

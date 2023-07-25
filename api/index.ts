@@ -34,11 +34,6 @@ const io = new Server(server, {
 
 
 
-app.use((req:any, res:any, next:any) => {
-  req.io = io;
-  next();
-});
-
 dotenv.config();
 
 mongoose
@@ -48,68 +43,55 @@ mongoose
     console.log(err);
   });
 
-io.use((socket, next) => {
-  authenticateSocket(socket, (err?: Error) => {
-    if (err) {
-      next(err);
-    } else {
-      next();
-    }
-  });
-});
 
-app.set("socketServer", io);
-setSocketInstance(io);
-
-app.use(cors());
 
 
 io.on("connection", async (socket) => {
   console.log("A client connected");
 
-  try {
-    const userId = socket.user ? socket.user._id : null;
-    if (userId) {
-      const cart = await Cart.findOne({ userId });
-      if (cart) {
-        socket.emit("cartData", cart.products);
-        console.log("Emitted cartData to user:", userId);
-      } else {
-        console.log("Cart not found for user:", userId);
-      }
-    } else {
-      console.log("User not authenticated");
-    }
-  } catch (error) {
-    console.error("Error fetching cart data:", error);
-  }
-
-  socket.on("updateCart", async (formattedProducts) => {
-    try {
-      const userId = socket.user ? socket.user._id : null;
-      if (userId) {
-        const updatedCart = await Cart.findOneAndUpdate(
-            { userId },
-            { products: formattedProducts },
-            { new: true, upsert: true }
-        );
-
-        io.emit(`cartUpdated:${userId}`, updatedCart);
-        console.log(`Emitted cartUpdated event for user ${userId}`);
-      } else {
-        console.log("User not authenticated");
-      }
-    } catch (error) {
-      console.error("Error updating cart:", error);
-    }
-  });
+  // try {
+  //   const userId = socket.user ? socket.user._id : null;
+  //   if (userId) {
+  //     const cart = await Cart.findOne({ userId });
+  //     if (cart) {
+  //       socket.emit("cartData", cart.products);
+  //       console.log("Emitted cartData to user:", userId);
+  //     } else {
+  //       console.log("Cart not found for user:", userId);
+  //     }
+  //   } else {
+  //     console.log("User not authenticated");
+  //   }
+  // } catch (error) {
+  //   console.error("Error fetching cart data:", error);
+  // }
+  //
+  // socket.on("updateCart", async (formattedProducts) => {
+  //   try {
+  //     const userId = socket.user ? socket.user._id : null;
+  //     if (userId) {
+  //       const updatedCart = await Cart.findOneAndUpdate(
+  //           { userId },
+  //           { products: formattedProducts },
+  //           { new: true, upsert: true }
+  //       );
+  //
+  //       io.emit(`cartUpdated:${userId}`, updatedCart);
+  //       console.log(`Emitted cartUpdated event for user ${userId}`);
+  //     } else {
+  //       console.log("User not authenticated");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating cart:", error);
+  //   }
+  // });
 
   socket.on("disconnect", () => {
     console.log("A client disconnected");
   });
 });
 
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRouter);
@@ -122,9 +104,7 @@ app.use("/api/payment", paymentRouter);
 app.use("/api/config", configRouter);
 app.options("/api/payment", cors());
 
-server.listen(() => {
-  console.log("Server is running");
-});
+
 
 
 
