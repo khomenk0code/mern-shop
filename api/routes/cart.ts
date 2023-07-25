@@ -1,6 +1,8 @@
 import {Request, Response} from "express";
+import { getSocketInstance } from "../middleware/socketInstance";
 const {verifyToken} = require("../middleware/verifyToken")
 const Cart = require("../models/cart");
+
 
 
 const router = require("express").Router()
@@ -23,9 +25,13 @@ router.post("/", verifyToken, async (req: any, res: Response) => {
             { new: true, upsert: true }
         );
 
-        const io = req.app.get("socketServer").io;
+        const io = getSocketInstance();
+        if (io) {
+            io.emit(`cartUpdated:${userId}`, updatedCart);
+        } else {
+            console.error("Socket instance is not available!");
+        }
 
-        io.emit(`cartUpdated:${userId}`, updatedCart);
         console.log(`Emitted cartUpdated event for user ${userId}`);
         res.status(200).json(updatedCart);
     } catch (error) {

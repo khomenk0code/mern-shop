@@ -1,6 +1,7 @@
 import * as http from "http";
 import { Server } from "socket.io";
 import authenticateSocket from "./middleware/verify-token.socket";
+import { setSocketInstance } from "./middleware/socketInstance";
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -28,7 +29,7 @@ const io = new Server(server, {
     ]
   }
 });
-
+setSocketInstance(io);
 app.use((req:any, res:any, next:any) => {
   req.io = io;
   next();
