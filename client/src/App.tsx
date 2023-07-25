@@ -24,7 +24,9 @@ const App = () => {
 
     useEffect(() => {
 
-        const socket = io("https://mern-shop-api.vercel.app");
+        const socket = io("https://mern-shop-api.vercel.app", {
+            transports: ["websocket", "polling"]
+        });
         socket.on("connect", () => console.log("Connected to server"))
 
     }, []);
