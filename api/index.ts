@@ -105,6 +105,6 @@ app.use("/api/config", configRouter);
 app.options("/api/payment", cors());
 
 
-
+module.exports = app;
 
 
