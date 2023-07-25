@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
+import { getSocketInstance } from "../middleware/socketInstance";
 const router = require("express").Router();
 const User = require("../models/user");
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
+const Cart = require("../models/cart");
 
 router.post("/register", async (req: Request, res: Response) => {
   //TODO: errors check for other codes 400 300 200
@@ -50,6 +52,14 @@ router.post("/login", async (req: Request, res: Response) => {
     );
 
     const { password, ...others } = user._doc;
+
+    const cart = await Cart.findOne({ userId: user._id });
+
+
+    const io = getSocketInstance();
+    if (io && cart) {
+      io.to(user._id).emit("cartData", cart.products);
+    }
     res.status(200).json({ ...others, accessToken });
   } catch (e) {
     res.status(500).json(e);
