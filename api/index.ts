@@ -98,6 +98,9 @@ app.use("/api/payment", paymentRouter);
 app.use("/api/config", configRouter);
 app.options("/api/payment", cors());
 
+server.listen(() => {
+  console.log("Server is running");
+});
 
 module.exports = app;
 
