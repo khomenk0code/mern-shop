@@ -31,7 +31,9 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
   }
 });
+
 setSocketInstance(io);
+
 app.use((req:any, res:any, next:any) => {
   req.io = io;
   next();
@@ -58,26 +60,32 @@ io.use((socket, next) => {
 
 app.set("socketServer", io);
 
+
+
 io.on("connection", async (socket) => {
   console.log("A client connected");
-
 
   try {
     const userId = socket.user ? socket.user._id : null;
     if (userId) {
       const cart = await Cart.findOne({ userId });
-      socket.emit("cartData", cart.products);
+      if (cart) {
+        socket.emit("cartData", cart.products);
+        console.log("Emitted cartData to user:", userId);
+      } else {
+        console.log("Cart not found for user:", userId);
+      }
+    } else {
+      console.log("User not authenticated");
     }
   } catch (error) {
     console.error("Error fetching cart data:", error);
   }
 
   socket.on("updateCart", async (formattedProducts) => {
-
     try {
       const userId = socket.user ? socket.user._id : null;
       if (userId) {
-
         const updatedCart = await Cart.findOneAndUpdate(
             { userId },
             { products: formattedProducts },
@@ -86,6 +94,8 @@ io.on("connection", async (socket) => {
 
         io.emit(`cartUpdated:${userId}`, updatedCart);
         console.log(`Emitted cartUpdated event for user ${userId}`);
+      } else {
+        console.log("User not authenticated");
       }
     } catch (error) {
       console.error("Error updating cart:", error);
@@ -96,6 +106,7 @@ io.on("connection", async (socket) => {
     console.log("A client disconnected");
   });
 });
+
 
 app.use(cors());
 app.use(express.json());
