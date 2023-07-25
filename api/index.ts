@@ -15,7 +15,7 @@ const wishlistRouter = require("./routes/wishlist");
 const paymentRouter = require("./routes/payment");
 const configRouter = require("./routes/firebase-config");
 const cors = require("cors");
-const Cart = require("../models/cart");
+const Cart = require("../api/models/cart");
 
 const app = express();
 const server = http.createServer(app);
