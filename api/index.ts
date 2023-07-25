@@ -32,7 +32,8 @@ const io = new Server(server, {
   }
 });
 
-setSocketInstance(io);
+app.use(cors());
+
 
 app.use((req:any, res:any, next:any) => {
   req.io = io;
@@ -59,6 +60,7 @@ io.use((socket, next) => {
 });
 
 app.set("socketServer", io);
+setSocketInstance(io);
 
 
 
@@ -108,7 +110,6 @@ io.on("connection", async (socket) => {
 });
 
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRouter);
