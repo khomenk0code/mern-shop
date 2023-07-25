@@ -32,7 +32,6 @@ const io = new Server(server, {
   }
 });
 
-app.use(cors());
 
 
 app.use((req:any, res:any, next:any) => {
@@ -62,6 +61,7 @@ io.use((socket, next) => {
 app.set("socketServer", io);
 setSocketInstance(io);
 
+app.use(cors());
 
 
 io.on("connection", async (socket) => {
