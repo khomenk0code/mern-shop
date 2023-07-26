@@ -24,9 +24,10 @@ router.post("/", verifyToken, async (req: any, res: Response) => {
     description: JSON.stringify(cart),
     order_id: `${req.user.id}_1`,
     version: "3",
-    result_url: "https://mern-shop-client.vercel.app/cart",
+    result_url: "https://mern-shop-client.vercel.app/cart?result=success",
     server_url: "https://mern-shop-api.vercel.app/api/payment/liqpay-callback",
   });
+
   console.log(req.body);
   res.send(order);
 });

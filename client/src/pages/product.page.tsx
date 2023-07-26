@@ -20,7 +20,7 @@ import {
     removeProductWishlist,
 } from "../redux/wishlist.slice";
 import { addToWishlist, removeFromWishlist } from "../redux/api.calls";
-import { Icon } from "@mui/material";
+import { User } from "../redux/user.slice";
 
 export interface FilterColorProps {
     color: string;
@@ -38,8 +38,9 @@ const Product: React.FC = () => {
     const [showNotification, setShowNotification] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [liked, setLiked] = useState(false);
+
     const wishlistProducts = useAppSelector((state) => state.wishlist.products);
-    const user: any = useAppSelector((state) => state.user.currentUser);
+    const user: User | null = useAppSelector((state) => state.user.currentUser);
     const userId = user ? user._id : null;
 
     const dispatch = useDispatch();

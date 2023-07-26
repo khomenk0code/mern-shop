@@ -94,32 +94,17 @@ export const removeFromWishlistAll = async (userId: any) => {
     }
 };
 
-export const getWishlist = async (userId: any) => {
+export const updateCart = async (products: any) => {
     try {
-        const res = await userRequest.get(`/wishlist/find/${userId}`);
+        const newCart = {
+            products,
+        };
+
+        const res = await userRequest.post("/cart", newCart);
         return res.data;
-    } catch (error) {
-        throw new Error("Failed to fetch wishlist");
-    }
-};
-
-
-
-export const updateCart = async ( products: any) => {
-    try {
-
-            const newCart = {
-                products,
-            };
-
-            const res = await userRequest.post("/cart", newCart);
-            return res.data;
-
     } catch (error) {
         throw new Error("Failed to update cart");
     }
 };
-
-
 
 export default login;

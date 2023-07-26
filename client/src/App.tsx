@@ -4,7 +4,7 @@ import {
     Route,
     Routes,
 } from "react-router-dom";
-import React, { useEffect } from "react";
+import React from "react";
 import Home from "./pages/home.page";
 import ProductList from "./pages/product-list.page";
 import Product from "./pages/product.page";
@@ -17,7 +17,6 @@ import Aside from "./components/aside.component";
 import Header from "./components/header.component";
 import Wishlist from "./pages/wishlist";
 import ScrollToTop from "./components/scroll-to-top";
-
 
 const App = () => {
     const user = useAppSelector((state) => state.user.currentUser);

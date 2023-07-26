@@ -4,7 +4,6 @@ import { mobile } from "../utils/responsive";
 import { Add, Announcement, DeleteOutline, Remove } from "@mui/icons-material";
 import FooterComponent from "../components/footer.component";
 import Navbar from "../components/header.component";
-import axios from "axios";
 import { IProduct } from "../components/products.component";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 import { clearCart, removeProduct, updateQuantity } from "../redux/cart.slice";
@@ -13,38 +12,34 @@ import cssColorNames from "css-color-names";
 import { updateCart } from "../redux/api.calls";
 import { userRequest } from "../utils/requestMethods";
 
-
 type StyledTypesProps = {
     types?: "filled" | "total";
 };
 
 const Cart = () => {
-    const [dataValue, setDataValue] = useState("");
-    const [signatureValue, setSignatureValue] = useState("");
-    const [imageLoaded, setImageLoaded] = useState(false);
+    const [dataValue, setDataValue] = useState<string>("");
+    const [signatureValue, setSignatureValue] = useState<string>("");
+    const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
 
+    const dispatch = useAppDispatch();
     const cart = useAppSelector((state) => state.cart);
     const wishlist = useAppSelector((state) => state.wishlist.products);
-    const dispatch = useAppDispatch();
     const user = useAppSelector((state) => state.user.currentUser);
+
     const userId = user ? user._id : null;
 
 
-
     const validColors = Object.keys(cssColorNames);
-    const hasValidColors: any = [];
+    const hasValidColors: boolean[] = [];
+
     cart.products.forEach((product, index) => {
         const validColorCount = product.color.filter((c) =>
             validColors.includes(c.toLowerCase())
         ).length;
-
         hasValidColors[index] = validColorCount !== 0;
     });
 
-    const axiosClient = axios.create({
-        baseURL: "https://mern-shop-api.vercel.app/api",
-    });
 
     useEffect(() => {
         const fetchForm = async () => {
@@ -98,16 +93,13 @@ const Cart = () => {
                 }));
 
                 await updateCart(formattedProducts);
-
             } catch (error) {
                 console.error("Failed to update cart:", error);
             }
         };
 
         updateCartOnServer();
-
     }, [dispatch, userId]);
-
 
     const handleRemoveFromCart = (
         productId: string,
@@ -137,8 +129,6 @@ const Cart = () => {
         }
     };
 
-
-
     const handleClearCart = async () => {
         try {
             dispatch(clearCart());
@@ -147,11 +137,9 @@ const Cart = () => {
         }
     };
 
-
     const handleImageLoad = () => {
         setImageLoaded(true);
     };
-
 
     return (
         <Container>
