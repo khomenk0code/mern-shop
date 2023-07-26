@@ -11,6 +11,7 @@ import { clearCart, removeProduct, updateQuantity } from "../redux/cart.slice";
 import { Link } from "react-router-dom";
 import cssColorNames from "css-color-names";
 import { updateCart } from "../redux/api.calls";
+import { userRequest } from "../utils/requestMethods";
 
 
 type StyledTypesProps = {
@@ -49,7 +50,7 @@ const Cart = () => {
         const fetchForm = async () => {
             const total = cart.total || "0";
             try {
-                const response = await axiosClient.post(
+                const response = await userRequest.post(
                     "/payment",
                     {
                         amount: total,

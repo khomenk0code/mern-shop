@@ -1,21 +1,27 @@
 import { Request, Response } from "express";
 import crypto from "crypto";
-
+const Cart = require("../models/cart");
 require("dotenv").config();
 const router = require("express").Router();
 const LiqPay = require("./liqpay");
+const {verifyToken} = require("../middleware/verifyToken")
 
 const liqpay = new LiqPay(
   process.env.LIQPAY_PUBLIC_KEY,
   process.env.LIQPAY_PRIVATE_KEY,
 );
 
-router.post("/", async (req: any, res: Response) => {
-  const order = liqpay.cnb_form({
+router.post("/", verifyToken, async (req: any, res: Response) => {
+
+    const cart = await Cart.findOne(
+        { userId: req.user.id }
+    );
+
+    const order = liqpay.cnb_form({
     action: "pay",
     amount: req.body.amount,
     currency: "USD",
-    description: "Оплата товара",
+    description: JSON.stringify(cart),
     order_id: `${req.user.id}_1`,
     version: "3",
     result_url: "https://mern-shop-client.vercel.app/cart",
