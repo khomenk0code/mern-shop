@@ -153,15 +153,6 @@ const cartSlice = createSlice({
                 total: updatedTotal,
             };
         },
-        updateCartViaWebSocket: (state, action: PayloadAction<CartState>) => {
-            const updatedCart = action.payload;
-            return {
-                ...state,
-                products: updatedCart.products,
-                quantity: updatedCart.quantity,
-                total: updatedCart.total,
-            };
-        },
 
         clearCart: () => initialState,
     },
@@ -171,7 +162,6 @@ export const {
     addProducts,
     removeProduct,
     updateQuantity,
-    updateCartViaWebSocket,
     clearCart } =
     cartSlice.actions;
 

@@ -7,11 +7,11 @@ import Navbar from "../components/header.component";
 import axios from "axios";
 import { IProduct } from "../components/products.component";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
-import { clearCart, removeProduct, updateCartViaWebSocket, updateQuantity } from "../redux/cart.slice";
+import { clearCart, removeProduct, updateQuantity } from "../redux/cart.slice";
 import { Link } from "react-router-dom";
 import cssColorNames from "css-color-names";
 import { updateCart } from "../redux/api.calls";
-import { io } from "socket.io-client";
+
 
 type StyledTypesProps = {
     types?: "filled" | "total";

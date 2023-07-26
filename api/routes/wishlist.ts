@@ -28,16 +28,13 @@ router.put("/:id", verifyToken, async (req: Request, res: Response) => {
     if (wishlist) {
       const existingProductIndex = wishlist.productId.indexOf(productId);
       if (existingProductIndex === -1) {
-        // Если продукт еще не существует в вишлисте, добавляем его
         wishlist.productId.push(productId);
         const updatedWishlist = await wishlist.save();
         res.status(200).json(updatedWishlist);
       } else {
-        // Если продукт уже существует в вишлисте, возвращаем текущий вишлист без изменений
         res.status(200).json(wishlist);
       }
     } else {
-      // Вишлист не найден
       res.status(404).json({ message: "Wishlist not found" });
     }
   } catch (e) {

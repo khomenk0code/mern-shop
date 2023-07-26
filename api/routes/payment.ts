@@ -10,17 +10,18 @@ const liqpay = new LiqPay(
   process.env.LIQPAY_PRIVATE_KEY,
 );
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", async (req: any, res: Response) => {
   const order = liqpay.cnb_form({
     action: "pay",
     amount: req.body.amount,
     currency: "USD",
-    description: "description text",
-    order_id: req.body.tokenId,
+    description: "Оплата товара",
+    order_id: `${req.user.id}_1`,
     version: "3",
     result_url: "https://mern-shop-client.vercel.app/cart",
     server_url: "https://mern-shop-api.vercel.app/api/payment/liqpay-callback",
   });
+  console.log(req.body);
   res.send(order);
 });
 
@@ -43,14 +44,19 @@ router.post("/liqpay-callback", async (req, res) => {
     process.env.LIQPAY_PRIVATE_KEY,
   );
 
-  if (isValidSignature) {
-    const decodedData = Buffer.from(data, "base64").toString("utf-8");
-    const paymentInfo = JSON.parse(decodedData);
-
-    res.status(200).json({ status: "success", paymentInfo });
-  } else {
+  if (!isValidSignature) {
     res.status(403).json({ error: "Invalid signature" });
+    return;
   }
+    res.status(200).json({ status: "success" });
+
+  const decodedData = Buffer.from(data, "base64").toString("utf-8");
+  const paymentInfo = JSON.parse(decodedData);
+  const userId = paymentInfo.order_id.split("_")[0]
+    console.log("paymentInfo", paymentInfo);
+    console.log("userId", userId);
+
+
 });
 
 router.get("/get-order/:order_id", async (req, res) => {
