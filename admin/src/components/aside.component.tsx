@@ -19,7 +19,7 @@ import {
 } from "@mui/icons-material";
 
 const Sidebar: React.FC = () => {
-    const [hideTitles, setHideTitles] = useState(false);
+    const [hideTitles, setHideTitles] = useState<boolean>(false);
 
     const handleToggleTitles = () => {
         setHideTitles(!hideTitles);

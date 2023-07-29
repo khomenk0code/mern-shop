@@ -103,8 +103,8 @@ const FeaturedInfo: React.FC = () => {
                         </LoaderContainer>
                     ) : (
                         <FeaturedProductsList>
-                            {productDetails.map((product: any) => (
-                                <FeaturedProductName key={product?._id}>
+                            {productDetails.map((product: any, index) => (
+                                <FeaturedProductName key={index}>
                                     {product ? (
                                         <>
                                             {product.title}

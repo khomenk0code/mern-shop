@@ -20,12 +20,7 @@ export interface ChartProps<T extends ChartData> {
     grid?: boolean;
 }
 
-const Chart = <T extends ChartData>({
-    title,
-    data,
-    dataKey,
-    grid,
-}: ChartProps<ChartData>) => {
+const Chart = ({ title, data, dataKey, grid }: ChartProps<ChartData>) => {
     return (
         <ChartContainer>
             <ChartTitle>{title}</ChartTitle>

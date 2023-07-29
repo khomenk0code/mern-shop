@@ -11,8 +11,13 @@ interface UserData {
     total: number;
 }
 
+interface UserStats {
+    name: string;
+    activeUsers: number;
+}
+
 const Home: React.FC = () => {
-    const [userStats, setUserStats] = useState<any[]>([]);
+    const [userStats, setUserStats] = useState<UserStats[]>([]);
 
     const MONTHS = useMemo(
         () => [
@@ -40,7 +45,7 @@ const Home: React.FC = () => {
                 res.data.map((item: UserData) => {
                     setUserStats((prev) => [
                         ...prev,
-                        { name: MONTHS[item._id - 1], ActiveUsers: item.total },
+                        { name: MONTHS[item._id - 1], activeUsers: item.total },
                     ]);
                 });
             } catch (e) {

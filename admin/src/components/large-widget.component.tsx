@@ -3,24 +3,22 @@ import styled, { css } from "styled-components";
 import { userRequest } from "../utils/requestMethods";
 import { Users } from "./small-widget.component";
 
-type ButtonProps = {
-    type: string;
-};
-
 interface OrderProduct {
     productId: string;
     quantity: number;
 }
 
-interface OrderAddress {}
+interface ButtonContainerProps {
+    buttonType: "approved" | "declined" | "pending";
+}
 
 interface Order {
-    _id: any;
+    _id: string;
     userId: string;
     products: OrderProduct[];
     amount: number;
-    address: OrderAddress;
-    status: string;
+    address: {};
+    status: "approved" | "declined" | "pending";
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -61,8 +59,12 @@ const LargeWidget: React.FC = () => {
         return DateFormat.replace(",", "");
     };
 
-    const Button = ({ type }: ButtonProps) => {
-        return <ButtonContainer type={type}>{type}</ButtonContainer>;
+    const Button = ({ buttonType }: ButtonContainerProps) => {
+        return (
+            <ButtonContainer buttonType={buttonType}>
+                {buttonType}
+            </ButtonContainer>
+        );
     };
 
     return (
@@ -100,7 +102,7 @@ const LargeWidget: React.FC = () => {
                                 <TableCell>${order.amount}</TableCell>
                                 <TableCell>
                                     <Status>
-                                        <Button type={order.status} />
+                                        <Button buttonType={order.status} />
                                     </Status>
                                 </TableCell>
                             </tr>
@@ -155,27 +157,27 @@ const Name = styled.span``;
 
 const Status = styled.div``;
 
-const ButtonContainer = styled.button<any>`
+const ButtonContainer = styled.button<ButtonContainerProps>`
     padding: 5px 7px;
     border: none;
     border-radius: 10px;
 
-    ${(props) =>
-        props.type === "approved" &&
+    ${(props: ButtonContainerProps) =>
+        props.buttonType === "approved" &&
         css`
             background-color: #e5faf2;
             color: #3bb077;
         `}
 
-    ${(props) =>
-        props.type === "declined" &&
+    ${(props: ButtonContainerProps) =>
+        props.buttonType === "declined" &&
         css`
             background-color: #fff0f1;
             color: #d95087;
         `}
 
-  ${(props) =>
-        props.type === "pending" &&
+  ${(props: ButtonContainerProps) =>
+        props.buttonType === "pending" &&
         css`
             background-color: #ebf1fe;
             color: #2a7ade;

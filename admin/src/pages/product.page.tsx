@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import React, { useEffect, useMemo, useState } from "react";
-import Chart, { ChartData } from "../components/chart.component";
+import Chart from "../components/chart.component";
 import { CheckCircle, CloudUpload, Error } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
 import { getProducts, updateProduct } from "../redux/api.calls";
@@ -16,10 +16,6 @@ import {
 } from "@mui/material";
 import handleImageChange from "../utils/uploadImg.helper";
 import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
-
-export interface ProductData extends ChartData {
-    Sales: number;
-}
 
 interface ProductStatsData {
     _id: number;
@@ -37,6 +33,8 @@ const Product = () => {
     const [fullSizeImgUrl, setFullSizeImgUrl] = useState<string>("");
     const [isProductUpdated, setIsProductSaved] = useState(false);
     const [isError, setIsError] = useState(false);
+
+    console.log(productStats);
 
     const firebaseConfig = useFirebaseConfig();
 
@@ -78,12 +76,14 @@ const Product = () => {
                         return a._id - b._id;
                     }
                 );
-                sortedRes.map((item: ProductStatsData) => {
-                    setProductStats((prev: any) => [
-                        ...prev,
-                        { name: MONTHS[item._id - 1], Sales: item.total },
-                    ]);
-                });
+                const updatedStats = sortedRes.map(
+                    (item: ProductStatsData) => ({
+                        name: MONTHS[item._id - 1],
+                        Sales: item.total,
+                    })
+                );
+
+                setProductStats(updatedStats);
             } catch (e) {
                 console.error(e);
             }
@@ -109,7 +109,9 @@ const Product = () => {
         }
     };
 
-    const handleChange = (e: any) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target;
         setInputs((prev) => ({
             ...prev,

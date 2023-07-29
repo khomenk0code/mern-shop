@@ -14,8 +14,6 @@ let TOKEN = localStorageItem
           ?.accessToken || ""
     : "";
 
-
-
 export const publicRequest = axios.create({
     baseURL: BASE_URL,
 });

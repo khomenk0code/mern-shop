@@ -37,7 +37,9 @@ const NewProduct = () => {
         }
     };
 
-    const handleChange = (e: any) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+    ) => {
         const { name, value } = e.target;
         setInputs((prev) => ({
             ...prev,
@@ -47,8 +49,6 @@ const NewProduct = () => {
                     : value,
         }));
     };
-
-    // ...
 
     const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
@@ -74,7 +74,7 @@ const NewProduct = () => {
             size: selectedSizes,
             altImg: lightweightImgUrl,
         };
-        console.log("Product:", product); // Check the console output
+        console.log("Product:", product);
         try {
             const savedProduct = await addProduct(product, dispatch);
             console.log("Product saved", savedProduct);

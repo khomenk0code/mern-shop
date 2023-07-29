@@ -3,10 +3,7 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
-import {
-    deleteUser,
-    getUsers,
-} from "../redux/api.calls";
+import { deleteUser, getUsers } from "../redux/api.calls";
 import {
     ConfirmationButton,
     ConfirmationButtons,
@@ -18,6 +15,7 @@ import {
     ProductListImg,
     ProductListItem,
 } from "./product-list.page";
+import { GridRenderCellParams } from "@mui/x-data-grid/models/params/gridCellParams";
 
 const UserList = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -68,7 +66,7 @@ const UserList = () => {
             headerName: "User",
             headerAlign: "center",
             flex: 200,
-            renderCell: (params: any) => {
+            renderCell: (params: GridRenderCellParams) => {
                 return (
                     <User>
                         <UserImage src={params.row.image} alt="" />
@@ -97,7 +95,7 @@ const UserList = () => {
             flex: 150,
             align: "center",
             headerAlign: "center",
-            renderCell: (params: any) => {
+            renderCell: (params: GridRenderCellParams) => {
                 const createdAt = new Date(
                     params.row.createdAt
                 ).toLocaleDateString();
@@ -111,7 +109,7 @@ const UserList = () => {
             headerAlign: "center",
             sortable: false,
             filterable: false,
-            renderCell: (params: any) => {
+            renderCell: (params: GridRenderCellParams) => {
                 if (params.row.isAdmin) {
                     return (
                         <Link to={`/user/${params.row._id}`}>
@@ -136,24 +134,28 @@ const UserList = () => {
 
     return (
         <Container>
-            <DataGrid
-                rows={users}
-                disableRowSelectionOnClick
-                columns={columns}
-                getRowId={(row: any) => row._id}
-                rowCount={users.length}
-                checkboxSelection
-                localeText={{
-                    toolbarDensity: "Size",
-                    toolbarDensityLabel: "Size",
-                    toolbarDensityCompact: "Small",
-                    toolbarDensityStandard: "Medium",
-                    toolbarDensityComfortable: "Large",
-                }}
-                slots={{
-                    toolbar: GridToolbar,
-                }}
-            />
+            {users ? (
+                <DataGrid
+                    rows={users}
+                    disableRowSelectionOnClick
+                    columns={columns}
+                    getRowId={(row) => row._id}
+                    rowCount={users.length}
+                    checkboxSelection
+                    localeText={{
+                        toolbarDensity: "Size",
+                        toolbarDensityLabel: "Size",
+                        toolbarDensityCompact: "Small",
+                        toolbarDensityStandard: "Medium",
+                        toolbarDensityComfortable: "Large",
+                    }}
+                    slots={{
+                        toolbar: GridToolbar,
+                    }}
+                />
+            ) : (
+                <p>Loading...</p>
+            )}
             {showConfirmation && (
                 <UserConfirmationPopup>
                     <UserConfirmationText>

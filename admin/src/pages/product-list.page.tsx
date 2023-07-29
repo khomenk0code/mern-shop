@@ -6,16 +6,9 @@ import { DeleteOutline } from "@mui/icons-material";
 import { deleteProduct, getProducts } from "../redux/api.calls";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
 
-interface Product {
-    _id: string;
-    product: string;
-    inStock: number;
-    price: number;
-}
-
 const ProductList = () => {
-    const [showConfirmation, setShowConfirmation] = useState(false);
-    const [productIdToDelete, setProductIdToDelete] = useState("");
+    const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+    const [productIdToDelete, setProductIdToDelete] = useState<string>("");
 
     const dispatch = useAppDispatch();
     const products = useAppSelector((state) => state.product.products);
@@ -109,25 +102,29 @@ const ProductList = () => {
 
     return (
         <ProductListContainer>
-            <DataGrid
-                rows={products}
-                disableRowSelectionOnClick
-                columns={columns}
-                getRowId={(row) => row._id}
-                rowCount={products.length}
-                checkboxSelection
-                autoHeight
-                localeText={{
-                    toolbarDensity: "Size",
-                    toolbarDensityLabel: "Size",
-                    toolbarDensityCompact: "Small",
-                    toolbarDensityStandard: "Medium",
-                    toolbarDensityComfortable: "Large",
-                }}
-                slots={{
-                    toolbar: GridToolbar,
-                }}
-            />
+            {products ? (
+                <DataGrid
+                    rows={products}
+                    disableRowSelectionOnClick
+                    columns={columns}
+                    getRowId={(row) => row._id}
+                    rowCount={products.length}
+                    checkboxSelection
+                    autoHeight
+                    localeText={{
+                        toolbarDensity: "Size",
+                        toolbarDensityLabel: "Size",
+                        toolbarDensityCompact: "Small",
+                        toolbarDensityStandard: "Medium",
+                        toolbarDensityComfortable: "Large",
+                    }}
+                    slots={{
+                        toolbar: GridToolbar,
+                    }}
+                />
+            ) : (
+                <p>Loading...</p>
+            )}
             {showConfirmation && (
                 <ConfirmationPopup>
                     <ConfirmationText>

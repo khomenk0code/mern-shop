@@ -5,7 +5,7 @@ import { userRequest } from "../utils/requestMethods";
 import { Link } from "react-router-dom";
 
 export interface Users {
-    name: any;
+    name: string;
     username: string;
     email: string;
     password: string;

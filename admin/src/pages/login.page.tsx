@@ -7,8 +7,8 @@ import { login } from "../redux/api.calls";
 import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const dispatch = useAppDispatch();
     const { isFetching, error, currentUser } = useAppSelector(
         (state) => state.user

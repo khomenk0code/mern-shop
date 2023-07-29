@@ -3,10 +3,22 @@ import styled from "styled-components";
 import { useAppDispatch } from "../hooks/redux.hooks";
 import { addUser } from "../redux/api.calls";
 
+interface NewUser {
+    name: string;
+    email: string;
+    password: string;
+}
+
+const defaultUserForm = {
+    name: "",
+    email: "",
+    password: "",
+};
+
 const NewUser: React.FC = () => {
-    const [isUserSaved, setIsUserSaved] = useState(false);
-    const [isError, setIsError] = useState(false);
-    const [inputs, setInputs] = useState({});
+    const [isUserSaved, setIsUserSaved] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
+    const [inputs, setInputs] = useState<NewUser>(defaultUserForm);
     const dispatch = useAppDispatch();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
