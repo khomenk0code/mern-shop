@@ -16,6 +16,7 @@ import { Button, LinearProgress, Typography } from "@mui/material";
 import handleImageChange from "../utils/uploadImg.helper";
 import { updateUser } from "../redux/api.calls";
 import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
+import { UploadButton } from "./product.page";
 
 const User: React.FC = () => {
     const [image, setImage] = useState<File | null>(null);
@@ -75,7 +76,7 @@ const User: React.FC = () => {
                 ...inputs,
             };
 
-            const savedUser: any = await updateUser(
+            await updateUser(
                 userId,
                 updatedUser,
                 dispatch
@@ -218,9 +219,9 @@ const User: React.FC = () => {
                                         alt="User image"
                                     />
                                 )}
-                                <UploadButton htmlFor="file">
+                                <UploadUserButton htmlFor="file">
                                     <UploadIcon />
-                                </UploadButton>
+                                </UploadUserButton>
                                 <input
                                     type="file"
                                     id="file"
@@ -278,23 +279,8 @@ const UserUploadImg = styled.img`
     object-fit: cover;
 `;
 
-const UploadButton = styled.label`
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s;
+const UploadUserButton = styled(UploadButton)`
 
-    &:hover {
-        background-color: #f1f1f1;
-    }
 `;
 
 const UploadIcon = styled(CloudUpload)`

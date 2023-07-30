@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Chart from "../components/chart.component";
 import { CheckCircle, CloudUpload, Error } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
@@ -23,18 +23,34 @@ interface ProductStatsData {
     name: string;
 }
 
+interface InputsState {
+    categories: string[];
+    color: string[];
+    price: string;
+    title: string;
+    desc: string;
+}
+
+const initialInputsState: InputsState = {
+    categories: [],
+    color: [],
+    price: '',
+    title: '',
+    desc: '',
+};
+
 const Product = () => {
     const [productStats, setProductStats] = useState<ProductStatsData[]>([]);
     const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-    const [inputs, setInputs] = useState({});
+    const [inputs, setInputs] = useState<InputsState>(initialInputsState);
     const [image, setImage] = useState<File | null>(null);
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState<number>(0);
     const [lightweightImgUrl, setLightweightImgUrl] = useState<string>("");
     const [fullSizeImgUrl, setFullSizeImgUrl] = useState<string>("");
-    const [isProductUpdated, setIsProductSaved] = useState(false);
-    const [isError, setIsError] = useState(false);
+    const [isProductUpdated, setIsProductSaved] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
 
-    console.log(productStats);
+    console.log(inputs);
 
     const firebaseConfig = useFirebaseConfig();
 
@@ -109,18 +125,19 @@ const Product = () => {
         }
     };
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
-        const { name, value } = e.target;
-        setInputs((prev) => ({
-            ...prev,
-            [name]:
-                name === "categories" || name === "color"
-                    ? value.split(",").map((item: string) => item.trim())
-                    : value,
-        }));
-    };
+    const handleChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+            const { name, value } = e.target;
+            setInputs((prev) => ({
+                ...prev,
+                [name]:
+                    name === 'categories' || name === 'color'
+                        ? value.split(',').map((item: string) => item.trim())
+                        : value,
+            }));
+        },
+        []
+    );
 
     const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
@@ -137,7 +154,7 @@ const Product = () => {
         }
     };
 
-    const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) : Promise<void> => {
         e.preventDefault();
 
         try {
@@ -153,7 +170,7 @@ const Product = () => {
                 size: selectedSizes,
             };
 
-            const savedProduct = await updateProduct(
+            await updateProduct(
                 productId,
                 updatedProduct,
                 dispatch
@@ -405,8 +422,7 @@ const ProductUploadImg = styled.img`
 const ProductUploadImgHidden = styled.img`
     display: none;
 `;
-
-const UploadButton = styled.label`
+export const UploadButton = styled.label`
     position: absolute;
     bottom: 0;
     right: 0;

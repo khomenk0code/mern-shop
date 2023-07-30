@@ -11,7 +11,7 @@ export interface Product {
     categories?: string[];
     size: string[];
     color: string[];
-    price: number;
+    price: string ;
     createdAt?: Date;
     updatedAt?: Date;
     inStock: boolean;

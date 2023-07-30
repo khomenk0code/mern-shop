@@ -55,7 +55,6 @@ const FeaturedInfo: React.FC = () => {
                 setisLoading(false);
             } catch (error) {
                 console.error(error);
-                // Handle error
             }
         };
 
