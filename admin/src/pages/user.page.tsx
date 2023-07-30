@@ -1,15 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import {
-    Cake,
-    MailOutline,
-    PermIdentity,
-    PhoneAndroid,
-    Error,
-    CheckCircle,
-    CloudUpload,
-} from "@mui/icons-material";
+import { Cake, CheckCircle, CloudUpload, Error, MailOutline, PermIdentity, PhoneAndroid } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../hooks/redux.hooks";
 import { Button, LinearProgress, Typography } from "@mui/material";
 
@@ -18,14 +10,33 @@ import { updateUser } from "../redux/api.calls";
 import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
 import { UploadButton } from "./product.page";
 
+interface UserInputsState {
+    birthDate: string;
+    email: string;
+    fullName: string;
+    phone: string;
+    username: string;
+}
+
+const initialInputsState: UserInputsState = {
+    birthDate: '',
+    email: '',
+    fullName: '',
+    phone: '',
+    username: '',
+};
+
+
 const User: React.FC = () => {
     const [image, setImage] = useState<File | null>(null);
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState<number>(0);
     const [fullSizeImgUrl, setFullSizeImgUrl] = useState<string>("");
     const [lightweightImgUrl, setLightweightImgUrl] = useState<string>("");
-    const [inputs, setInputs] = useState({});
-    const [isUserSaved, setIsUserSaved] = useState(false);
-    const [isError, setIsError] = useState(false);
+    const [inputs, setInputs] = useState<UserInputsState>(initialInputsState);
+    const [isUserSaved, setIsUserSaved] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
+
+    console.log(inputs);
 
     const location = useLocation();
     const dispatch = useAppDispatch();
@@ -33,7 +44,7 @@ const User: React.FC = () => {
 
     const userId: string = location.pathname.split("/")[2];
     const user: any = useAppSelector((state) =>
-        state.user.users.find((user) => user._id === userId)
+        state.user.users.find((user) => user._id === userId),
     );
 
     const onImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +55,7 @@ const User: React.FC = () => {
                 setProgress,
                 setFullSizeImgUrl,
                 setLightweightImgUrl,
-                firebaseConfig
+                firebaseConfig,
             );
         } catch (error) {
             console.log(error);
@@ -60,7 +71,7 @@ const User: React.FC = () => {
     };
 
     const handleClick = async (
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     ) => {
         e.preventDefault();
 
@@ -79,7 +90,7 @@ const User: React.FC = () => {
             await updateUser(
                 userId,
                 updatedUser,
-                dispatch
+                dispatch,
             );
             setIsError(false);
             setIsUserSaved(true);
@@ -260,23 +271,23 @@ const User: React.FC = () => {
 };
 
 const UserUpdateRight = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const UserUpload = styled.div`
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin-bottom: 20px;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
 `;
 
 const UserUploadImg = styled.img`
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 `;
 
 const UploadUserButton = styled(UploadButton)`
@@ -284,160 +295,160 @@ const UploadUserButton = styled(UploadButton)`
 `;
 
 const UploadIcon = styled(CloudUpload)`
-    color: #555;
+  color: #555;
 `;
 
 const ProgressBar = styled(LinearProgress)`
-    width: 100%;
-    margin-bottom: 20px;
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 const FeedbackMessage = styled(Typography)`
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
 `;
 
 const SuccessIcon = styled(CheckCircle)`
-    margin-right: 5px;
-    color: green;
+  margin-right: 5px;
+  color: green;
 `;
 
 const ErrorIcon = styled(Error)`
-    margin-right: 5px;
-    color: red;
+  margin-right: 5px;
+  color: red;
 `;
 
 const UpdateButton = styled(Button)`
-    && {
-        background-color: darkblue;
-        color: white;
-        font-weight: 600;
+  && {
+    background-color: darkblue;
+    color: white;
+    font-weight: 600;
 
-        &:hover {
-            background-color: #0f4dff;
-        }
+    &:hover {
+      background-color: #0f4dff;
     }
+  }
 `;
 
 const UserContainer = styled.div`
-    flex: 4;
-    padding: 20px;
+  flex: 4;
+  padding: 20px;
 `;
 
 const Wrapper = styled.div`
-    display: flex;
+  display: flex;
 `;
 
 const UserTitleContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const UserAddButton = styled.button`
-    width: 80px;
-    border: none;
-    padding: 5px;
-    background-color: teal;
-    border-radius: 5px;
-    cursor: pointer;
-    color: white;
-    font-size: 16px;
+  width: 80px;
+  border: none;
+  padding: 5px;
+  background-color: teal;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
 `;
 
 const UserShow = styled.div`
-    flex: 1;
-    padding: 20px;
-    margin-top: 15px;
-    box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
+  flex: 1;
+  padding: 20px;
+  margin-top: 15px;
+  box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
 `;
 
 const UserUpdate = styled.div`
-    flex: 2;
-    padding: 20px;
-    box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
-    margin-top: 15px;
+  flex: 2;
+  padding: 20px;
+  box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
+  margin-top: 15px;
 `;
 
 const UserShowTop = styled.div`
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 `;
 
 const UserShowImg = styled.img`
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 `;
 
 const UserShowTopTitle = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
 `;
 
 const UserShowUsername = styled.span`
-    font-weight: 600;
+  font-weight: 600;
 `;
 
 const UserShowBottom = styled.div`
-    margin-top: 20px;
+  margin-top: 20px;
 `;
 
 const UserShowTitle = styled.span`
-    font-size: 14px;
-    font-weight: 600;
-    color: rgb(175, 170, 170);
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(175, 170, 170);
 `;
 
 const UserShowInfo = styled.div`
-    display: flex;
-    align-items: center;
-    margin: 20px 0;
-    color: #444;
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #444;
 `;
 
 const UserShowIcon = styled.span`
-    font-size: 16px !important;
+  font-size: 16px !important;
 `;
 
 const UserShowInfoTitle = styled.span`
-    margin-left: 10px;
+  margin-left: 10px;
 `;
 
 const UserUpdateTitle = styled.span`
-    font-size: 24px;
-    font-weight: 600;
-    margin-left: 20px;
+  font-size: 24px;
+  font-weight: 600;
+  margin-left: 20px;
 `;
 
 const UserUpdateForm = styled.form`
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 0 20px;
 `;
 
 const UserUpdateLeft = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
 `;
 
 const UserUpdateItem = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
 `;
 
 const UserUpdateInput = styled.input`
-    border: none;
-    max-width: 250px;
-    height: 2rem;
-    margin-top: 5px;
-    border-bottom: 1px solid gray;
+  border: none;
+  max-width: 250px;
+  height: 2rem;
+  margin-top: 5px;
+  border-bottom: 1px solid gray;
 `;
 
 // const UserUpdateRight = styled.div`

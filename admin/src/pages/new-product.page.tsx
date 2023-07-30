@@ -11,17 +11,38 @@ import {
 import handleImageChange from "../utils/uploadImg.helper";
 import { useFirebaseConfig } from "../hooks/useFirebase.hooks";
 
+interface NewProductInputs {
+    categories: string[]
+    color: string
+    desc: string
+    inStock: boolean
+    price: string
+    title: string
+}
+const NewProductInitialState = {
+    categories: [''],
+    color: '',
+    desc: '',
+    inStock: true,
+    price: '',
+    title: '',
+}
+
+
+
 const NewProduct = () => {
-    const [inputs, setInputs] = useState({});
+    const [inputs, setInputs] = useState<NewProductInputs>(NewProductInitialState);
     const [image, setImage] = useState<File | null>(null);
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState<number>(0);
     const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
     const [fullSizeImgUrl, setFullSizeImgUrl] = useState<string>("");
     const [lightweightImgUrl, setLightweightImgUrl] = useState<string>("");
-    const [isProductSaved, setIsProductSaved] = useState(false);
-    const [isError, setIsError] = useState(false);
+    const [isProductSaved, setIsProductSaved] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
+
     const dispatch = useAppDispatch();
     const firebaseConfig = useFirebaseConfig();
+
 
     const handleSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;

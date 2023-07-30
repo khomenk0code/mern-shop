@@ -16,13 +16,14 @@ import {
     ProductListItem,
 } from "./product-list.page";
 import { GridRenderCellParams } from "@mui/x-data-grid/models/params/gridCellParams";
+import { Users } from "../components/small-widget.component";
 
 const UserList = () => {
-    const [showConfirmation, setShowConfirmation] = useState(false);
-    const [UserIdToDelete, setUserIdToDelete] = useState("");
+    const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+    const [UserIdToDelete, setUserIdToDelete] = useState<string>("");
 
     const dispatch = useAppDispatch();
-    const users = useAppSelector((state) => state.user.users);
+    const users:Users[] = useAppSelector((state) => state.user.users);
 
     useEffect(() => {
         getUsers(dispatch);
@@ -96,7 +97,7 @@ const UserList = () => {
             align: "center",
             headerAlign: "center",
             renderCell: (params: GridRenderCellParams) => {
-                const createdAt = new Date(
+                const createdAt: string = new Date(
                     params.row.createdAt
                 ).toLocaleDateString();
                 return <>{createdAt}</>;

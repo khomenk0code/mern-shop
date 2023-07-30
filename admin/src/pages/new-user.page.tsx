@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useAppDispatch } from "../hooks/redux.hooks";
 import { addUser } from "../redux/api.calls";
 
-interface NewUser {
+export interface INewUser {
     name: string;
     email: string;
     password: string;
@@ -18,7 +18,8 @@ const defaultUserForm = {
 const NewUser: React.FC = () => {
     const [isUserSaved, setIsUserSaved] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
-    const [inputs, setInputs] = useState<NewUser>(defaultUserForm);
+    const [inputs, setInputs] = useState<INewUser>(defaultUserForm);
+
     const dispatch = useAppDispatch();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

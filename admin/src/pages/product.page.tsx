@@ -50,7 +50,6 @@ const Product = () => {
     const [isProductUpdated, setIsProductSaved] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(false);
 
-    console.log(inputs);
 
     const firebaseConfig = useFirebaseConfig();
 
@@ -169,6 +168,7 @@ const Product = () => {
                 ...inputs,
                 size: selectedSizes,
             };
+
 
             await updateProduct(
                 productId,

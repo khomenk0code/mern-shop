@@ -14,7 +14,7 @@ import {
     loginSuccess,
     updateUserFailure,
     updateUserStart,
-    updateUserSuccess,
+    updateUserSuccess, User,
 } from "./user.slice";
 import { publicRequest, userRequest } from "../utils/requestMethods";
 import {
@@ -26,13 +26,28 @@ import {
     deleteProductSuccess,
     getProductFailure,
     getProductStart,
-    getProductSuccess,
+    getProductSuccess, Product,
     updateProductFailure,
     updateProductStart,
     updateProductSuccess,
 } from "./productsSlice";
+import  { INewUser } from "../pages/new-user.page";
 
-export const login = async (dispatch: Dispatch, user: any) => {
+
+interface LoginUser {
+    username: string;
+    password: string
+}
+
+interface ProductNew {
+    img: string;
+    size: string[];
+    altImg: string;
+}
+
+
+
+export const login = async (dispatch: Dispatch, user: LoginUser) => {
     dispatch(loginStart());
     try {
         const res = await publicRequest.post("/auth/login", user);
@@ -86,7 +101,7 @@ export const deleteUser = async (id: string, dispatch: Dispatch) => {
 
 export const updateProduct = async (
     id: string,
-    product: any,
+    product: Product,
     dispatch: Dispatch
 ) => {
     dispatch(updateProductStart());
@@ -100,7 +115,8 @@ export const updateProduct = async (
         throw e;
     }
 };
-export const updateUser = async (id: string, user: any, dispatch: Dispatch) => {
+
+export const updateUser = async (id: string, user: User, dispatch: Dispatch) => {
     dispatch(updateUserStart());
     try {
         const res = await userRequest.put(`/users/${id}`, user);
@@ -113,7 +129,9 @@ export const updateUser = async (id: string, user: any, dispatch: Dispatch) => {
     }
 };
 
-export const addProduct = async (product: any, dispatch: Dispatch) => {
+
+
+export const addProduct = async (product: ProductNew, dispatch: Dispatch) => {
     dispatch(addProductStart());
     try {
         const res = await userRequest.post("/products", product);
@@ -125,7 +143,9 @@ export const addProduct = async (product: any, dispatch: Dispatch) => {
         throw e;
     }
 };
-export const addUser = async (user: any, dispatch: Dispatch) => {
+
+
+export const addUser = async (user: INewUser, dispatch: Dispatch) => {
     dispatch(addUserStart());
     try {
         const res = await userRequest.post("/auth/register", user);

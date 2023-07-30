@@ -44,9 +44,9 @@ const SmallWidget: React.FC = () => {
                             }
                             alt="https://vyshnevyi-partners.com/wp-content/uploads/2016/12/no-avatar.png"
                         />
-                        <User>
+                        <Users>
                             <Username>{user.username}</Username>
-                        </User>
+                        </Users>
 
                         <StyledLink to={`/user/${user._id}`}>
                             <Icon>
@@ -111,7 +111,7 @@ const StyledLink = styled(Link)`
     }
 `;
 
-const User = styled.div`
+const Users = styled.div`
     display: flex;
     flex-direction: column;
 `;
