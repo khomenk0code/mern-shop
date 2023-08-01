@@ -8,10 +8,12 @@ import {
     Tooltip,
     XAxis,
 } from "recharts";
+
 export interface ChartData {
     name: string;
     ActiveUsers?: number;
 }
+
 
 export interface ChartProps<T extends ChartData> {
     title: string;
@@ -21,6 +23,7 @@ export interface ChartProps<T extends ChartData> {
 }
 
 const Chart = ({ title, data, dataKey, grid }: ChartProps<ChartData>) => {
+
     return (
         <ChartContainer>
             <ChartTitle>{title}</ChartTitle>

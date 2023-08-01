@@ -451,45 +451,4 @@ const UserUpdateInput = styled.input`
   border-bottom: 1px solid gray;
 `;
 
-// const UserUpdateRight = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-// `;
-//
-// const UserUpload = styled.div`
-//   display: flex;
-//   align-items: center;
-// `;
-//
-// const UserUploadImg = styled.img`
-//   width: 100px;
-//   height: 100px;
-//   border-radius: 10px;
-//   object-fit: cover;
-//   margin-right: 20px;
-// `;
-//
-// const UserUpdateButton = styled.button`
-//   border-radius: 5px;
-//   border: none;
-//   padding: 5px;
-//   cursor: pointer;
-//   background-color: darkblue;
-//   color: white;
-//   font-weight: 600;
-// `;
-//
-// const SuccessMessage = styled.div`
-//   margin-top: 10px;
-//   text-align: center;
-//   color: green;
-// `;
-//
-// const ErrorMessage = styled.div`
-//   margin-top: 10px;
-//   text-align: center;
-//   color: red;
-// `;
-
 export default User;
