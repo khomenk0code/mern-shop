@@ -10,9 +10,9 @@ import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { loginOut } from "../redux/user.slice";
 
 const Header: React.FC = () => {
-    const quantity = useAppSelector((state: any) => state.cart.quantity);
-    const user = useAppSelector((state: any) => state.user.currentUser);
-    const wishlist = useAppSelector((state: any) => state.wishlist.products);
+    const quantity = useAppSelector((state) => state.cart.quantity);
+    const user = useAppSelector((state) => state.user.currentUser);
+    const wishlist = useAppSelector((state) => state.wishlist.products);
     const dispatch = useAppDispatch();
 
     const handleLogout = () => {

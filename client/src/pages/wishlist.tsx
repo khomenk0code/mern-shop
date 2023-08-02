@@ -46,7 +46,7 @@ const Wishlist: React.FC = () => {
         number[]
     >([]);
     const user: any = useAppSelector((state) => state.user.currentUser);
-    const wishlist = useAppSelector((state: any) => state.wishlist.products);
+    const wishlist = useAppSelector((state) => state.wishlist.products);
     const dispatch = useAppDispatch();
     const validColors = Object.keys(cssColorNames);
     const userId = user ? user._id : null;
@@ -211,6 +211,7 @@ const Wishlist: React.FC = () => {
                 };
             });
 
+        console.log(selectedProductsToAdd);
         dispatch(addProducts(selectedProductsToAdd));
 
         setShowCartPopup(false);

@@ -48,11 +48,14 @@ const Product: React.FC = () => {
     const id: string = location.pathname.split("/")[2];
     const validColors = Object.keys(cssColorNames);
 
+    console.log(wishlistProducts);
     useEffect(() => {
         const isProductInWishlist = wishlistProducts.some(
-            (product) => product._id === product._id.toString()
+            (wishlistProduct) => wishlistProduct._id === product?._id
         );
-        setLiked(isProductInWishlist);
+        if (isProductInWishlist) {
+            setLiked(true)
+        }
     }, [wishlistProducts, product?._id]);
 
     const handleQuantity = (type: "inc" | "dec") => {
@@ -73,6 +76,7 @@ const Product: React.FC = () => {
         setImageLoaded(true);
     };
 
+
     const handleLike = async () => {
         if (!userId) {
             console.log("User is not logged in. Cannot add to wishlist.");
@@ -84,6 +88,7 @@ const Product: React.FC = () => {
             await removeFromWishlist(product?._id, userId);
         } else {
             try {
+
                 const wishlistItem = { ...product, userId };
                 dispatch(addProductWishlist(wishlistItem));
                 await addToWishlist(product?._id, userId);

@@ -18,6 +18,7 @@ export interface IProduct {
     quantity: number;
     id: string;
     _id: string;
+    userId: string;
     title: string;
     desc: string;
     img: string;

@@ -1,11 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IProduct } from "../components/products.component";
 
+interface IWishlistState {
+    products: IProduct[];
+}
+
 const wishlistSlice = createSlice({
     name: "wishlist",
     initialState: {
         products: [] as IProduct[],
-    },
+    } as IWishlistState,
     reducers: {
         addProductWishlist: (state, action: PayloadAction<any>) => {
             state.products.push(action.payload);
