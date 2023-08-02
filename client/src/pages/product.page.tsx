@@ -48,7 +48,6 @@ const Product: React.FC = () => {
     const id: string = location.pathname.split("/")[2];
     const validColors = Object.keys(cssColorNames);
 
-    console.log(wishlistProducts);
     useEffect(() => {
         const isProductInWishlist = wishlistProducts.some(
             (wishlistProduct) => wishlistProduct._id === product?._id
