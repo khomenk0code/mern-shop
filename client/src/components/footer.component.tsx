@@ -10,6 +10,7 @@ import {
     Twitter,
 } from "@mui/icons-material";
 import { mobile } from "../utils/responsive";
+import { Link } from "react-router-dom";
 
 const FooterComponent: React.FC = () => {
     return (
@@ -41,16 +42,16 @@ const FooterComponent: React.FC = () => {
             <Center>
                 <Title>Useful Links</Title>
                 <List>
-                    <ListItem>Home</ListItem>
-                    <ListItem>Cart</ListItem>
-                    <ListItem>Man Fashion</ListItem>
-                    <ListItem>Woman Fashion</ListItem>
-                    <ListItem>Accessories</ListItem>
-                    <ListItem>My Account</ListItem>
-                    <ListItem>Order Tracking</ListItem>
-                    <ListItem>Wishlist</ListItem>
-                    <ListItem>Wishlist2</ListItem>
-                    <ListItem>Terms</ListItem>
+                    <ListItem to="/">Home</ListItem>
+                    <ListItem to="/cart">Cart</ListItem>
+                    <ListItem to="#">Man Fashion</ListItem>
+                    <ListItem to="#">Woman Fashion</ListItem>
+                    <ListItem to="#">Accessories</ListItem>
+                    <ListItem to="/cabinet">My Account</ListItem>
+                    <ListItem to="#">Order Tracking</ListItem>
+                    <ListItem to="/cabinet/wishlist">Wishlist</ListItem>
+                    <ListItem to="#">Terms</ListItem>
+                    <ListItem to="#">Support</ListItem>
                 </List>
             </Center>
             <Right>
@@ -124,9 +125,11 @@ const List = styled.ul`
     flex-wrap: wrap;
 `;
 
-const ListItem = styled.li`
+const ListItem = styled(Link)`
     width: 50%;
     margin-bottom: 0.5rem;
+   text-decoration: none;
+  color: white;
 `;
 
 const Right = styled.div`
