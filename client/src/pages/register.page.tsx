@@ -12,32 +12,29 @@ const Register: React.FC = () => {
     const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [showPopup, setShowPopup] = useState(false);
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
     const navigate = useNavigate()
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault()
         setUsername(e.target.value);
     };
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault()
         setEmail(e.target.value);
     };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault()
         setPassword(e.target.value);
     };
 
     const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault()
         setConfirmPassword(e.target.value);
     };
 
+    const handleRegisterClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
 
-
-    const handleRegisterClick = async () => {
         const newErrorMessages: string[] = [];
 
         if (password !== confirmPassword) {
@@ -50,10 +47,13 @@ const Register: React.FC = () => {
 
             try {
                 const userData = { username, email, password };
-                const newUserResponse = await publicRequest.post("/auth/register", userData);
-                const newUser = newUserResponse.data;
-                navigate('/');
-                return newUser;
+                await publicRequest.post("/auth/register", userData);
+                setUsername("");
+                setEmail("");
+                setPassword("");
+                setConfirmPassword("");
+                setErrorMessages([]);
+                setShowSuccessPopup(true); // Показать попап успеха
             } catch (e) {
                 newErrorMessages.push("Registration unsuccessful. Please try again.");
                 setShowPopup(true);
@@ -66,6 +66,7 @@ const Register: React.FC = () => {
 
     const handlePopupClose = () => {
         setShowPopup(false);
+        setShowSuccessPopup(false); // Закрыть попап успеха
     };
 
 
@@ -92,6 +93,17 @@ const Register: React.FC = () => {
                         <PopupButton onClick={handlePopupClose}>OK</PopupButton>
                     </ErrorPopup>
                 )}
+                {showSuccessPopup && (
+                    <SuccessPopup>
+                        Registration successful!
+                        <PopupButton onClick={() => {
+                            handlePopupClose();
+                            navigate('/'); // Переход на главную страницу
+                        }}>
+                            Go to Home
+                        </PopupButton>
+                    </SuccessPopup>
+                )}
 
             </Wrapper>
         </Container>
@@ -111,6 +123,36 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+`;
+
+const SuccessPopup = styled.div`
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    button {
+        margin-top: 10px;
+        padding: 8px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: teal;
+        color: white;
+        cursor: pointer;
+    }
 `;
 
 const ErrorPopup = styled.div`
@@ -142,6 +184,7 @@ const Wrapper = styled.div`
     background-color: white;
 
     ${mobile({ width: "75%" })}
+
 `;
 
 const Title = styled.h1`
@@ -155,6 +198,8 @@ const Form = styled.form`
     flex-wrap: wrap;
     justify-content: center;
     flex-direction: column;
+  align-items: center;
+  
 `;
 
 const Input = styled.input`
@@ -177,6 +222,7 @@ const Button = styled.button`
     color: white;
     cursor: pointer;
     justify-self: center;
+ 
 `;
 
 export default Register;
