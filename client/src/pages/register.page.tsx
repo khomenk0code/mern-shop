@@ -2,12 +2,18 @@ import styled from "styled-components";
 import { mobile } from "../utils/responsive";
 import React, { useState } from "react";
 import { publicRequest } from "../utils/requestMethods";
+import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
+    const [showPopup, setShowPopup] = useState(false);
+
+    const navigate = useNavigate()
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()
@@ -31,27 +37,37 @@ const Register: React.FC = () => {
 
 
 
-    const handleCreateClick = async () => {
+    const handleRegisterClick = async () => {
+        const newErrorMessages: string[] = [];
 
-        const userData = {
-            username,
-            email,
-            password,
-        };
+        if (password !== confirmPassword) {
+            newErrorMessages.push("Passwords don't match.");
+            setPasswordsMatch(false);
+            setShowPopup(true);
+        } else {
+            setPasswordsMatch(true);
+            setShowPopup(false);
 
-        console.log(userData);
+            try {
+                const userData = { username, email, password };
+                const newUserResponse = await publicRequest.post("/auth/register", userData);
+                const newUser = newUserResponse.data;
+                navigate('/');
+                return newUser;
+            } catch (e) {
+                newErrorMessages.push("Registration unsuccessful. Please try again.");
+                setShowPopup(true);
+                console.error(e);
+            }
 
-       if (password === confirmPassword) {
-          try {
-              const newUser = await publicRequest.post("/auth/register", userData)
-              return newUser.data;
-          } catch (e) {
-              console.error(e);
-          }
-       } else {
-           console.log("passwords");
-       }
+            setErrorMessages(newErrorMessages);
+        }
     };
+
+    const handlePopupClose = () => {
+        setShowPopup(false);
+    };
+
 
 
     return (
@@ -68,8 +84,15 @@ const Register: React.FC = () => {
                         my personal data in accordance with the{" "}
                         <b>PRIVACY POLICY</b>
                     </Agreement>
-                    <Button onClick={handleCreateClick}>CREATE</Button>
+                    <Button onClick={handleRegisterClick}>CREATE</Button>
                 </Form>
+                {showPopup && (
+                    <ErrorPopup>
+                        {passwordsMatch ? "Registration unsuccessful. Please try again." : "Passwords don't match."}
+                        <PopupButton onClick={handlePopupClose}>OK</PopupButton>
+                    </ErrorPopup>
+                )}
+
             </Wrapper>
         </Container>
     );
@@ -88,6 +111,29 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+`;
+
+const ErrorPopup = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const PopupButton = styled.button`
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
 `;
 
 const Wrapper = styled.div`
