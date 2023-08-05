@@ -129,7 +129,7 @@ const ListItem = styled(Link)`
     width: 50%;
     margin-bottom: 0.5rem;
    text-decoration: none;
-  color: white;
+  color: #000;
 `;
 
 const Right = styled.div`

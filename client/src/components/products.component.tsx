@@ -92,17 +92,31 @@ const Products: React.FC<ProductsProps> = ({ category, filters, sort }) => {
 
     return (
         <>
-            <Container>
-                {(category ? filteredProducts : products)
-                    .slice(0, visibleProductCount)
-                    .map((item: any) => (
-                        <ProductsItem item={item} key={item._id} />
-                    ))}
-                {isLoading && <Loader>Loading...</Loader>}
-            </Container>
+            {category ? (
+                filteredProducts.length === 0 ? (
+                    <NoProductsMessage>No products available in this category.</NoProductsMessage>
+                ) : (
+                    <Container>
+                        {filteredProducts
+                            .slice(0, visibleProductCount)
+                            .map((item: any) => (
+                                <ProductsItem item={item} key={item._id} />
+                            ))}
+                        {isLoading && <Loader>Loading...</Loader>}
+                    </Container>
+                )
+            ) : (
+                <Container>
+                    {products
+                        .slice(0, visibleProductCount)
+                        .map((item: any) => (
+                            <ProductsItem item={item} key={item._id} />
+                        ))}
+                    {isLoading && <Loader>Loading...</Loader>}
+                </Container>
+            )}
             <ButtonWrapper>
-                {visibleProductCount <
-                    (category ? filteredProducts.length : products.length) &&
+                {(category ? filteredProducts : products).length > visibleProductCount &&
                     !isLoading && (
                         <ShowMoreButton onClick={handleShowMore}>
                             Show more
@@ -119,6 +133,14 @@ const Container = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+`;
+
+const NoProductsMessage = styled.p`
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+    margin: 20px 0;
+    height: 10rem;
 `;
 
 const Loader = styled.div`

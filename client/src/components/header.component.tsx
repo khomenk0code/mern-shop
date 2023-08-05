@@ -24,20 +24,10 @@ const Header: React.FC = () => {
             <Container>
                 <Wrapper>
                     <Left>
-                        <Language>EN</Language>
-                        <SearchContainer>
-                            <Input placeholder="Search" />
-                            <FontAwesomeIcon
-                                icon={faMagnifyingGlass}
-                                style={{ color: "gray" }}
-                            />
-                        </SearchContainer>
-                    </Left>
-                    <Center>
                         <Logo>
                             <StyledLink to="/">MERN.</StyledLink>
                         </Logo>
-                    </Center>
+                    </Left>
                     <Right>
                         {user?.isAdmin ? (
                             <MenuItem>
@@ -130,31 +120,13 @@ const Left = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
+  margin-left: 30px;
 `;
 
 const Language = styled.span`
     font-size: 14px;
     cursor: pointer;
     ${mobile({ display: "none" })}
-`;
-
-const SearchContainer = styled.div`
-    border: 0.5px solid lightgray;
-    display: flex;
-    align-items: center;
-    margin-left: 25px;
-    padding: 5px;
-    ${mobile({ marginLeft: "10px" })}
-`;
-
-const Input = styled.input`
-    border: none;
-    ${mobile({ width: "50px" })}
-`;
-
-const Center = styled.div`
-    flex: 1;
-    text-align: center;
 `;
 
 const Logo = styled.h1`
