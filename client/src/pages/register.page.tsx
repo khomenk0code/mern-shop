@@ -1,25 +1,72 @@
 import styled from "styled-components";
 import { mobile } from "../utils/responsive";
-import React from "react";
+import React, { useState } from "react";
+import { publicRequest } from "../utils/requestMethods";
 
 const Register: React.FC = () => {
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        setUsername(e.target.value);
+    };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        setEmail(e.target.value);
+    };
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        setPassword(e.target.value);
+    };
+
+    const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        setConfirmPassword(e.target.value);
+    };
+
+
+
+    const handleCreateClick = async () => {
+
+        const userData = {
+            username,
+            email,
+            password,
+        };
+
+       if (password === confirmPassword) {
+          try {
+              const newUser = await publicRequest.post("/register", userData)
+              return newUser.data;
+          } catch (e) {
+              console.error(e);
+          }
+       } else {
+           return alert("password dont match")
+       }
+    };
+
+
     return (
         <Container>
             <Wrapper>
                 <Title>CREATE AN ACCOUNT</Title>
                 <Form>
-                    <Input placeholder="name" type="text" />
-                    <Input placeholder="last name" type="text" />
-                    <Input placeholder="username" type="text" />
-                    <Input placeholder="email" type="email" />
-                    <Input placeholder="password" type="password" />
-                    <Input placeholder="confirm password" type="password" />
+                    <Input placeholder="username" type="text" onChange={handleUsernameChange} value={username} />
+                    <Input placeholder="email" type="email" onChange={handleEmailChange} value={email} />
+                    <Input placeholder="password" type="password" onChange={handlePasswordChange} value={password} />
+                    <Input placeholder="confirm password" type="password" onChange={handleConfirmPasswordChange} value={confirmPassword} />
                     <Agreement>
                         By creating an account, I consent to the processing of
                         my personal data in accordance with the{" "}
                         <b>PRIVACY POLICY</b>
                     </Agreement>
-                    <Button>CREATE</Button>
+                    <Button onClick={handleCreateClick}>CREATE</Button>
                 </Form>
             </Wrapper>
         </Container>
@@ -59,6 +106,7 @@ const Form = styled.form`
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    flex-direction: column;
 `;
 
 const Input = styled.input`
