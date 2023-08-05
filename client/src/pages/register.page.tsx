@@ -39,15 +39,17 @@ const Register: React.FC = () => {
             password,
         };
 
+        console.log(userData);
+
        if (password === confirmPassword) {
           try {
-              const newUser = await publicRequest.post("/register", userData)
+              const newUser = await publicRequest.post("/auth/register", userData)
               return newUser.data;
           } catch (e) {
               console.error(e);
           }
        } else {
-           return alert("password dont match")
+           console.log("passwords");
        }
     };
 
