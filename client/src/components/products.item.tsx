@@ -82,7 +82,7 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
                     <ShoppingCartOutlined />
                 </Icon>
                 <LikeIcon onClick={handleLike}>
-                    {liked ? (
+                    {liked && user ? (
                         <FontAwesomeIcon
                             icon={faHeart}
                             beat
