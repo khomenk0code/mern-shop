@@ -224,36 +224,49 @@ const Wishlist: React.FC = () => {
         }));
     };
 
+
     return (
         <Container>
             <Title>
                 <Typography variant="h4" gutterBottom>
                     Wishlist
                 </Typography>
+
+            <WishlistControls>
                 {selectedProducts.length >= 2 && (
                     <Badge
                         badgeContent={selectedProducts.length}
                         color="warning"
                     >
-                        <Button
+                        <ControlButton
                             variant="contained"
                             color="secondary"
                             onClick={() => handleRemoveAll(userId)}
+                            sx={{ mx: 0.5 }}
                         >
                             Remove Selected
-                        </Button>
+                        </ControlButton >
                     </Badge>
                 )}
-                <Button
+                <ControlButton  variant="contained"
+                        sx={{ mx: 0.5 }}
+                        onClick={handleToggleAll}>
+                    {selectedProducts.length === wishlist.length
+                        ? "Deselect All"
+                        : "Select All"}
+                </ControlButton >
+                <ControlButton
                     variant="contained"
                     color="primary"
                     onClick={handleBuyAll}
+                    sx={{ mx: 0.5 }}
                 >
                     {selectedProducts.length >= 1 &&
                     selectedProducts.length !== wishlist.length
                         ? "Buy Selected"
                         : "Buy All"}
-                </Button>
+                </ControlButton >
+            </WishlistControls>
             </Title>
             <Grid container spacing={2}>
                 {wishlist.map((product: any) => (
@@ -384,6 +397,7 @@ const Wishlist: React.FC = () => {
                                             </PriceToCart>
                                         </WrapperToCart>
                                         <HrLineCart />
+
                                     </div>
                                 ))}
                         </div>
@@ -395,6 +409,14 @@ const Wishlist: React.FC = () => {
                         <ConfirmationButton onClick={handleClick}>
                             Add to cart
                         </ConfirmationButton>
+                       <PopupTotal>
+                           {selectedProducts.length > 0 && (
+                               <Typography variant="subtitle1" gutterBottom>
+                                   Total:
+                                   ${selectedTotalPrice}
+                               </Typography>
+                           )}
+                       </PopupTotal>
                     </ConfirmationButtons>
                 </ConfirmationPopup>
             )}
@@ -409,19 +431,6 @@ const Wishlist: React.FC = () => {
                             ${calculateTotalPrice()}
                         </Typography>
                     </TotalPrice>
-
-                    <Button variant="contained" onClick={handleToggleAll}>
-                        {selectedProducts.length === wishlist.length
-                            ? "Deselect All"
-                            : "Select All"}
-                    </Button>
-
-                    {selectedProducts.length > 0 && (
-                        <Typography variant="subtitle1" gutterBottom>
-                            Selected: {selectedProducts.length} products, Total:
-                            ${selectedTotalPrice}
-                        </Typography>
-                    )}
                 </>
             ) : (
                 <EmptyCartMessage>
@@ -442,6 +451,23 @@ const ClosePopupButton = styled.button`
     cursor: pointer;
     padding: 0;
 `;
+const PopupTotal = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+
+
+const WishlistControls = styled.div`
+   display: flex;
+  
+`;
+const ControlButton = styled(Button)`
+    white-space: nowrap;
+    flex-grow: 1;
+    min-width: 0; 
+`;
+
 
 const EmptyCartMessage = styled.div`
     margin-top: 2rem;
@@ -549,6 +575,7 @@ const Title = styled.div`
     width: 100%;
     align-items: center;
     text-align: center;
+  margin-bottom: 3rem;
 `;
 
 const ProductCard = styled(Card)`
