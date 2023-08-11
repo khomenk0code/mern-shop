@@ -99,7 +99,7 @@ const Cart = () => {
         };
 
         updateCartOnServer();
-    }, [dispatch, userId]);
+    }, [dispatch, userId, cart]);
 
     const handleRemoveFromCart = (
         productId: string,
