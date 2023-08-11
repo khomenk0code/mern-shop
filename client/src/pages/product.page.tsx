@@ -350,11 +350,14 @@ export const FilterContainer = styled.div`
 export const Filter = styled.div`
     display: flex;
     align-items: center;
+  ${mobile({ paddingBottom: "20px" })}
+  
 `;
 
 export const FilterTitle = styled.span`
     font-size: 20px;
     font-weight: 200;
+  
 `;
 
 export const FilterColor = styled.div<FilterColorProps>`

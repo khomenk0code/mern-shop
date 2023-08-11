@@ -14,6 +14,7 @@ import {
     SettingsApplications,
     ThreePSharp,
 } from "@mui/icons-material";
+import { mobile } from "../utils/responsive";
 
 const Aside: React.FC = () => {
     const [hideMenu, setHideMenu] = useState(false);
@@ -128,6 +129,7 @@ const SidebarContainer = styled.aside`
     background-color: rgb(251, 251, 255);
     position: sticky;
     top: 50px;
+  ${mobile({ display: "none" })}
 `;
 
 const SidebarWrapper = styled.div<{ hideMenu: boolean }>`

@@ -1,7 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Badge } from "@mui/material";
 import { FavoriteBorder, ShoppingCartOutlined } from "@mui/icons-material";
 import { mobile } from "../utils/responsive";
@@ -114,6 +112,9 @@ const LogoutButton = styled.button`
     &:hover {
         background-color: #e54246;
     }
+
+  ${mobile({ padding: "5px 10px", margin: "0 5px" })}
+  
 `;
 
 const Left = styled.div`
@@ -121,17 +122,14 @@ const Left = styled.div`
     display: flex;
     align-items: center;
   margin-left: 30px;
+  ${mobile({ marginLeft: "15px" })}
+  
 `;
 
-const Language = styled.span`
-    font-size: 14px;
-    cursor: pointer;
-    ${mobile({ display: "none" })}
-`;
 
 const Logo = styled.h1`
     font-weight: bold;
-    ${mobile({ fontSize: "24px", marginLeft: "20px" })}
+    ${mobile({ fontSize: "24px" })}
 `;
 const Right = styled.div`
     flex: 1;

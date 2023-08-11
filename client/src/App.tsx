@@ -18,6 +18,7 @@ import Header from "./components/header.component";
 import Wishlist from "./pages/wishlist";
 import ScrollToTop from "./components/scroll-to-top";
 
+
 const App = () => {
     const user = useAppSelector((state) => state.user.currentUser);
 

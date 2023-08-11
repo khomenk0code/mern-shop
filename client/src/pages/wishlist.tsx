@@ -26,6 +26,7 @@ import cssColorNames from "css-color-names";
 import { Link } from "react-router-dom";
 import { addProducts } from "../redux/cart.slice";
 import { removeFromWishlist, removeFromWishlistAll } from "../redux/api.calls";
+import { mobile } from "../utils/responsive";
 
 interface SelectedColors {
     [productId: string]: string;
@@ -231,7 +232,6 @@ const Wishlist: React.FC = () => {
                 <Typography variant="h4" gutterBottom>
                     Wishlist
                 </Typography>
-
             <WishlistControls>
                 {selectedProducts.length >= 2 && (
                     <Badge
@@ -242,14 +242,14 @@ const Wishlist: React.FC = () => {
                             variant="contained"
                             color="secondary"
                             onClick={() => handleRemoveAll(userId)}
-                            sx={{ mx: 0.5 }}
+                            sx={{ m: 0.5 }}
                         >
                             Remove Selected
                         </ControlButton >
                     </Badge>
                 )}
                 <ControlButton  variant="contained"
-                        sx={{ mx: 0.5 }}
+                        sx={{ m: 0.5 }}
                         onClick={handleToggleAll}>
                     {selectedProducts.length === wishlist.length
                         ? "Deselect All"
@@ -259,7 +259,7 @@ const Wishlist: React.FC = () => {
                     variant="contained"
                     color="primary"
                     onClick={handleBuyAll}
-                    sx={{ mx: 0.5 }}
+                    sx={{ m: 0.5 }}
                 >
                     {selectedProducts.length >= 1 &&
                     selectedProducts.length !== wishlist.length
@@ -389,7 +389,6 @@ const Wishlist: React.FC = () => {
                                                         </FilterWishlist>
                                                     ) : null}
                                                 </FilterContainerWishlist>
-                                                ;
                                             </div>
                                             <PriceToCart>
                                                 {" "}
@@ -403,9 +402,9 @@ const Wishlist: React.FC = () => {
                         </div>
                     )}
                     <ConfirmationButtons>
-                        <ConfirmationButton>
-                            Continue shopping
-                        </ConfirmationButton>
+                        {/*<ConfirmationButton onClick={() => setShowCartPopup(false)}>*/}
+                        {/*    Continue shopping*/}
+                        {/*</ConfirmationButton>*/}
                         <ConfirmationButton onClick={handleClick}>
                             Add to cart
                         </ConfirmationButton>
@@ -457,15 +456,19 @@ const PopupTotal = styled.div`
 `;
 
 
-
 const WishlistControls = styled.div`
    display: flex;
-  
+  ${mobile({ flexDirection: "column-reverse",
+    marginTop: "20px", 
+    minWidth: "200px"
+  })}
 `;
 const ControlButton = styled(Button)`
     white-space: nowrap;
     flex-grow: 1;
-    min-width: 0; 
+    min-width: 0;
+  ${mobile({ flexDirection: "column" })}
+  
 `;
 
 
@@ -487,6 +490,7 @@ const CartLink = styled(Link)`
 
 export const ImageToCart = styled.img`
     height: 100px;
+  ${mobile({ height: "60px" })}
 `;
 
 export const WrapperToCart = styled.div`
@@ -494,6 +498,7 @@ export const WrapperToCart = styled.div`
     justify-content: space-around;
     align-items: center;
     padding: 10px 0;
+  ${mobile({ padding: "5px 0", })}
 `;
 
 export const PriceToCart = styled.div`
@@ -503,9 +508,17 @@ export const PriceToCart = styled.div`
 `;
 export const AddToCartTitle = styled.h4`
     font-size: 20px;
+  ${mobile({
+    fontSize: "14px",
+    marginTop: "3px",
+  })}
 `;
 
-const FilterContainerWishlist = styled(FilterContainer)``;
+const FilterContainerWishlist = styled(FilterContainer)`
+  ${mobile({
+    flexDirection: "column",
+  })}
+`;
 const FilterWishlist = styled(Filter)``;
 const FilterTitleWishlist = styled(FilterTitle)``;
 const FilterColorWishlist = styled(FilterColor)<FilterColorProps>``;
@@ -522,17 +535,26 @@ export const ConfirmationPopup = styled.div`
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     z-index: 9999;
+  
+  ${mobile({
+    width: "90%", 
+    padding: "10px", 
+    transform: "translate(-50%, -60%)", 
+  })}
+  
 `;
 
 export const ConfirmationText = styled.div`
     margin-bottom: 20px;
     text-align: center;
     font-size: 22px;
+  ${mobile({ fontSize: "18px" })}
 `;
 
 export const ConfirmationButtons = styled.div`
     display: flex;
     justify-content: center;
+  
 `;
 
 export const ConfirmationButton = styled.button`
@@ -547,6 +569,11 @@ export const ConfirmationButton = styled.button`
     &:hover {
         background-color: #2d8a5f;
     }
+
+  ${mobile({
+    margin: "0px 15px",
+    padding: "5px 5px",
+  })}
 `;
 
 const HrLineCart = styled(Hr)`
@@ -559,16 +586,24 @@ const HrLine = styled(Hr)`
 `;
 
 const Container = styled.div`
-    padding: 20px;
-    width: 100%;
+  padding: 20px;
+  width: 100%;
+  overflow-x: hidden;
+  ${mobile({
+    padding: '0',
+  })}
 `;
+
+
 const TotalPrice = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     margin-bottom: 1rem;
     align-items: flex-end;
+  margin-right: 1rem;
 `;
+
 const Title = styled.div`
     display: flex;
     justify-content: space-between;
@@ -576,6 +611,7 @@ const Title = styled.div`
     align-items: center;
     text-align: center;
   margin-bottom: 3rem;
+  ${mobile({ flexDirection: "column" })}
 `;
 
 const ProductCard = styled(Card)`
@@ -583,6 +619,8 @@ const ProductCard = styled(Card)`
     flex-direction: column;
     height: 100%;
     justify-content: space-between;
+  
+
 `;
 
 const ProductImage = styled(CardMedia)`
@@ -598,6 +636,8 @@ const ProductTitle = styled(Typography)`
     text-overflow: ellipsis;
     flex: 1;
     min-height: 30px;
+  ${mobile({  paddingBottom: "5px", })}
+  
 `;
 
 const ProductDescription = styled(Typography)`
@@ -605,12 +645,16 @@ const ProductDescription = styled(Typography)`
     text-overflow: ellipsis;
     overflow: hidden;
     flex: 3;
+  ${mobile({  paddingBottom: "5px", })}
+  
 `;
 
 const ProductPrice = styled(Typography)`
     flex: 1;
     display: flex;
     align-items: center;
+  ${mobile({  padding: "10px", justifyContent: "flex-end" })}
+  
 `;
 
 const DeleteButton = styled.button`
