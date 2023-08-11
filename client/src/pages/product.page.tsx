@@ -164,6 +164,7 @@ const Product: React.FC = () => {
         }
     }, [product]);
 
+
     return (
         <Container>
             <Navbar />
@@ -218,6 +219,7 @@ const Product: React.FC = () => {
                                     onChange={(e) => setSize(e.target.value)}
                                 >
                                     {product?.size
+                                        ?.slice()
                                         .sort((a, b) => {
                                             const sizesOrder = [
                                                 "XS",
@@ -237,6 +239,7 @@ const Product: React.FC = () => {
                                                 {s}
                                             </FilterSizeOption>
                                         ))}
+
                                 </FilterSize>
                             </Filter>
                         ) : null}
