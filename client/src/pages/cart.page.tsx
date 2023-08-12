@@ -339,6 +339,10 @@ const TopButton = styled(Link)<StyledTypesProps>`
         props.types === "filled" ? "black" : "transparent"};
     color: ${(props) => props.types === "filled" && "white"};
     text-decoration: none;
+
+  ${mobile({ flexDirection: "column-reverse",
+    padding: "5px"
+  })}
 `;
 
 const Bottom = styled.div`
@@ -371,6 +375,9 @@ const ClearCart = styled.div`
 
 const Image = styled.img`
     width: 200px;
+  ${mobile({ flexDirection: "column-reverse",
+    width: "100px"
+  })}
 `;
 
 const Details = styled.div`
@@ -378,11 +385,23 @@ const Details = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+  ${mobile({ 
+    padding: "5px"
+  })}
+  
 `;
 
-const ProductName = styled.span``;
+const ProductName = styled.span`
+  ${mobile({ flexDirection: "column-reverse",
+    marginBottom: "5px"
+  })}
+`;
 
-const ProductId = styled.span``;
+const ProductId = styled.span`
+  ${mobile({ flexDirection: "column-reverse",
+    marginBottom: "5px"
+  })}
+`;
 
 const ProductColor = styled.span<StyledTypesProps>`
     border-radius: 50%;
@@ -394,10 +413,16 @@ const ProductColor = styled.span<StyledTypesProps>`
     border: ${(props) =>
         props.color?.toLowerCase() === "white" ? "1px solid black" : "none"};
     display: inline-block;
+  ${mobile({ flexDirection: "column-reverse",
+    marginBottom: "5px"
+  })}
 `;
 
 const ProductSize = styled.span`
     display: inline-block;
+  ${mobile({ flexDirection: "column-reverse",
+    marginBottom: "5px"
+  })}
 `;
 
 const PriceDetail = styled.div`
@@ -406,6 +431,9 @@ const PriceDetail = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  ${mobile({ flexDirection: "column-reverse",
+    marginBottom: "5px"
+  })}
 `;
 
 const ButtonWrapper = styled.div`
