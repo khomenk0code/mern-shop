@@ -149,12 +149,8 @@ const Cart = () => {
                 <Title>Cart</Title>
                 <Top>
                     <TopButton to="/">CONTINUE SHOPPING</TopButton>
-                    <button onClick={handleClearCart}>Очистить корзину</button>
                     <TopButton to="/cabinet/wishlist" types="filled">
                         Your Wishlist ({wishlist.length || 0})
-                        <div>
-                            <h1>Status: </h1>
-                        </div>
                     </TopButton>
                 </Top>
                 <Bottom>
@@ -265,6 +261,9 @@ const Cart = () => {
                         ) : (
                             <p>Your cart is empty.</p>
                         )}
+                        <ClearCart>
+                            <TopButton to="#" types="filled" onClick={handleClearCart}>Clear cart</TopButton>
+                        </ClearCart>
                     </Info>
                     <Summary>
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>
@@ -355,12 +354,19 @@ const Info = styled.div`
 const Product = styled.div`
     display: flex;
     justify-content: space-between;
+    margin: 1rem 0;
     ${mobile({ flexDirection: "column" })}
 `;
 
 const ProductDetail = styled.div`
     flex: 2;
     display: flex;
+`;
+const ClearCart = styled.div`
+  height: 40px;
+  display: flex;
+  margin: 1rem;
+  justify-content: flex-end;
 `;
 
 const Image = styled.img`
