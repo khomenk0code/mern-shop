@@ -156,6 +156,8 @@ const Product = () => {
     const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) : Promise<void> => {
         e.preventDefault();
 
+        console.log(product)
+
         try {
             let updatedProduct = { ...product };
             if (fullSizeImgUrl) {
@@ -169,12 +171,13 @@ const Product = () => {
                 size: selectedSizes,
             };
 
-
+            console.log(updatedProduct)
             await updateProduct(
                 productId,
                 updatedProduct,
                 dispatch
             );
+
             setIsError(false);
             setIsProductSaved(true);
         } catch (error) {

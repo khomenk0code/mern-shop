@@ -6,7 +6,7 @@ import Newsletter from "../components/newsletter.component";
 import { Add, Remove } from "@mui/icons-material";
 import styled from "styled-components";
 import { mobile } from "../utils/responsive";
-import { useLocation } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import { IProduct } from "../components/products.component";
 import { publicRequest } from "../utils/requestMethods";
 import { addProducts, updateQuantity } from "../redux/cart.slice";
@@ -21,6 +21,8 @@ import {
 } from "../redux/wishlist.slice";
 import { addToWishlist, removeFromWishlist } from "../redux/api.calls";
 import { User } from "../redux/user.slice";
+import {Snackbar} from "@mui/material";
+import WishlistSnackbar from "../utils/snackbar.popup";
 
 export interface FilterColorProps {
     color: string;
@@ -35,9 +37,11 @@ const Product: React.FC = () => {
     const [size, setSize] = useState<string>("");
     const [isColorSelected, setIsColorSelected] = useState<boolean>(false);
     const products = useAppSelector((state) => state.cart.products);
-    const [showNotification, setShowNotification] = useState(false);
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const [liked, setLiked] = useState(false);
+    const [showNotification, setShowNotification] = useState<boolean>(false);
+    const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+    const [liked, setLiked] = useState<boolean>(false);
+    const [snackbarOpen, setSnackbarOpen] = useState<boolean>(true);
+
 
     const wishlistProducts = useAppSelector((state) => state.wishlist.products);
     const user: User | null = useAppSelector((state) => state.user.currentUser);
@@ -47,6 +51,8 @@ const Product: React.FC = () => {
     const location = useLocation();
     const id: string = location.pathname.split("/")[2];
     const validColors = Object.keys(cssColorNames);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const isProductInWishlist = wishlistProducts.some(
@@ -85,17 +91,23 @@ const Product: React.FC = () => {
         if (liked) {
             dispatch(removeProductWishlist(product?._id));
             await removeFromWishlist(product?._id, userId);
+            setSnackbarOpen(false);
         } else {
             try {
 
                 const wishlistItem = { ...product, userId };
                 dispatch(addProductWishlist(wishlistItem));
                 await addToWishlist(product?._id, userId);
+                setSnackbarOpen(true);
             } catch (error) {
                 console.log("Failed to add product to wishlist:", error);
             }
         }
         setLiked(!liked);
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbarOpen(false);
     };
 
     const handleClick = () => {
@@ -289,6 +301,11 @@ const Product: React.FC = () => {
                     </AddContainer>
                 </InfoContainer>
             </Wrapper>
+            <WishlistSnackbar
+                open={snackbarOpen}
+                onClose={handleCloseSnackbar}
+                onGoToWishlist={() => console.log("Navigate to wishlist")}
+            />
             <Newsletter />
             <FooterComponent />
         </Container>
@@ -302,6 +319,17 @@ const WarningText = styled.span`
 `;
 
 const Container = styled.div``;
+
+const SnackbarButton = styled.button`
+border-radius: 5px;
+  height: 30px;
+  cursor: pointer;
+  &:hover {
+    background-color: lightgray;
+  }
+`;
+
+
 
 const Wrapper = styled.div`
     padding: 50px;
