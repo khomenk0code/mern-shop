@@ -304,7 +304,7 @@ const Product: React.FC = () => {
             <WishlistSnackbar
                 open={snackbarOpen}
                 onClose={handleCloseSnackbar}
-                onGoToWishlist={() => console.log("Navigate to wishlist")}
+                onGoToWishlist={() => navigate("/cabinet/wishlist")}
             />
             <Newsletter />
             <FooterComponent />

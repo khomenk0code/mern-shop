@@ -29,7 +29,7 @@ const SnackbarButton: React.FC<SnackbarButtonProps> = ({ onClick, children }) =>
 );
 
 
-const WishlistSnackbar: React.FC<WishlistSnackbarProps> = ({ open, onClose, onGoToWishlist }) => {
+export const WishlistSnackbar: React.FC<WishlistSnackbarProps> = ({ open, onClose, onGoToWishlist }) => {
     return (
         <Snackbar
             open={open}
