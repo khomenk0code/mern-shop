@@ -40,7 +40,7 @@ const Product: React.FC = () => {
     const [showNotification, setShowNotification] = useState<boolean>(false);
     const [imageLoaded, setImageLoaded] = useState<boolean>(false);
     const [liked, setLiked] = useState<boolean>(false);
-    const [snackbarOpen, setSnackbarOpen] = useState<boolean>(true);
+    const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 
 
     const wishlistProducts = useAppSelector((state) => state.wishlist.products);

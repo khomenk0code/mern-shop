@@ -43,9 +43,7 @@ const Wishlist: React.FC = () => {
     const [showCartPopup, setShowCartPopup] = useState(false);
     const [selectedTotalPrice, setSelectedTotalPrice] = useState<number>(0);
     const [isAllSelected, setIsAllSelected] = useState<boolean>(false);
-    const [selectedProductsInPopup, setSelectedProductsInPopup] = useState<
-        number[]
-    >([]);
+    const [selectedProductsInPopup, setSelectedProductsInPopup] = useState<number[]>([]);
     const user: any = useAppSelector((state) => state.user.currentUser);
     const wishlist = useAppSelector((state) => state.wishlist.products);
     const dispatch = useAppDispatch();
