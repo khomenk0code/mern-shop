@@ -256,14 +256,14 @@ const Cart = () => {
                                         </PriceDetail>
                                     </Product>
                                     <Hr />
+                        <ClearCart>
+                            <TopButton to="#" types="filled" onClick={handleClearCart}>Clear cart</TopButton>
+                        </ClearCart>
                                 </div>
                             ))
                         ) : (
                             <p>Your cart is empty.</p>
                         )}
-                        <ClearCart>
-                            <TopButton to="#" types="filled" onClick={handleClearCart}>Clear cart</TopButton>
-                        </ClearCart>
                     </Info>
                     <Summary>
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>
@@ -353,6 +353,10 @@ const Bottom = styled.div`
 
 const Info = styled.div`
     flex: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 `;
 
 const Product = styled.div`
