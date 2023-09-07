@@ -131,11 +131,16 @@ const Desc = styled.p`
     letter-spacing: 3px;
 `;
 const Button = styled.button`
-    text-transform: uppercase;
-    padding: 10px;
-    font-size: 20px;
-    background-color: transparent;
-    cursor: pointer;
+  text-transform: uppercase;
+  padding: 10px;
+  font-size: 20px;
+  background-color: transparent;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #4b4a4a;
+    color: white;
+  }
 `;
 
 export default Slider;

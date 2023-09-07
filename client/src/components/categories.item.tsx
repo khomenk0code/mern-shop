@@ -54,12 +54,17 @@ const Title = styled.h1`
 `;
 
 const Button = styled.button`
-    border: none;
-    padding: 10px;
-    background-color: white;
-    color: gray;
-    cursor: pointer;
-    font-weight: 600;
+  border: none;
+  padding: 10px;
+  background-color: white;
+  color: gray;
+  cursor: pointer;
+  font-weight: 600;
+
+  &:hover {
+    background-color: #8e7d7d;
+    color: white;
+  }
 `;
 
 export default CategoriesItem;
