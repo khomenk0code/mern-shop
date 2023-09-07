@@ -78,9 +78,6 @@ const ProductsItem: React.FC<CategoriesItemProps> = ({ item }) => {
                         <SearchOutlined />
                     </StyledLink>
                 </Icon>
-                <Icon>
-                    <ShoppingCartOutlined />
-                </Icon>
                 <LikeIcon onClick={handleLike}>
                     {liked && user ? (
                         <FontAwesomeIcon

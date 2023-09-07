@@ -256,9 +256,9 @@ const Cart = () => {
                                         </PriceDetail>
                                     </Product>
                                     <Hr />
-                        <ClearCart>
-                            <TopButton to="#" types="filled" onClick={handleClearCart}>Clear cart</TopButton>
-                        </ClearCart>
+                                <ClearCart>
+                                    <TopButton to="#" types="filled" onClick={handleClearCart}>Clear cart</TopButton>
+                                </ClearCart>
                                 </div>
                             ))
                         ) : (
